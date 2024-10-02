@@ -19,6 +19,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final MemberValidate memberValidate;
 
 
 
@@ -26,10 +27,10 @@ public class MemberService {
     public MemberSignUpResponse singUp(MemberSignUpRequest req) {
 
        // 이메일 중복 검증
-        emailDuplicate(req.getEmail());
+        memberValidate.emailDuplicate(req.getEmail());
 
         // 닉네임 중복 검증
-        nickNameDuplicate(req.getNickname());
+        memberValidate.nickNameDuplicate(req.getNickname());
 
         // 비밀번호 중복 확인
         if(!req.getPassword().equals(req.getCheckedPassword())) {
@@ -48,23 +49,8 @@ public class MemberService {
     }
 
 
-    public void emailDuplicate(String email) {
-        boolean result = memberRepository.existsByEmail(email);
-
-        if(result) {
-            throw new MemberException.EmailDuplicateException("중복된 이메일 입니다.");
-        }
-
-    }
 
 
-    public void nickNameDuplicate(String nickName) {
-        boolean result = memberRepository.existsByNickName(nickName);
-
-        if(result) {
-            throw new MemberException.NickNameDuplicateException("중복된 닉네임 입니다 다른 닉네임을 선택하세요");
-        }
-    }
 
 
     public List<MemberFindAllResponse> memberFindAll() {

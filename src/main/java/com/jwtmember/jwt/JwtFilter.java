@@ -2,6 +2,7 @@ package com.jwtmember.jwt;
 
 import com.jwtmember.member.domain.Authority;
 import com.jwtmember.member.domain.Member;
+import com.jwtmember.member.repository.MemberRepository;
 import com.jwtmember.member.service.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ public class JwtFilter extends OncePerRequestFilter {
      * HTTP 요청이 올 때마다 토큰을 검증한다.doFilterInternal 메서드에서 토큰의 유효성을 확인.
      */
     private final JwtUtil jwtUtil;
+    private final MemberRepository memberRepository;
 
 
     @Override
@@ -70,8 +73,13 @@ public class JwtFilter extends OncePerRequestFilter {
         String userEmail = jwtUtil.getUserEmail(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
-        Member member = Member.authorization(userEmail, null, Authority.valueOf(role));
-        CustomUserDetails customUserDetails = new CustomUserDetails(member);
+        log.info("여기도 셀렉트 쿼리?");
+        Member findMember = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+
+//        Member member = Member.authorization(userEmail, null, Authority.valueOf(role));
+        CustomUserDetails customUserDetails = new CustomUserDetails(findMember.getId(), memberRepository);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);

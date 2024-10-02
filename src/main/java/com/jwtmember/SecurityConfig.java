@@ -5,6 +5,7 @@ import com.jwtmember.jwt.CustomLogoutFilter;
 import com.jwtmember.jwt.JwtFilter;
 import com.jwtmember.jwt.JwtUtil;
 import com.jwtmember.jwt.LoginFilter;
+import com.jwtmember.member.repository.MemberRepository;
 import com.jwtmember.member.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, MemberRepository memberRepository) throws Exception {
 
         // cors 설정
         http
@@ -80,7 +81,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join", "/reissue").permitAll() // 모든 권한을 허용
+                        .requestMatchers("/login", "/", "/api/join", "/reissue").permitAll() // 모든 권한을 허용
                         .requestMatchers("/admin").hasRole("ADMIN") // ADMIN 권한 사용자만 접근
                         .anyRequest().authenticated()); // 다른 요청에 대해서는 로그인한 사용자만 접근 가능
 
@@ -96,7 +97,7 @@ public class SecurityConfig {
 
         //JwtFilter 필터 등록
         http
-                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class); //로그인 필터 앞에 먼저 실행한다는 뜻.
+                .addFilterBefore(new JwtFilter(jwtUtil, memberRepository), LoginFilter.class); //로그인 필터 앞에 먼저 실행한다는 뜻.
 
         http
                 .addFilterBefore(new CustomLogoutFilter(refreshRepository, jwtUtil), LogoutFilter.class);

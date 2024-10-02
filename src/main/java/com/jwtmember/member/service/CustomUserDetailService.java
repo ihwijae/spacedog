@@ -21,7 +21,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
             return memberRepository.findByEmail(username)
-                .map(member -> new CustomUserDetails(member))
+                .map(member -> new CustomUserDetails(member.getId(), memberRepository))
                 .orElseThrow(() -> new EmailDuplicateException("이메일이 존재하지 않습니다"));
     }
 }

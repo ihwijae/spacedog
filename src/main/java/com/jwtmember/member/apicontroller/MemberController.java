@@ -1,10 +1,6 @@
 package com.jwtmember.member.apicontroller;
 
-import com.jwtmember.member.service.MemberFindAllResponse;
-import com.jwtmember.member.service.MemberService;
-import com.jwtmember.member.service.MemberSignUpRequest;
-import com.jwtmember.member.service.MemberSignUpResponse;
-import com.jwtmember.service.*;
+import com.jwtmember.member.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +16,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberValidate memberValidate;
 
 
 
@@ -42,14 +39,14 @@ public class MemberController {
     // 이메일 중복 검증 api
     @GetMapping("/members/email/{email}")
     public String emailDuplicate(@PathVariable String email) {
-        memberService.emailDuplicate(email);
+        memberValidate.emailDuplicate(email);
         return "이메일 사용이 가능합니다";
     }
 
     // 닉네임 중복 검증 api
     @GetMapping("/members/nickName/{nickName}")
     public String nickNameDuplicate(@PathVariable String nickName) {
-        memberService.nickNameDuplicate(nickName);
+        memberValidate.nickNameDuplicate(nickName);
         return "닉네임 사용이 가능합니다";
     }
 
