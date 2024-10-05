@@ -79,17 +79,17 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable());
 
         //경로별 인가 작업
-//        http
-//                .authorizeHttpRequests((auth) -> auth
-//                        .requestMatchers("/login", "/", "/api/join", "/reissue").permitAll() // 모든 권한을 허용
-//                        .requestMatchers("/admin").hasRole("ADMIN") // ADMIN 권한 사용자만 접근
-//                        .anyRequest().authenticated()); // 다른 요청에 대해서는 로그인한 사용자만 접근 가능
-
-        // 모든 요청에 대해 접근 허용
         http
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // 모든 요청에 대해 접근 허용
-                );
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/login", "/", "/api/join", "/reissue").permitAll() // 모든 권한을 허용
+                        .requestMatchers("/admin").hasRole("ADMIN") // ADMIN 권한 사용자만 접근
+                        .anyRequest().authenticated()); // 다른 요청에 대해서는 로그인한 사용자만 접근 가능
+
+//        // 모든 요청에 대해 접근 허용
+//        http
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll() // 모든 요청에 대해 접근 허용
+//                );
 
         //세션 설정
         http

@@ -23,6 +23,8 @@ public class OrderItems {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
+
+
     private int orderPrice;
     private int orderCount;
 

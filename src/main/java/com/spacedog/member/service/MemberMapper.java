@@ -24,4 +24,12 @@ public interface MemberMapper {
     @Mapping(source = "member.name", target = "username")
     @Mapping(source = "member.nickName", target = "nickname")
     MemberSignUpResponse toSignUpResponse(Member member);
+
+
+
+    MemberResponse toMemberResponse(Member member);
+
+
+    @Mapping(target = "message", constant = "정상적으로 수정이 완료 됐습니다")
+    MemberEditResponse toMemberEditResponse(Member member);
 }

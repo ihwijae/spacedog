@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,6 +56,19 @@ public class MemberController {
         return memberService.memberFindAll();
     }
 
+
+    @GetMapping("/members/me")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_SELLER', 'ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse findByDetailMyInfo() {
+    log.info("유저 상세조회 컨트롤러");
+        return memberService.findByDetailMyInfo();
+    }
+
+    @PostMapping("/members")
+    public MemberEditResponse editMember(@RequestBody @Valid MemberEditRequest request) {
+        return memberService.memberEdit(request);
+    }
 
 
 

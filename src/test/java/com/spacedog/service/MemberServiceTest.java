@@ -1,12 +1,12 @@
 package com.spacedog.service;
 
+import com.spacedog.member.domain.Address;
 import com.spacedog.member.exception.MemberException;
 import com.spacedog.member.repository.MemberRepository;
-import com.spacedog.member.service.LoginRequest;
-import com.spacedog.member.service.MemberService;
-import com.spacedog.member.service.MemberSignUpRequest;
-import com.spacedog.member.service.MemberSignUpResponse;
+import com.spacedog.member.service.*;
 import jakarta.transaction.Transactional;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -82,6 +82,24 @@ class MemberServiceTest {
 
         memberService.login(loginRequest);
 
+    }
+
+    @Test
+    @DisplayName("회원 수정")
+    void editMember() {
+        //given
+        MemberEditRequest memberEditRequest = new MemberEditRequest();
+
+        memberEditRequest.setNickName("수정된닉네임");
+        memberEditRequest.setPassword("123456789");
+        memberEditRequest.setAddress(new Address("안산시", "상록구", "본오동"));
+
+        //when
+        MemberEditResponse memberEditResponse = memberService.memberEdit(memberEditRequest);
+
+
+        //then
+        Assertions.assertThat(memberEditResponse.getNickName()).isEqualTo(memberEditRequest.getNickName());
     }
 
 }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -81,7 +82,12 @@ public class JwtFilter extends OncePerRequestFilter {
         CustomUserDetails customUserDetails = new CustomUserDetails(findMember.getId(), memberRepository);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authToken);
+
+        log.info("authToken = {}", authToken);
+        log.info("context = {}", context.getAuthentication());
+        log.info("userEmail = {}", userEmail);
 
         filterChain.doFilter(request, response);
 
