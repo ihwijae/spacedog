@@ -5,6 +5,7 @@ import com.spacedog.generic.Money;
 import com.spacedog.generic.MoneyConverter;
 import com.spacedog.item.dto.CreateItemRequest;
 import com.spacedog.item.exception.NotEnoughStockException;
+import com.spacedog.item.service.ItemMapper;
 import com.spacedog.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,7 +46,7 @@ public class Item {
     private Long categoryId;
 
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<ItemOptionGroupSpecification> itemOption = new ArrayList<>();
 
@@ -65,14 +66,8 @@ public class Item {
 
     }
 
-    public static Item createItem(CreateItemRequest request, Member member, Category category) {
-        return Item.builder()
-                .name(request.getName())
-                .memberId(member.getId())
-                .categoryId(category.getId())
-                .price(request.getPrice())
-                .description(request.getDescription())
-                .stockQuantity(request.getStockQuantity())
-                .build();
-    }
+
+   public void addMember(Member member) {
+        this.memberId = member.getId();
+   }
 }

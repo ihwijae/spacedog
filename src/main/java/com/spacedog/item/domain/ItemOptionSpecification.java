@@ -28,5 +28,10 @@ public class ItemOptionSpecification {
     @Column(name = "price")
     private Money price;
 
+    @Column(name = "option_group_spec_id")
+    private Long optionGroupSpecId;
+
+
+
 
 }

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import nonapi.io.github.classgraph.utils.LogNode;
+import org.hibernate.engine.internal.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +26,6 @@ public class ItemOptionGroupSpecification {
     private Long id;
 
 
-    @Builder
-    public ItemOptionGroupSpecification(Long id, String name, boolean exclusive, boolean basic, List<ItemOptionSpecification> optionSpecs) {
-        this.id = id;
-        this.name = name;
-        this.exclusive = exclusive;
-        this.basic = basic;
-        this.optionSpecs = optionSpecs;
-        log.info("생성자 optionSpecs = {}", this.optionSpecs );
-    }
-
     @Column(name = "name")
     private String name;
 
@@ -43,17 +35,25 @@ public class ItemOptionGroupSpecification {
     @Column(name = "basic")
     private boolean basic;
 
-    @OneToMany
+    @Column(name = "item_id")
+    private Long itemId;
+
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "option_group_spec_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<ItemOptionSpecification> optionSpecs = new ArrayList<>();
 
 
-
-    public void addOptionSpecs(ItemOptionSpecification spec) {
-        log.info("spec = {}", spec);
-        log.info("optionSpecs = {}", this.optionSpecs);
-        this.optionSpecs.add(spec);
+    @Builder
+    public ItemOptionGroupSpecification(Long id, String name, boolean exclusive, boolean basic, List<ItemOptionSpecification> optionSpecs, Long itemId) {
+        this.id = id;
+        this.name = name;
+        this.exclusive = exclusive;
+        this.basic = basic;
+        this.optionSpecs = optionSpecs;
+        this.itemId = itemId;
     }
+
+
 
 
 }

@@ -4,6 +4,7 @@ import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.ItemOptionGroupSpecification;
 import com.spacedog.item.domain.ItemOptionSpecification;
 import com.spacedog.item.dto.CreateItemRequest;
+import com.spacedog.item.dto.FindItemAllResponse;
 import com.spacedog.item.dto.OptionGroupRequest;
 import com.spacedog.item.dto.OptionSpecsRequest;
 import org.mapstruct.Mapper;
@@ -19,10 +20,12 @@ public interface ItemMapper {
 
 
     @Mapping(target = "id" , ignore = true)
+    @Mapping(target = "itemOption", source = "optionGroups")
     Item toEntity(CreateItemRequest createItemRequest);
 
 
     @Mapping(target = "id" , ignore = true)
+    @Mapping(target = "optionSpecs", source = "optionSpecsRequest")
     ItemOptionGroupSpecification toItemOptionGroupSpecification(OptionGroupRequest optionGroupRequest);
 
 
@@ -30,5 +33,7 @@ public interface ItemMapper {
     ItemOptionSpecification toItemOptionItemOptionSpecification(OptionSpecsRequest optionSpecsRequest);
 
 
+    @Mapping(target = "id" , ignore = true)
+    List<FindItemAllResponse> toFindItemAllResponse(List<Item> items);
 
 }
