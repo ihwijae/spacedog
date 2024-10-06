@@ -52,19 +52,24 @@ public class ItemService {
 
 
 
+
+
         // OptionGroupRequest를 ItemOptionGroupSpecification으로 매핑
         List<ItemOptionGroupSpecification> optionGroupSpecifications = request.getOptionGroups()
                 .stream()
                 .map(optionGroupRequest -> {
+                    log.info("request = {}", request.getOptionGroups());
+                    log.info("request optionSpecs = {}", optionGroupRequest.toString());
                     // ItemOptionGroupSpecification 생성
                     ItemOptionGroupSpecification optionGroupSpec = ItemMapper.INSTANCE.toItemOptionGroupSpecification(optionGroupRequest);
                     log.info("optionGroupSpec: {}", optionGroupSpec);
-
+                    log.info("name: {}", optionGroupSpec.getName());
                     // 옵션 스펙 리스트 생성
                     List<ItemOptionSpecification> optionSpecs = optionGroupRequest.getOptionSpecsRequest() // <-- 여기에서 optionGroupRequest를 사용
                             .stream()
-                                    .map(optionSpecsRequest -> ItemMapper.INSTANCE.toItemOptionItemOptionSpecification(optionSpecsRequest))
-                                            .collect(Collectors.toList());
+                            .map(optionSpecsRequest -> ItemMapper.INSTANCE.toItemOptionItemOptionSpecification(optionSpecsRequest))
+                            .collect(Collectors.toList());
+                            log.info("optionSpecs: {}", optionSpecs.toString());
 
                     optionSpecs
                             .forEach(option -> optionGroupSpec.addOptionSpecs(option));

@@ -31,6 +31,7 @@ public class ItemOptionGroupSpecification {
         this.exclusive = exclusive;
         this.basic = basic;
         this.optionSpecs = optionSpecs;
+        log.info("생성자 optionSpecs = {}", this.optionSpecs );
     }
 
     @Column(name = "name")
