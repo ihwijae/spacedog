@@ -20,20 +20,21 @@ public interface ItemMapper {
 
 
     @Mapping(target = "id" , ignore = true)
-    @Mapping(target = "itemOption", source = "optionGroups")
+//    @Mapping(target = "itemOption", source = "optionGroups")
     Item toEntity(CreateItemRequest createItemRequest);
 
 
-    @Mapping(target = "id" , ignore = true)
-    @Mapping(target = "optionSpecs", source = "optionSpecsRequest")
-    ItemOptionGroupSpecification toItemOptionGroupSpecification(OptionGroupRequest optionGroupRequest);
 
 
-    @Mapping(target = "id" , ignore = true)
-    ItemOptionSpecification toItemOptionItemOptionSpecification(OptionSpecsRequest optionSpecsRequest);
+
 
 
     @Mapping(target = "id" , ignore = true)
     List<FindItemAllResponse> toFindItemAllResponse(List<Item> items);
+
+
+
+
+
 
 }

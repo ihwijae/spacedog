@@ -28,8 +28,15 @@ public class ItemOptionSpecification {
     @Column(name = "price")
     private Money price;
 
-    @Column(name = "option_group_spec_id")
-    private Long optionGroupSpecId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "option_group_spec_id")
+    private ItemOptionGroupSpecification optionGroupSpecId;
+
+//
+//    public void addOptionGroup(ItemOptionGroupSpecification optionGroupSpec) {
+//        optionGroupSpec.getOptionSpecs().add(this);
+//        this.optionGroupSpecId = optionGroupSpec;
+//    }
 
 
 

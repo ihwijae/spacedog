@@ -1,5 +1,6 @@
 package com.spacedog.item.dto;
 
+import com.spacedog.category.domain.Category;
 import com.spacedog.generic.Money;
 import com.spacedog.item.domain.ItemOptionGroupSpecification;
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +31,7 @@ public class CreateItemRequest {
     private int stockQuantity;
 
     @NotBlank(message = "상품의 카테고리를 입력하세요")
-    private int categoryId;
+    private Long categoryId;
 
 
 

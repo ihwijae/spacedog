@@ -3,6 +3,7 @@ package com.spacedog.item.service;
 import com.spacedog.generic.Money;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.CreateItemRequest;
+import com.spacedog.item.dto.ItemEditRequest;
 import com.spacedog.item.dto.OptionGroupRequest;
 import com.spacedog.item.dto.OptionSpecsRequest;
 import com.spacedog.item.repository.ItemRepository;
@@ -58,7 +59,7 @@ class ItemServiceTest {
 
 
         //when
-        Long resultId = itemService.saveItem(itemRequest);
+        Long resultId = itemService.createItem(itemRequest);
         Item findItem = itemRepository.findById(resultId).orElseThrow();
 
         //then
@@ -66,14 +67,32 @@ class ItemServiceTest {
         Assertions.assertThat(resultId).isEqualTo(findItem.getId());
     }
 
+//    @Test
+//    @DisplayName("상품 수정 테스트")
+//    void itemEdit () {
+//
+//
+//        //given
+//        ItemEditRequest itemEditRequest = editItemRequest();
+//
+//
+//        //when
+//        itemService.itemEdit(1L, itemEditRequest);
+//        Item item = itemRepository.findById(1L).orElseThrow();
+//
+//
+//        //then
+//        assertNotNull(item.getId());
+//    }
+
 
     private CreateItemRequest createItemRequest () {
         return CreateItemRequest.builder()
                 .name("test item")
                 .description("test description")
-                .categoryId(5)
                 .price(Money.wons(10000))
                 .stockQuantity(999)
+                .categoryId(5L)
                 .optionGroups(createOptionGroup())
                 .build();
     }
@@ -96,6 +115,34 @@ class ItemServiceTest {
                 .price(Money.wons(20000))
                 .build();
         return List.of(testOption);
+    }
+
+    private ItemEditRequest editItemRequest () {
+        return ItemEditRequest.builder()
+                .name("test item edit")
+                .description("test edit description")
+                .price(Money.wons(8900))
+                .stockQuantity(2500)
+                .itemOption(editOptionGrups())
+                .build();
+    }
+
+    private List<OptionGroupRequest> editOptionGrups() {
+        OptionGroupRequest testEditOptionGroup = OptionGroupRequest.builder()
+                .name("Test edit option group")
+                .exclusive(true)
+                .basic(true)
+                .optionSpecsRequest(editOptionSpecs())
+                .build();
+        return List.of(testEditOptionGroup);
+    }
+
+    private List<OptionSpecsRequest> editOptionSpecs() {
+        OptionSpecsRequest testEditOption = OptionSpecsRequest.builder()
+                .name("Test edit option")
+                .price(Money.wons(9800))
+                .build();
+        return List.of(testEditOption);
     }
 
 }

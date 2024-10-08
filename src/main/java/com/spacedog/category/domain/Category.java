@@ -31,6 +31,9 @@ public class Category {
     @OneToMany(mappedBy = "parent")
     private List<Category> children;
 
+    @OneToMany(mappedBy = "category")
+    private List<CategoryItem> categoryItems;
+
 
 
 

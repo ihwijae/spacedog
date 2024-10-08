@@ -1,5 +1,6 @@
 package com.spacedog.item.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,8 +16,10 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "option_group_specs")
 @Slf4j
+@Builder
 public class ItemOptionGroupSpecification {
 
 
@@ -35,23 +38,30 @@ public class ItemOptionGroupSpecification {
     @Column(name = "basic")
     private boolean basic;
 
-    @Column(name = "item_id")
-    private Long itemId;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "option_group_spec_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private List<ItemOptionSpecification> optionSpecs = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+//    @OneToMany(mappedBy = "optionGroupSpecId")
+//    private List<ItemOptionSpecification> optionSpecs = new ArrayList<>();
 
 
-    @Builder
-    public ItemOptionGroupSpecification(Long id, String name, boolean exclusive, boolean basic, List<ItemOptionSpecification> optionSpecs, Long itemId) {
-        this.id = id;
-        this.name = name;
-        this.exclusive = exclusive;
-        this.basic = basic;
-        this.optionSpecs = optionSpecs;
-        this.itemId = itemId;
-    }
+
+
+//    public void addItem (Item item) {
+//
+//        //기존 관계 제거
+//        if(this.item != null) {
+//            this.item.getItemOption().remove(this);
+//        }
+//
+//        this.item = item;
+//        item.getItemOption().add(this);
+//    }
+
+
+
 
 
 
