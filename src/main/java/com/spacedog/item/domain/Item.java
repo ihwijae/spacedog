@@ -54,9 +54,6 @@ public class Item {
     private List<CategoryItem> category;
 
 
-//    @OneToMany(mappedBy = "item")
-//    private List<ItemOptionGroupSpecification> itemOption = new ArrayList<>();
-
 
 
     public void addStock(int quantity) {
@@ -81,30 +78,17 @@ public class Item {
    }
 
 
-//   public void itemUpdate(ItemEditRequest request) {
-//
-//        if(request.getItemOption().isEmpty()) {
-//            throw new NotEnoughStockException.ItemDuplicate("상품의 옵션을 입력하세요");
-//        }
-//
-//
-//        // 기존 옵션들을 제거
-//        this.itemOption.clear();
-//
-//       List<ItemOptionGroupSpecification> option = request.getItemOption().stream()
-//               .map(optionGroupRequest -> ItemMapper.INSTANCE.toItemOptionGroup(optionGroupRequest))
-//               .collect(Collectors.toList());
-//
-//       // 연관관계 설정
-//       option.forEach(optionGroupSpecification -> optionGroupSpecification.addItem(this));
-//       this.name = request.getName();
-//        this.description = request.getDescription();
-//        this.price = request.getPrice();
-//        this.stockQuantity = request.getStockQuantity();
-//
-//        //카테고리 들어가야함
-//        this.itemOption.addAll(option);
-//   }
+   public void itemUpdate(ItemEditRequest request) {
+
+
+       // 연관관계 설정
+       this.name = request.getName();
+        this.description = request.getDescription();
+        this.price = request.getPrice();
+        this.stockQuantity = request.getStockQuantity();
+
+
+   }
 
 
 

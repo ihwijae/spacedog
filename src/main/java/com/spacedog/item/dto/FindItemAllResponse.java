@@ -15,8 +15,5 @@ public class FindItemAllResponse {
     private String description;
     private Money price;
     private int stockQuantity;
-    private Long categoryId;
-
-    private List<itemOptionGroupResponse> itemOption = new ArrayList<>();
 
 }

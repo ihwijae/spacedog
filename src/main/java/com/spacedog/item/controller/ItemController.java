@@ -1,5 +1,7 @@
 package com.spacedog.item.controller;
 
+import com.spacedog.global.ApiResponse;
+import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.CreateItemRequest;
 import com.spacedog.item.dto.FindItemAllResponse;
 import com.spacedog.item.dto.SearchItemRequest;
@@ -29,8 +31,9 @@ public class ItemController {
 
     // 상품 전체 조회
     @GetMapping("/items")
-    public List<FindItemAllResponse> findItems() {
-        return itemService.fineItemAll();
+    public ApiResponse<List<FindItemAllResponse>> findItems() {
+        List<FindItemAllResponse> findItemAllResponses = itemService.fineItemAll();
+        return ApiResponse.success(findItemAllResponses, "아이템 전체조회 성공");
     }
 
     // 상품 검색

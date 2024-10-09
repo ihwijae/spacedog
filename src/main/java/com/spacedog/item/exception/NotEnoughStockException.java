@@ -18,5 +18,11 @@ public class NotEnoughStockException extends RuntimeException {
         }
     }
 
+    public static class ItemNotFound extends NotEnoughStockException {
+        public ItemNotFound(String message) {
+            super(message);
+        }
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.spacedog.item.domain;
 
 import com.spacedog.generic.Money;
 import com.spacedog.generic.MoneyConverter;
+import com.spacedog.item.dto.EditOptionSpecsRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,14 +31,15 @@ public class ItemOptionSpecification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_spec_id")
-    private ItemOptionGroupSpecification optionGroupSpecId;
+    private ItemOptionGroupSpecification optionGroupSpecification;
 
-//
-//    public void addOptionGroup(ItemOptionGroupSpecification optionGroupSpec) {
-//        optionGroupSpec.getOptionSpecs().add(this);
-//        this.optionGroupSpecId = optionGroupSpec;
-//    }
 
+
+    public void update (EditOptionSpecsRequest request, ItemOptionGroupSpecification optionGroupSpec) {
+        this.name = request.getName();
+        this.price = request.getPrice();
+        this.optionGroupSpecification = optionGroupSpec;
+    }
 
 
 

@@ -1,6 +1,7 @@
 package com.spacedog.item.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spacedog.item.dto.EditOptionGroupRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,22 +44,16 @@ public class ItemOptionGroupSpecification {
     @JoinColumn(name = "item_id")
     private Item item;
 
-//    @OneToMany(mappedBy = "optionGroupSpecId")
-//    private List<ItemOptionSpecification> optionSpecs = new ArrayList<>();
+
+    public void update(EditOptionGroupRequest request) {
+        this.name = request.getName();
+        this.exclusive = request.isExclusive();
+        this.basic = request.isBasic();
+    }
 
 
 
 
-//    public void addItem (Item item) {
-//
-//        //기존 관계 제거
-//        if(this.item != null) {
-//            this.item.getItemOption().remove(this);
-//        }
-//
-//        this.item = item;
-//        item.getItemOption().add(this);
-//    }
 
 
 

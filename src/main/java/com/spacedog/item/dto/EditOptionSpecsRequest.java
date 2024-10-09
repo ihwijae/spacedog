@@ -6,21 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ItemEditRequest {
+public class EditOptionSpecsRequest {
 
-
-
+    private Long id;
     private String name;
-    private String description;
+
     private Money price;
-    private int stockQuantity;
-    private Long categoryId;
-    private List<EditOptionGroupRequest> itemOption = new ArrayList<>();
+
 }

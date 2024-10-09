@@ -1,6 +1,7 @@
 package com.spacedog.advice;
 
 import com.spacedog.category.exception.CategoryNotFoundException;
+import com.spacedog.global.ApiResponse;
 import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.member.exception.MemberException;
 import com.spacedog.exception.RefreshTokenException;
@@ -59,8 +60,9 @@ public class ExceptionRestControllerAdvice {
     }
 
     @ExceptionHandler(MemberException.CheckedPassWordDuplicateException.class)
-    public ResponseEntity<List<String>> handleDuplicateCheckedPassWordException(MemberException.CheckedPassWordDuplicateException ex) {
-        return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ApiResponse<?>> handleDuplicateCheckedPassWordException(MemberException.CheckedPassWordDuplicateException ex) {
+//        return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.errorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(MemberException.PassWordDuplicateException.class)
