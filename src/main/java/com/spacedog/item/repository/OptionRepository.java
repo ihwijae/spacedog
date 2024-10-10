@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface OptionRepository extends JpaRepository<ItemOptionGroupSpecification, Long> {
 
-    Optional<ItemOptionGroupSpecification> findByItemId(Long itemId);
+    List<ItemOptionGroupSpecification> findByItemId(Long itemId);
+
 }

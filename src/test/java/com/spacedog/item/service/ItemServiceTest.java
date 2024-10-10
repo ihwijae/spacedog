@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,6 +81,17 @@ class ItemServiceTest {
         assertNotNull(item.getId());
     }
 
+    @Test
+    @DisplayName("상품 삭제 테스트")
+    void itemDelete () {
+
+
+        itemService.itemDelete(1L);
+
+    }
+
+
+
 
     private CreateItemRequest createItemRequest () {
         return CreateItemRequest.builder()
@@ -87,7 +99,7 @@ class ItemServiceTest {
                 .description("test description")
                 .price(Money.wons(10000))
                 .stockQuantity(999)
-                .categoryId(5L)
+                .categoryIds(Arrays.asList(1L, 5L))
                 .optionGroups(createOptionGroup())
                 .build();
     }
@@ -105,11 +117,22 @@ class ItemServiceTest {
     }
 
     private List<OptionSpecsRequest> createOptionSpecs () {
-        OptionSpecsRequest testOption = OptionSpecsRequest.builder()
+        OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
                 .name("2.5kg")
                 .price(Money.wons(20000))
                 .build();
-        return List.of(testOption);
+
+        OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
+                .name("5kg")
+                .price(Money.wons(50000))
+                .build();
+
+        OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
+                .name("7,5")
+                .price(Money.wons(100000))
+                .build();
+
+        return List.of(testOption1, testOption2, testOption3);
     }
 
     private ItemEditRequest editItemRequest () {

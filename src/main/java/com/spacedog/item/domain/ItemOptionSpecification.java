@@ -27,6 +27,7 @@ public class ItemOptionSpecification {
     private String name;
 
     @Column(name = "price")
+    @Convert(converter = MoneyConverter.class)
     private Money price;
 
     @ManyToOne(fetch = FetchType.LAZY)

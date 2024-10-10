@@ -3,8 +3,10 @@ package com.spacedog.item.service;
 
 import com.spacedog.category.domain.Category;
 import com.spacedog.category.domain.CategoryItem;
+import com.spacedog.category.exception.CategoryNotFoundException;
 import com.spacedog.category.repository.CategoryItemRepository;
 import com.spacedog.category.repository.CategoryRepository;
+import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.ItemOptionGroupSpecification;
 import com.spacedog.item.domain.ItemOptionSpecification;
@@ -24,10 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.spacedog.item.domain.QItemOptionGroupSpecification.itemOptionGroupSpecification;
+import static com.spacedog.item.exception.NotEnoughStockException.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,26 +52,32 @@ public class ItemService {
         Member member = memberService.getMember();
 
         if(itemRepository.findByName(createItemRequest.getName()).isPresent()) {
-            throw new NotEnoughStockException.ItemDuplicate("이미 존재하는 상품 이름 입니다");
+            throw new ItemDuplicate("이미 존재하는 상품 이름 입니다");
         }
 
         if(member == null) {
             throw new MemberException("유저 정보를 불러올 수 없습니다");
         }
 
-        Category category = categoryRepository.findById(createItemRequest.getCategoryId())
-                .orElseThrow(() -> new CategoryDuplicate("카테고리를 찾을 수 없습니다"));
 
 
         Item item = ItemMapper.INSTANCE.toEntity(createItemRequest);
         item.addMember(member);
         itemRepository.save(item);
 
-        CategoryItem categoryItem = CategoryItem.builder()
-                .category(category)
-                .item(item)
-                .build();
-        categoryItemRepository.save(categoryItem);
+        List<Long> categoryIds = createItemRequest.getCategoryIds();
+        categoryIds.forEach(categoryId -> {
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow( () -> new CategoryNotFoundException("카테고리를 찾을수 없습니다"));
+
+            //카테고리 아이템 생성
+            CategoryItem categoryItem = CategoryItem.builder()
+                    .category(category)
+                    .item(item)
+                    .build();
+            categoryItemRepository.save(categoryItem);
+        });
+
 
 
         createItemRequest.getOptionGroups().stream()
@@ -192,73 +201,154 @@ public class ItemService {
     public void itemEdit (Long id, ItemEditRequest request) {
         Member member = memberService.getMember();
 
-        if(member == null) {
+        if (member == null) {
             throw new MemberException("유저 정보를 불러올 수 없습니다");
         }
 
-        if(itemRepository.findByName(request.getName()).isPresent()) {
-            throw new NotEnoughStockException.ItemDuplicate("중복된 상품 이름 입니다");
+        if (itemRepository.findByName(request.getName()).isPresent()) {
+            throw new ItemDuplicate("중복된 상품 이름 입니다");
         }
 
         Item findItem = itemRepository.findById(id)
-                .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("해당 상품이 존재하지 않습니다"));
+                .orElseThrow(() -> new ItemNotFound("해당 상품이 존재하지 않습니다"));
 
-        if(!findItem.getMemberId().equals(member.getId())) {
+        if (!findItem.getMemberId().equals(member.getId())) {
             throw new MemberException("상품을 등록한 사용자가 아닙니다");
         }
 
         findItem.itemUpdate(request);
 
-//        // 기존 옵션 그룹과 사양을 가져와서 수정
-//        List<ItemOptionGroupSpecification> findOptionGroup = optionRepository.findByItemId(findItem.getId());
-//
-//
-//        request.getItemOption()
-//                .forEach(optionGroupRequest -> {
-//                    //존재하는 옵션그룹이면 업데이트, 아니면 추가
-//                    ItemOptionGroupSpecification itemOptionGroupSpecification = findOptionGroup.stream()
-//                            .filter(group -> group.getId().equals(optionGroupRequest.getId()))
-//                            .findFirst()
-//                            .orElseGet(() -> ItemOptionGroupSpecification.builder()
-//                                    .name(optionGroupRequest.getName())
-//                                    .exclusive(optionGroupRequest.isExclusive())
-//                                    .basic(optionGroupRequest.isBasic())
-//                                    .item(findItem)
-//                                    .build());
 
-            request.getItemOption()
-                    .forEach(editOptionGroupRequest ->  {
-                        //기존에 있는 옵션 그룹의면 수정, 아니면 새로 생성.
-                        ItemOptionGroupSpecification itemOptionGroupSpecification = optionRepository.findByItemId(findItem.getId())
-                                .orElseGet(() -> ItemOptionGroupSpecification.builder()
-                                        .name(editOptionGroupRequest.getName())
-                                        .exclusive(editOptionGroupRequest.isExclusive())
-                                        .basic(editOptionGroupRequest.isBasic())
-                                        .item(findItem)
-                                        .build());
-                        itemOptionGroupSpecification.update(editOptionGroupRequest);
-                        ItemOptionGroupSpecification saved = optionRepository.save(itemOptionGroupSpecification);
+        // 기존 옵션 그룹과 사양을 가져와서 수정
+        List<ItemOptionGroupSpecification> findOptionGroup = optionRepository.findByItemId(findItem.getId());
 
+        request.getItemOption()
+                .forEach(editOptionGroupRequest -> {
+                    //존재하는 옵션그룹이면 업데이트, 아니면 추가
+                    ItemOptionGroupSpecification itemOptionGroupSpecification = findOptionGroup.stream()
+                            .filter(group -> group.getId().equals(editOptionGroupRequest.getId()))
+                            .findFirst()
+                            .orElseGet(() -> ItemOptionGroupSpecification.builder()
+                                    .name(editOptionGroupRequest.getName())
+                                    .exclusive(editOptionGroupRequest.isExclusive())
+                                    .basic(editOptionGroupRequest.isBasic())
+                                    .item(findItem)
+                                    .build());
+
+                    itemOptionGroupSpecification.update(editOptionGroupRequest);
+                    optionRepository.save(itemOptionGroupSpecification);
 
                     //옵션 스펙 업데이트
-                        editOptionGroupRequest.getOptionSpecsRequest()
-                            .forEach(optionSpecsRequest -> {
-                                ItemOptionSpecification optionSpecs = optionSpecsRepository.findByOptionGroupSpecification_Id(saved.getId())
+                    editOptionGroupRequest.getOptionSpecsRequest()
+                            .forEach(editOptionSpecsRequest -> {
+                                List<ItemOptionSpecification> optionSpecsList = optionSpecsRepository.findByOptionGroupSpecification_Id(itemOptionGroupSpecification.getId());
+                                ItemOptionSpecification itemOptionSpecification = optionSpecsList.stream()
+                                        .filter(spec -> spec.getId().equals(editOptionSpecsRequest.getId()))
+                                        .findFirst()
                                         .orElseGet(() -> ItemOptionSpecification.builder()
-                                                .name(optionSpecsRequest.getName())
-                                                .price(optionSpecsRequest.getPrice())
-                                                .optionGroupSpecification(saved)
-                                                .build());
-                                optionSpecs.update(optionSpecsRequest, saved);
-                                optionSpecsRepository.save(optionSpecs);
-
+                                                .name(editOptionSpecsRequest.getName())
+                                                .price(editOptionSpecsRequest.getPrice())
+                                                .optionGroupSpecification(itemOptionGroupSpecification)
+                                                .build()
+                                        );
+                                itemOptionSpecification.update(editOptionSpecsRequest, itemOptionGroupSpecification);
+                                optionSpecsRepository.save(itemOptionSpecification);
                             });
                 });
 
+
+        //단일 옵션 일때
+//        request.getItemOption()
+//                    .forEach(editOptionGroupRequest ->  {
+//                        //기존에 있는 옵션 그룹의면 수정, 아니면 새로 생성.
+//                        ItemOptionGroupSpecification itemOptionGroupSpecification = optionRepository.findByItemId(findItem.getId())
+//                                .orElseGet(() -> ItemOptionGroupSpecification.builder()
+//                                        .name(editOptionGroupRequest.getName())
+//                                        .exclusive(editOptionGroupRequest.isExclusive())
+//                                        .basic(editOptionGroupRequest.isBasic())
+//                                        .item(findItem)
+//                                        .build());
+//                        itemOptionGroupSpecification.update(editOptionGroupRequest);
+//                        ItemOptionGroupSpecification saved = optionRepository.save(itemOptionGroupSpecification);
+//
+//
+//                    //옵션 스펙 업데이트
+//                        editOptionGroupRequest.getOptionSpecsRequest()
+//                            .forEach(optionSpecsRequest -> {
+//                                ItemOptionSpecification optionSpecs = optionSpecsRepository.findByOptionGroupSpecification_Id(saved.getId())
+//                                        .orElseGet(() -> ItemOptionSpecification.builder()
+//                                                .name(optionSpecsRequest.getName())
+//                                                .price(optionSpecsRequest.getPrice())
+//                                                .optionGroupSpecification(saved)
+//                                                .build());
+//                                optionSpecs.update(optionSpecsRequest, saved);
+//                                optionSpecsRepository.save(optionSpecs);
+//
+//                            });
+//                });
+
+
+    }
+    @Transactional
+    public void itemDelete (Long itemId) {
+
+        Member member = memberService.getMember();
+
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ItemNotFound("아이템을 찾을 수 없습니다"));
+
+        //상품을 등록한 회원과 로그인한 회원이 다르면 예외
+        if(!item.getMemberId().equals(member.getId())) {
+            throw new MemberException("상품을 등록한 회원이 아닙니다");
+        }
+
+        //카테고리 아이템 삭제
+        List<CategoryItem> findCategoryItems = categoryItemRepository.findByItemId(itemId);
+        categoryItemRepository.deleteAll(findCategoryItems);
+
+
+        //옵션 그룹 삭제
+        List<ItemOptionGroupSpecification> optionGroup = optionRepository.findByItemId(itemId);
+
+
+        //옵션 스펙 삭제
+        optionGroup.forEach(group -> {
+            List<ItemOptionSpecification> optionSpecs = optionSpecsRepository.findByOptionGroupSpecification_Id(group.getId());
+            optionSpecsRepository.deleteAll(optionSpecs);
+        });
+
+        optionRepository.deleteAll(optionGroup);
+        itemRepository.delete(item);
     }
 
-    @Transactional
-    public void itemDelete (Long id) {}
+    @Transactional(readOnly = true)
+    public ItemDetailResponse itemDetail(Long itemId) {
+
+        Item item = itemQueryRepository.findByItemWithCategory(itemId)
+                .orElseThrow(() -> new ItemNotFound("아이템을 불러올 수 없습니다"));
+
+
+        List<CategoryResponse> categoryResponses = item.getCategory().stream()
+                .map(categoryItem -> {
+                    Category category = categoryItem.getCategory();
+                    return CategoryResponse.builder()
+                            .id(category.getId())
+                            .name(category.getName())
+                            .depth(category.getDepth())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+
+        return ItemDetailResponse.builder()
+                .name(item.getName())
+                .description(item.getDescription())
+                .price(item.getPrice())
+                .stockQuantity(item.getStockQuantity())
+                .category(categoryResponses)
+                .build();
+    }
+
 
 
 

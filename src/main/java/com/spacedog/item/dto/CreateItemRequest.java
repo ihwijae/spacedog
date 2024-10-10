@@ -31,9 +31,7 @@ public class CreateItemRequest {
     private int stockQuantity;
 
     @NotBlank(message = "상품의 카테고리를 입력하세요")
-    private Long categoryId;
-
-
+    private List<Long> categoryIds;
 
 
     @NotBlank(message = "상품의 옵션을 입력하세요")

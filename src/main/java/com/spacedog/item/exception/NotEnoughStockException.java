@@ -24,5 +24,17 @@ public class NotEnoughStockException extends RuntimeException {
         }
     }
 
+    public static class OptionGroupNotFound extends NotEnoughStockException {
+        public OptionGroupNotFound(String message) {
+            super(message);
+        }
+    }
+
+    public static class OptionSpecsNotFound extends NotEnoughStockException {
+        public OptionSpecsNotFound(String message) {
+            super(message);
+        }
+    }
+
 
 }

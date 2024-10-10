@@ -2,10 +2,7 @@ package com.spacedog.item.controller;
 
 import com.spacedog.global.ApiResponse;
 import com.spacedog.item.domain.Item;
-import com.spacedog.item.dto.CreateItemRequest;
-import com.spacedog.item.dto.FindItemAllResponse;
-import com.spacedog.item.dto.SearchItemRequest;
-import com.spacedog.item.dto.SearchItemResponse;
+import com.spacedog.item.dto.*;
 import com.spacedog.item.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +40,17 @@ public class ItemController {
     }
 
     // 상품 수정
+    @PatchMapping("/items")
+    public ApiResponse<String> itemEdit(@RequestParam Long id, @RequestBody ItemEditRequest itemEditRequest) {
+        itemService.itemEdit(id, itemEditRequest);
+        return ApiResponse.success(null, "수정 완료");
+    }
 
-
+    // 상품 상세 조회
+    @GetMapping("/items/{itemId}")
+    public ApiResponse<ItemDetailResponse> itemDetail(@PathVariable Long itemId) {
+        ItemDetailResponse itemDetailResponse = itemService.itemDetail(itemId);
+        return ApiResponse.success(itemDetailResponse, "상세 조회 완료");
+    }
 
 }

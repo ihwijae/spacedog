@@ -15,15 +15,10 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Slf4j
 public class Item {
 
@@ -53,8 +48,24 @@ public class Item {
     @OneToMany(mappedBy = "item")
     private List<CategoryItem> category;
 
+    @Builder
+    public Item(Long id, String name, String description, Long memberId, Money price, int stockQuantity, List<CategoryItem> category) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.memberId = memberId;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.category = category;
+    }
+
+    public Item() {
+    }
 
 
+    public void addCategory(CategoryItem category) {
+        this.category.add(category);
+    }
 
     public void addStock(int quantity) {
         this.stockQuantity += quantity;

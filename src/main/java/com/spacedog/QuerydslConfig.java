@@ -1,5 +1,6 @@
 package com.spacedog;
 
+import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -16,6 +17,6 @@ public class QuerydslConfig {
 
     @Bean
     public JPAQueryFactory jpaQueryFactory() {
-        return new JPAQueryFactory(em);
+        return new JPAQueryFactory(JPQLTemplates.DEFAULT, em);
     }
 }

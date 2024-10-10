@@ -28,6 +28,10 @@ public class ApiResponse<T> {
         return new ApiResponse<>(SUCCESS_STATUS, message, data);
     }
 
+    public static ApiResponse<?> successNoResponse(String message){
+        return new ApiResponse<>(SUCCESS_STATUS, message, null);
+    }
+
     public static ApiResponse<?> successWithContent() {
         return new ApiResponse<>(SUCCESS_STATUS, null, null);
     }

@@ -2,12 +2,14 @@ package com.spacedog.generic;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
+@Getter
 public class Money {
 
     public static final Money ZERO = Money.wons(0);
@@ -54,10 +56,6 @@ public class Money {
 
     public Money divide(double percent) {
         return new Money(this.amount.divide(BigDecimal.valueOf(percent)));
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
     }
 
     public Long longValue() {
