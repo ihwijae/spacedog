@@ -21,7 +21,7 @@ public class OptionGroupResponse {
 
     private boolean basic;
 
-    private List<OptionSpecsResponse> optionSpecs = new ArrayList<>();
+    private List<OptionSpecsResponse> optionSpecs;
 
 
     @Builder

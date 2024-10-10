@@ -5,11 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 public class CategoryResponse {
 
 
     private Long id;
+
     private String name;
     private Long depth;
 
@@ -18,6 +18,9 @@ public class CategoryResponse {
         this.id = id;
         this.name = name;
         this.depth = depth;
+    }
+
+    public CategoryResponse() {
     }
 
 

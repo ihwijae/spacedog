@@ -321,34 +321,38 @@ public class ItemService {
         itemRepository.delete(item);
     }
 
+//    @Transactional(readOnly = true)
+//    public ItemDetailResponse itemDetail(Long itemId) {
+//
+//        Item item = itemQueryRepository.findByItemWithCategory(itemId)
+//                .orElseThrow(() -> new ItemNotFound("아이템을 불러올 수 없습니다"));
+//
+//
+//        List<CategoryResponse> categoryResponses = item.getCategory().stream()
+//                .map(categoryItem -> {
+//                    Category category = categoryItem.getCategory();
+//                    return CategoryResponse.builder()
+//                            .id(category.getId())
+//                            .name(category.getName())
+//                            .depth(category.getDepth())
+//                            .build();
+//                })
+//                .collect(Collectors.toList());
+//
+//
+//        return ItemDetailResponse.builder()
+//                .name(item.getName())
+//                .description(item.getDescription())
+//                .price(item.getPrice())
+//                .stockQuantity(item.getStockQuantity())
+//                .category(categoryResponses)
+//                .build();
+//    }
+
     @Transactional(readOnly = true)
-    public ItemDetailResponse itemDetail(Long itemId) {
-
-        Item item = itemQueryRepository.findByItemWithCategory(itemId)
-                .orElseThrow(() -> new ItemNotFound("아이템을 불러올 수 없습니다"));
-
-
-        List<CategoryResponse> categoryResponses = item.getCategory().stream()
-                .map(categoryItem -> {
-                    Category category = categoryItem.getCategory();
-                    return CategoryResponse.builder()
-                            .id(category.getId())
-                            .name(category.getName())
-                            .depth(category.getDepth())
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-
-        return ItemDetailResponse.builder()
-                .name(item.getName())
-                .description(item.getDescription())
-                .price(item.getPrice())
-                .stockQuantity(item.getStockQuantity())
-                .category(categoryResponses)
-                .build();
+    public List<ItemDetailResponse> itemDetail(Long itemId) {
+        return itemQueryRepository.itemDetail(itemId);
     }
-
 
 
 

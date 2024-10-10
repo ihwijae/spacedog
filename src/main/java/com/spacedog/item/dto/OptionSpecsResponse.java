@@ -8,14 +8,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class OptionSpecsResponse {
 
     private String name;
     private Money price;
 
 
+    public OptionSpecsResponse(String name, Money price) {
+        this.name = name;
+        this.price = price;
+    }
 
-
+    public OptionSpecsResponse() {
+    }
 }

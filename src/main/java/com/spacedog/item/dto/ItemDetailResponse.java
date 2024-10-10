@@ -23,7 +23,7 @@ public class ItemDetailResponse {
 
     private List<CategoryResponse> category;
 
-    private List<OptionGroupResponse> optionGroup = new ArrayList<>();
+    private List<OptionGroupResponse> optionGroup;
 
     @Builder
     public ItemDetailResponse(String name, String description, Money price, int stockQuantity, List<CategoryResponse> category, List<OptionGroupResponse> optionGroup) {
