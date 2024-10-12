@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.spacedog.category.domain.QCategory.category;
@@ -61,38 +63,73 @@ public class ItemQueryRepository {
         return Optional.ofNullable(item);
     }
 
+    /** 추후 리팩터링 예정**/
+
 //    public List<ItemDetailResponse> findByItemDetail(Long itemId) {
-//      List<ItemDetailResponse> findItemWithOption = query
-//                .selectFrom(item)
-//                .leftJoin(itemOptionGroupSpecification).on(item.id.eq(itemOptionGroupSpecification.item.id))
-//                .leftJoin(itemOptionSpecification).on(itemOptionGroupSpecification.id.eq(itemOptionSpecification.optionGroupSpecification.id))
-//                .join(item.category, categoryItem)
-//                .join(categoryItem.category, category)
-//                .where(item.id.eq(itemId))
-//                .transform(
-//                        groupBy(item.id).list(
-//                                Projections.fields(ItemDetailResponse.class,
-//                                        item.name,
-//                                        item.description,
-//                                        item.price,
-//                                        item.stockQuantity,
-//                                        category.as("category"),
-//                                        list(
-//                                                Projections.fields(OptionGroupResponse.class,
-//                                                        itemOptionGroupSpecification.name,
-//                                                        itemOptionGroupSpecification.exclusive,
-//                                                        itemOptionGroupSpecification.basic,
-//                                                        list(
-//                                                                Projections.fields(OptionSpecsResponse.class,
-//                                                                        itemOptionSpecification.name,
-//                                                                        itemOptionSpecification.price
-//                                                                )
-//                                                        ))
-//                                        )
-//                                )
-//                        )
-//                );
-//      return findItemWithOption;
+//
+//        //루트 조회
+//        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
+//
+//        // optionGroup, optionSpecs 컬렉션을 Map 으로 한방에 조회
+//        Map<Long, List<OptionGroupResponse>> optionGroupMap = findOptionGroupMap(toOptionGroupIds(itemDetail));
+//        Map<Long, List<OptionSpecsResponse>> optionSpecsMap = findOptionSpecsMap(toOptionSpecsIds(itemDetail));
+//
+//        //루프를 돌면서 컬렉션 추가 (추가 쿼리 실행 xx)
+//        itemDetail.forEach(
+//                itemDetailResponse -> {
+//                    itemDetailResponse.setOptionGroup(optionGroupMap.get(itemDetailResponse.getId()));
+//
+//                }
+//        );
+//
+//    }
+//
+//    private Map<Long, List<OptionGroupResponse>> findOptionGroupMap(List<Long> itemIds) {
+//        List<OptionGroupResponse> optionGroupResponses = query
+//                .select(Projections.fields(OptionGroupResponse.class,
+//                        itemOptionGroupSpecification.name,
+//                        itemOptionGroupSpecification.exclusive,
+//                        itemOptionGroupSpecification.basic))
+//                .from(itemOptionGroupSpecification)
+//                .join(item).on(itemOptionGroupSpecification.item.id.eq(item.id))
+//                .where(itemOptionGroupSpecification.item.id.in(itemIds))
+//                .fetch();
+//
+//        Map<Long, List<OptionGroupResponse>> optionGroupMap = optionGroupResponses.stream()
+//                .collect(Collectors.groupingBy(optionGroup -> optionGroup.getId()));
+//
+//        return optionGroupMap;
+//    }
+//
+//    private Map<Long, List<OptionSpecsResponse>> findOptionSpecsMap(List<Long> itemIds) {
+//        List<OptionSpecsResponse> optionSpecsResponses = query
+//                .select(Projections.fields(OptionSpecsResponse.class,
+//                        itemOptionSpecification.name,
+//                        itemOptionSpecification.price))
+//                .from(itemOptionSpecification)
+//                .join(itemOptionGroupSpecification).on(itemOptionSpecification.optionGroupSpecification.id.eq(itemOptionGroupSpecification.id))
+//                .fetch();
+//
+//        Map<Long, List<OptionSpecsResponse>> result = optionSpecsResponses.stream()
+//                .collect(Collectors.groupingBy(optionSpecs -> optionSpecs.getId()));
+//
+//        return result;
+//    }
+//
+//    private List<Long> toOptionGroupIds(List<ItemDetailResponse> result) {
+//        List<Long> optionGroupIds = result.stream()
+//                .map(o -> o.getId())
+//                .collect(Collectors.toList());
+//
+//        return optionGroupIds;
+//    }
+//
+//    private List<Long> toOptionSpecsIds(List<ItemDetailResponse> result) {
+//        List<Long> optionSpecsIds = result.stream()
+//                .map(o -> o.getId())
+//                .collect(Collectors.toList());
+//
+//        return optionSpecsIds;
 //    }
 
     public List<ItemDetailResponse> itemDetail(Long itemId) {
@@ -105,7 +142,7 @@ public class ItemQueryRepository {
                     itemDetailResponse.setOptionGroup(optionGroup);
 
                     optionGroup.forEach(optionGroupResponse -> {
-                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs();
+                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs(optionGroupResponse.getId());
                         optionGroupResponse.setOptionSpecs(optionSpecs);
                     });
                 }
@@ -116,6 +153,7 @@ public class ItemQueryRepository {
     private List<ItemDetailResponse> findItemDetail(Long itemId) {
         return query
                 .selectDistinct(Projections.fields(ItemDetailResponse.class,
+                        item.id,
                         item.name,
                         item.description,
                         item.price,
@@ -145,7 +183,8 @@ public class ItemQueryRepository {
 
     private List<OptionGroupResponse> findOptionGroup(Long itemId) {
         return query
-                .select(Projections.fields(OptionGroupResponse.class,
+                .selectDistinct(Projections.fields(OptionGroupResponse.class,
+                        itemOptionGroupSpecification.id,
                         itemOptionGroupSpecification.name,
                         itemOptionGroupSpecification.basic,
                         itemOptionGroupSpecification.exclusive))
@@ -155,14 +194,16 @@ public class ItemQueryRepository {
                 .fetch();
     }
 
-    private List<OptionSpecsResponse> findOptionSpecs() {
+    private List<OptionSpecsResponse> findOptionSpecs (Long optionGroupId) {
         return query
-                .select(Projections.fields(OptionSpecsResponse.class,
+                .selectDistinct(Projections.fields(OptionSpecsResponse.class,
+                        itemOptionSpecification.id,
                         itemOptionSpecification.name,
                         itemOptionSpecification.price
                         ))
                 .from(itemOptionSpecification)
                 .join(itemOptionGroupSpecification).on(itemOptionSpecification.optionGroupSpecification.id.eq(itemOptionGroupSpecification.id))
+                .where(itemOptionGroupSpecification.id.eq(optionGroupId))
                 .fetch();
     }
 

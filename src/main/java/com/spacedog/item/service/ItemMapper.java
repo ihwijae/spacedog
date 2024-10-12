@@ -27,9 +27,6 @@ public interface ItemMapper {
 
 
 
-    @Mapping(target = "id" , ignore = true)
-    List<FindItemAllResponse> toFindItemAllResponse(List<Item> items);
-
 
 
 }

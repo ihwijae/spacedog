@@ -105,18 +105,26 @@ class ItemServiceTest {
     }
 
     private List<OptionGroupRequest> createOptionGroup () {
-        OptionGroupRequest testOptionGroup = OptionGroupRequest.builder()
+        OptionGroupRequest testOptionGroup1 = OptionGroupRequest.builder()
                 .name("용량")
                 .exclusive(false)
                 .basic(true)
-                .optionSpecsRequest(createOptionSpecs())
+                .optionSpecsRequest(createOptionSpecsVolume())
                 .build();
-        return List.of(testOptionGroup);
+
+        OptionGroupRequest testOptionGroup2 = OptionGroupRequest.builder()
+                .name("나이별 사료")
+                .exclusive(false)
+                .basic(true)
+                .optionSpecsRequest(createOptionSpecsAge())
+                .build();
+
+        return List.of(testOptionGroup1, testOptionGroup2);
         // java 9 부터 제공되는 불변 리스트를 생성하는 메서드
         // ArratList 와 다르게 리스트에 요소를 추가하거나 삭제할 수 없다.
     }
 
-    private List<OptionSpecsRequest> createOptionSpecs () {
+    private List<OptionSpecsRequest> createOptionSpecsVolume () {
         OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
                 .name("2.5kg")
                 .price(Money.wons(20000))
@@ -130,6 +138,25 @@ class ItemServiceTest {
         OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
                 .name("7,5")
                 .price(Money.wons(100000))
+                .build();
+
+        return List.of(testOption1, testOption2, testOption3);
+    }
+
+    private List<OptionSpecsRequest> createOptionSpecsAge () {
+        OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
+                .name("퍼피")
+                .price(Money.wons(20000))
+                .build();
+
+        OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
+                .name("어덜트")
+                .price(Money.wons(20000))
+                .build();
+
+        OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
+                .name("시니어")
+                .price(Money.wons(20000))
                 .build();
 
         return List.of(testOption1, testOption2, testOption3);

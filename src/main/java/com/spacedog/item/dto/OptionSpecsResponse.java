@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class OptionSpecsResponse {
 
+    private Long id;
     private String name;
     private Money price;
 
