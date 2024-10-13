@@ -1,10 +1,15 @@
 package com.spacedog.category.service;
 
 import com.spacedog.category.domain.Category;
+import com.spacedog.category.dto.CategoryDto;
+import com.spacedog.category.dto.CategoryWithItemResponse;
 import com.spacedog.category.exception.CategoryNotFoundException;
+import com.spacedog.category.repository.CategoryQueryRepository;
 import com.spacedog.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +22,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryQueryRepository categoryQueryRepository;
 
 
     @Transactional(readOnly = true)
@@ -32,5 +38,10 @@ public class CategoryService {
                 .map(m -> CategoryMapper.INSTANCE.toDto(m))
                 .collect(Collectors.toList());
 
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CategoryWithItemResponse> findCategoryItems (Long categoryId, Pageable pageable) {
+        return categoryQueryRepository.findCategoryItems(categoryId, pageable);
     }
 }

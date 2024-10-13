@@ -1,4 +1,4 @@
-package com.spacedog.category.service;
+package com.spacedog.category.dto;
 
 import lombok.Builder;
 import lombok.Data;

@@ -39,6 +39,8 @@ public class ItemController {
         return ApiResponse.success(findItemAllResponses, "아이템 전체조회 성공");
     }
 
+
+
     // 상품 검색
     @GetMapping("/items/search")
     public List<SearchItemResponse> searchItems(@ModelAttribute SearchItemRequest searchItemRequest) {

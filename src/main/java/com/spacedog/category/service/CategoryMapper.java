@@ -1,7 +1,7 @@
 package com.spacedog.category.service;
 
 import com.spacedog.category.domain.Category;
-import com.spacedog.member.service.MemberMapper;
+import com.spacedog.category.dto.CategoryDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
