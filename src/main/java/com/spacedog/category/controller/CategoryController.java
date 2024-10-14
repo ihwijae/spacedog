@@ -12,10 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,10 +33,12 @@ public class CategoryController {
     }
 
     @GetMapping("/categoryItems/{categoryId}")
-    public ApiResponse<Page<CategoryWithItemResponse>> findCategoryItems(@PathVariable Long categoryId, @PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable ) {
-        Page<CategoryWithItemResponse> categoryItems = categoryService.findCategoryItems(categoryId, pageable);
+    public ApiResponse<List<CategoryWithItemResponse>> findCategoryItems(@PathVariable Long categoryId,
+                                                                         @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+                                                                         @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        List<CategoryWithItemResponse> categoryItems = categoryService.findCategoryItems(categoryId, pageNo, pageSize);
 
-        return ApiResponse.success(categoryItems, "조회 했습니다");
+        return ApiResponse.success(categoryItems, "카테고리별 아이템 조회");
     }
 
 }

@@ -41,7 +41,8 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public Page<CategoryWithItemResponse> findCategoryItems (Long categoryId, Pageable pageable) {
-        return categoryQueryRepository.findCategoryItems(categoryId, pageable);
+    public List<CategoryWithItemResponse> findCategoryItems (Long categoryId, int pageNo, int pageSize) {
+
+        return categoryQueryRepository.findCategoryItems(categoryId, pageNo, pageSize);
     }
 }

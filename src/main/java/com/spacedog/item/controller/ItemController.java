@@ -34,9 +34,10 @@ public class ItemController {
 
     // 상품 전체 조회
     @GetMapping("/items")
-    public ApiResponse<Page<FindItemAllResponse>> findItems(@PageableDefault (page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<FindItemAllResponse> findItemAllResponses = itemService.fineItemAll(pageable);
-        return ApiResponse.success(findItemAllResponses, "아이템 전체조회 성공");
+    public ApiResponse<List<FindItemAllResponse>> findItems(@RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
+                                                            @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        List<FindItemAllResponse> findItemAllResponses = itemService.fineItemAll(pageNo, pageSize);
+        return ApiResponse.success(findItemAllResponses, "조회 했습니다");
     }
 
 

@@ -11,7 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.spacedog.category.domain.QCategory.category;
@@ -26,22 +28,52 @@ public class CategoryQueryRepository {
     private final JPAQueryFactory queryFactory;
 
 
-    public Page<CategoryWithItemResponse> findCategoryItems(Long categoryId, Pageable pageable) {
+    public List<CategoryWithItemResponse> findCategoryItems(Long categoryId, int pageNo, int pageSize) {
 
-        List<CategoryWithItemResponse> CategoryWithItemResponse = queryFactory
+//        List<CategoryWithItemResponse> CategoryWithItemResponse = queryFactory
+//                .select(Projections.fields(CategoryWithItemResponse.class,
+//                        item.id,
+//                        item.name,
+//                        item.description,
+//                        item.price,
+//                        item.stockQuantity
+//                ))
+//                .from(item)
+//                .join(item.category, categoryItem)
+//                .join(categoryItem.category, category)
+//                .where(categoryItem.category.id.eq(categoryId))
+//                .fetch();
+//
+//        return new PageImpl<>(CategoryWithItemResponse, pageable, CategoryWithItemResponse.size());
+
+        /**
+         * 커버링 인덱스 사용
+         */
+        List<Long> ids = queryFactory
+                .select(item.id)
+                .from(item)
+                .join(item.category, categoryItem)
+                .join(categoryItem.category, category)
+                .where(category.id.eq(categoryId))
+                .orderBy(categoryItem.id.desc())
+                .limit(pageSize)
+                .offset(pageNo * pageSize)
+                .fetch();
+
+        if (CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+
+        return queryFactory
                 .select(Projections.fields(CategoryWithItemResponse.class,
                         item.id,
                         item.name,
                         item.description,
                         item.price,
-                        item.stockQuantity
-                ))
+                        item.stockQuantity))
                 .from(item)
-                .join(item.category, categoryItem)
-                .join(categoryItem.category, category)
-                .where(categoryItem.category.id.eq(categoryId))
+                .where(item.id.in(ids))
+                .orderBy(item.id.desc())
                 .fetch();
-
-        return new PageImpl<>(CategoryWithItemResponse, pageable, CategoryWithItemResponse.size());
     }
 }

@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 public class FindItemAllResponse {
 
+    private Long id;
     private String name;
 
     private String description;

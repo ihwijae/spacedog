@@ -10,8 +10,10 @@ import com.spacedog.item.domain.QItem;
 import com.spacedog.item.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +51,32 @@ public class ItemQueryRepository {
                                 LikeItemContent(request.getSearchContent())
                         )
                         .fetch();
+    }
+
+    public List<FindItemAllResponse> findItemsAll(int pageNo, int pageSize) {
+        List<Long> ids = query
+                .select(item.id)
+                .from(item)
+                .orderBy(item.id.desc())
+                .limit(pageSize)
+                .offset(pageNo * pageSize)
+                .fetch();
+
+        if (CollectionUtils.isEmpty(ids)) {
+            return new ArrayList<>();
+        }
+
+        return query
+                .select(Projections.fields(FindItemAllResponse.class,
+                        item.id,
+                        item.name,
+                        item.description,
+                        item.price,
+                        item.stockQuantity))
+                .from(item)
+                .where(item.id.in(ids))
+                .orderBy(item.id.desc())
+                .fetch();
     }
 
 
