@@ -1,5 +1,7 @@
 package com.spacedog.member.service;
 
+import com.spacedog.cart.domain.Cart;
+import com.spacedog.cart.repository.CartRepository;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.exception.MemberException;
 import com.spacedog.member.repository.MemberRepository;
@@ -24,6 +26,7 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberValidate memberValidate;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final CartRepository cartRepository;
 
 
     @Transactional
@@ -35,6 +38,14 @@ public class MemberService {
         req.setPassword(bCryptPasswordEncoder.encode(req.getPassword()));
 
         Member save = memberRepository.save(MemberMapper.INSTANCE.toEntity(req));
+
+        //장바구니 생성
+        Cart cart = Cart.builder()
+                .id(save.getId())
+                .build();
+
+        cartRepository.save(cart);
+
 
         return MemberMapper.INSTANCE.toSignUpResponse(save);
     }

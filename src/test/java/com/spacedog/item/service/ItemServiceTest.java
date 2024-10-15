@@ -95,7 +95,7 @@ class ItemServiceTest {
 
     private CreateItemRequest createItemRequest () {
         return CreateItemRequest.builder()
-                .name("아투 퍼피사료")
+                .name("몬지 연어사료")
                 .description("test description")
                 .price(Money.wons(10000))
                 .stockQuantity(999)

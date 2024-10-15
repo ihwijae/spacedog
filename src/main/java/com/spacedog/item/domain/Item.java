@@ -15,6 +15,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -46,17 +47,17 @@ public class Item {
 
 
     @OneToMany(mappedBy = "item")
-    private List<CategoryItem> category;
+    private List<CategoryItem> category = new ArrayList<>();
 
     @Builder
-    public Item(Long id, String name, String description, Long memberId, Money price, int stockQuantity, List<CategoryItem> category) {
+    public Item(Long id, String name, String description, Long memberId, Money price, int stockQuantity, CategoryItem category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.memberId = memberId;
         this.price = price;
         this.stockQuantity = stockQuantity;
-        this.category = category;
+        this.category.add(category);
     }
 
     public Item() {

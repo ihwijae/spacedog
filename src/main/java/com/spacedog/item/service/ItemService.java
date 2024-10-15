@@ -62,9 +62,15 @@ public class ItemService {
             throw new MemberException("유저 정보를 불러올 수 없습니다");
         }
 
+        Item item = Item.builder()
+                .name(createItemRequest.getName())
+                .description(createItemRequest.getDescription())
+                .price(createItemRequest.getPrice())
+                .stockQuantity(createItemRequest.getStockQuantity())
+                .build();
 
 
-        Item item = ItemMapper.INSTANCE.toEntity(createItemRequest);
+
         item.addMember(member);
         itemRepository.save(item);
 
@@ -74,11 +80,10 @@ public class ItemService {
                     .orElseThrow( () -> new CategoryNotFoundException("카테고리를 찾을수 없습니다"));
 
             //카테고리 아이템 생성
-            CategoryItem categoryItem = CategoryItem.builder()
-                    .category(category)
-                    .item(item)
-                    .build();
+            CategoryItem categoryItem = CategoryItem.createCategoryItem(category, item);
+
             categoryItemRepository.save(categoryItem);
+            log.info("item 객체 ={}", item.getCategory().toString());
         });
 
 
@@ -101,7 +106,7 @@ public class ItemService {
                             .forEach(optionSpecsRequest -> {
                                 ItemOptionSpecification itemOptionSpecs = ItemOptionSpecification.builder()
                                         .name(optionSpecsRequest.getName())
-                                                .price(optionSpecsRequest.getPrice())
+                                                .additionalPrice(optionSpecsRequest.getPrice())
                                                         .optionGroupSpecification(saveItemOption)
                                                                 .build();
                                 optionSpecsRepository.save(itemOptionSpecs);
@@ -252,7 +257,7 @@ public class ItemService {
                                         .findFirst()
                                         .orElseGet(() -> ItemOptionSpecification.builder()
                                                 .name(editOptionSpecsRequest.getName())
-                                                .price(editOptionSpecsRequest.getPrice())
+                                                .additionalPrice(editOptionSpecsRequest.getPrice())
                                                 .optionGroupSpecification(itemOptionGroupSpecification)
                                                 .build()
                                         );

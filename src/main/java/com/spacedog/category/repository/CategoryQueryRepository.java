@@ -54,7 +54,7 @@ public class CategoryQueryRepository {
                 .from(item)
                 .join(item.category, categoryItem)
                 .join(categoryItem.category, category)
-                .where(category.id.eq(categoryId))
+                .where(categoryItem.category.id.eq(categoryId))
                 .orderBy(categoryItem.id.desc())
                 .limit(pageSize)
                 .offset(pageNo * pageSize)

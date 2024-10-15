@@ -227,7 +227,7 @@ public class ItemQueryRepository {
                 .selectDistinct(Projections.fields(OptionSpecsResponse.class,
                         itemOptionSpecification.id,
                         itemOptionSpecification.name,
-                        itemOptionSpecification.price
+                        itemOptionSpecification.additionalPrice
                         ))
                 .from(itemOptionSpecification)
                 .join(itemOptionGroupSpecification).on(itemOptionSpecification.optionGroupSpecification.id.eq(itemOptionGroupSpecification.id))

@@ -28,7 +28,7 @@ public class ItemOptionSpecification {
 
     @Column(name = "price")
     @Convert(converter = MoneyConverter.class)
-    private Money price;
+    private Money additionalPrice; //옵션에 따른 추가금액 0일수도 아닐수도
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_spec_id")
@@ -38,7 +38,7 @@ public class ItemOptionSpecification {
 
     public void update (EditOptionSpecsRequest request, ItemOptionGroupSpecification optionGroupSpec) {
         this.name = request.getName();
-        this.price = request.getPrice();
+        this.additionalPrice = request.getPrice();
         this.optionGroupSpecification = optionGroupSpec;
     }
 

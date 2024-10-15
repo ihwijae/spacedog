@@ -19,9 +19,9 @@ public interface ItemMapper {
     ItemMapper INSTANCE = Mappers.getMapper(ItemMapper.class);
 
 
-    @Mapping(target = "id" , ignore = true)
-//    @Mapping(target = "itemOption", source = "optionGroups")
-    Item toEntity(CreateItemRequest createItemRequest);
+//    @Mapping(target = "id" , ignore = true)
+////    @Mapping(target = "itemOption", source = "optionGroups")
+//    Item toEntity(CreateItemRequest createItemRequest);
 
 
 

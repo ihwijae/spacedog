@@ -31,17 +31,28 @@ public class CategoryItem {
     private Category category;
 
 
-
-    public void addRelation(Item item, Category category) {
-        log.info("item 객체= {}", item.getId());
-        log.info("카테고리 객체= {}", category.getId());
-
+    public static CategoryItem createCategoryItem(Category category, Item item) {
         CategoryItem categoryItem = CategoryItem.builder()
-                .item(item)
                 .category(category)
+                .item(item)
                 .build();
 
-        item.getCategory().add(categoryItem);
-        category.getCategoryItems().add(categoryItem);
+        item.addCategory(categoryItem);
+        return categoryItem;
     }
+
+
+
+//    public void addRelation(Item item, Category category) {
+//        log.info("item 객체= {}", item.getId());
+//        log.info("카테고리 객체= {}", category.getId());
+//
+//        CategoryItem categoryItem = CategoryItem.builder()
+//                .item(item)
+//                .category(category)
+//                .build();
+//
+//        item.getCategory().add(categoryItem);
+//        category.getCategoryItems().add(categoryItem);
+//    }
 }
