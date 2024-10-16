@@ -19,7 +19,7 @@ public class ItemDetailResponse {
 
     private String description;
 
-    private Money price;
+    private int price;
 
     private int stockQuantity;
 
@@ -28,7 +28,7 @@ public class ItemDetailResponse {
     private List<OptionGroupResponse> optionGroup;
 
     @Builder
-    public ItemDetailResponse(String name, String description, Money price, int stockQuantity, List<CategoryResponse> category, List<OptionGroupResponse> optionGroup) {
+    public ItemDetailResponse(String name, String description, int price, int stockQuantity, List<CategoryResponse> category, List<OptionGroupResponse> optionGroup) {
         this.name = name;
         this.description = description;
         this.price = price;

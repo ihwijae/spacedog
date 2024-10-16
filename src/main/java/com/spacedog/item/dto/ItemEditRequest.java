@@ -19,7 +19,7 @@ public class ItemEditRequest {
 
     private String name;
     private String description;
-    private Money price;
+    private int price;
     private int stockQuantity;
     private Long categoryId;
     private List<EditOptionGroupRequest> itemOption = new ArrayList<>();

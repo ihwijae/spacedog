@@ -14,5 +14,5 @@ public class OptionSpecsRequest {
 
     private String name;
 
-    private Money price;
+    private int price;
 }

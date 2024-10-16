@@ -39,8 +39,8 @@ public class Item {
     private Long memberId;
 
     @Column(name = "item_price")
-    @Convert(converter = MoneyConverter.class)
-    private Money price;
+//    @Convert(converter = MoneyConverter.class)
+    private int price;
 
     @Column(name = "stock_quantity")
     private int stockQuantity;
@@ -50,7 +50,7 @@ public class Item {
     private List<CategoryItem> category = new ArrayList<>();
 
     @Builder
-    public Item(Long id, String name, String description, Long memberId, Money price, int stockQuantity, CategoryItem category) {
+    public Item(Long id, String name, String description, Long memberId, int price, int stockQuantity, CategoryItem category) {
         this.id = id;
         this.name = name;
         this.description = description;

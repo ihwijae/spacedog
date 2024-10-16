@@ -35,6 +35,9 @@ public class ItemQueryRepository {
     private final JPAQueryFactory query;
 
 
+
+
+
     public List<SearchItemResponse> getItems(SearchItemRequest request) {
         return
                 query

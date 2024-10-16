@@ -42,7 +42,7 @@ class ItemServiceTest {
     @BeforeEach
     void setUp() {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("lhj@gmail.com", "12345678");
+        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("lhj@naver.com", "12345678");
         context.setAuthentication(mockAuthentication);
         SecurityContextHolder.setContext(context);
     }
@@ -97,7 +97,7 @@ class ItemServiceTest {
         return CreateItemRequest.builder()
                 .name("몬지 연어사료")
                 .description("test description")
-                .price(Money.wons(10000))
+                .price(39000)
                 .stockQuantity(999)
                 .categoryIds(Arrays.asList(1L, 5L))
                 .optionGroups(createOptionGroup())
@@ -127,17 +127,17 @@ class ItemServiceTest {
     private List<OptionSpecsRequest> createOptionSpecsVolume () {
         OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
                 .name("2.5kg")
-                .price(Money.wons(20000))
+                .price(0)
                 .build();
 
         OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
                 .name("5kg")
-                .price(Money.wons(50000))
+                .price(0)
                 .build();
 
         OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
                 .name("7,5")
-                .price(Money.wons(100000))
+                .price(0)
                 .build();
 
         return List.of(testOption1, testOption2, testOption3);
@@ -146,17 +146,17 @@ class ItemServiceTest {
     private List<OptionSpecsRequest> createOptionSpecsAge () {
         OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
                 .name("퍼피")
-                .price(Money.wons(20000))
+                .price(0)
                 .build();
 
         OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
                 .name("어덜트")
-                .price(Money.wons(20000))
+                .price(0)
                 .build();
 
         OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
                 .name("시니어")
-                .price(Money.wons(20000))
+                .price(0)
                 .build();
 
         return List.of(testOption1, testOption2, testOption3);
@@ -166,7 +166,7 @@ class ItemServiceTest {
         return ItemEditRequest.builder()
                 .name("test item edit")
                 .description("test edit description")
-                .price(Money.wons(8900))
+                .price(8900)
                 .stockQuantity(2500)
                 .itemOption(editOptionGrups())
                 .build();
@@ -186,7 +186,7 @@ class ItemServiceTest {
     private List<EditOptionSpecsRequest> editOptionSpecs() {
         EditOptionSpecsRequest testEditOption = EditOptionSpecsRequest.builder()
                 .name("Test edit option")
-                .price(Money.wons(9800))
+                .price(9800)
                 .id(1L)
                 .build();
         return List.of(testEditOption);

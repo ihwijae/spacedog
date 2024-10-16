@@ -15,6 +15,6 @@ public class EditOptionSpecsRequest {
     private Long id;
     private String name;
 
-    private Money price;
+    private int price;
 
 }

@@ -7,5 +7,5 @@ import lombok.Data;
 public class ItemOptionSpecsResponse {
 
     private String name;
-    private Money price;
+    private int price;
 }

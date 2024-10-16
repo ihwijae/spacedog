@@ -26,9 +26,9 @@ public class ItemOptionSpecification {
 
     private String name;
 
-    @Column(name = "price")
-    @Convert(converter = MoneyConverter.class)
-    private Money additionalPrice; //옵션에 따른 추가금액 0일수도 아닐수도
+    @Column(name = "additional_amount")
+//    @Convert(converter = MoneyConverter.class)
+    private int additionalPrice; //옵션에 따른 추가금액 0일수도 아닐수도
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_spec_id")

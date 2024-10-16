@@ -3,8 +3,10 @@ package com.spacedog.cart.domain;
 import com.spacedog.member.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Cart extends BaseTimeEntity {
 
     @Id
@@ -28,5 +30,13 @@ public class Cart extends BaseTimeEntity {
 
     public Cart() {
 
+    }
+
+    public void updateTotalPrice(int totalPrice) {
+        this.totalPrice += totalPrice;
+    }
+
+    public void updateTotalItems(int totalItems) {
+        this.totalItems += totalItems;
     }
 }

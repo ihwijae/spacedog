@@ -11,7 +11,7 @@ public class SearchItemResponse {
     private String description;
     private String memberName;
     private int stockQuantity;
-    private Money price;
+    private int price;
     private Long categoryId;
 
 }

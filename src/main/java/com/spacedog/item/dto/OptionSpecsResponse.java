@@ -12,10 +12,10 @@ public class OptionSpecsResponse {
 
     private Long id;
     private String name;
-    private Money price;
+    private int price;
 
 
-    public OptionSpecsResponse(String name, Money price) {
+    public OptionSpecsResponse(String name, int price) {
         this.name = name;
         this.price = price;
     }
