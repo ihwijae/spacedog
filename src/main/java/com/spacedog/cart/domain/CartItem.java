@@ -1,5 +1,6 @@
 package com.spacedog.cart.domain;
 
+import com.spacedog.cart.dto.CartAddRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,6 +44,7 @@ public class CartItem {
     public void addOptionSpecsId(Long optionSpecsId) {
         this.optionSpecsIds.add(optionSpecsId);
     }
+
 
 
     public void addQuantity(int quantity) {

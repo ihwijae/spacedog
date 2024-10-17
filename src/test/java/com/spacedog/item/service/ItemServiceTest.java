@@ -93,6 +93,7 @@ class ItemServiceTest {
 
 
 
+
     private CreateItemRequest createItemRequest () {
         return CreateItemRequest.builder()
                 .name("몬지 연어사료")
@@ -127,17 +128,17 @@ class ItemServiceTest {
     private List<OptionSpecsRequest> createOptionSpecsVolume () {
         OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
                 .name("2.5kg")
-                .price(0)
+                .price(5000)
                 .build();
 
         OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
                 .name("5kg")
-                .price(0)
+                .price(10000)
                 .build();
 
         OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
                 .name("7,5")
-                .price(0)
+                .price(20000)
                 .build();
 
         return List.of(testOption1, testOption2, testOption3);
@@ -146,17 +147,17 @@ class ItemServiceTest {
     private List<OptionSpecsRequest> createOptionSpecsAge () {
         OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
                 .name("퍼피")
-                .price(0)
+                .price(3000)
                 .build();
 
         OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
                 .name("어덜트")
-                .price(0)
+                .price(6000)
                 .build();
 
         OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
                 .name("시니어")
-                .price(0)
+                .price(9000)
                 .build();
 
         return List.of(testOption1, testOption2, testOption3);
