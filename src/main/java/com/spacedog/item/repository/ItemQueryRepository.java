@@ -94,7 +94,9 @@ public class ItemQueryRepository {
         return Optional.ofNullable(item);
     }
 
-    /** 추후 리팩터링 예정**/
+    /** 추후 리팩터링 예정
+     * 여러개의 상품 조회시 N+1 문제 최적화 코드
+     * **/
 
 //    public List<ItemDetailResponse> findByItemDetail(Long itemId) {
 //
@@ -163,6 +165,14 @@ public class ItemQueryRepository {
 //        return optionSpecsIds;
 //    }
 
+
+    /**
+     * 여러개의 상품의 조회할때 ( ex)전체 아이템조회, 카테고리별 아이템 조회 등등..) 단일 조회시에는 해당 x
+     * N+1 문제 발생 조회하는 아이템의 갯수마다 N+1 쿼리가 실행된다 .
+     * 조회하는 아이템이 10개라면 컬렉션을 조회하는 10번의 쿼리가 추가로 발생한다.
+     * **/
+
+
     public List<ItemDetailResponse> itemDetail(Long itemId) {
         List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
         itemDetail.forEach(
@@ -197,8 +207,6 @@ public class ItemQueryRepository {
 
 
 
-
-
     private List<CategoryResponse> findCategory(Long itemId) {
         return query
                 .select(Projections.fields(CategoryResponse.class,
@@ -208,7 +216,7 @@ public class ItemQueryRepository {
                 .from(categoryItem) // categoryItem을 먼저 조인
                 .join(categoryItem.category, category) // categoryItem과 category 조인
                 .join(categoryItem.item, item) // categoryItem과 item 조인
-                .where(item.id.eq(itemId)) // 조건 설정
+                .where(categoryItem.item.id.eq(itemId)) // 조건 설정
                 .fetch();
     }
 
@@ -237,6 +245,8 @@ public class ItemQueryRepository {
                 .where(itemOptionGroupSpecification.id.eq(optionGroupId))
                 .fetch();
     }
+
+
 
         private BooleanExpression LikeItemName(String searchName) {
         if(StringUtils.hasText(searchName)) {

@@ -47,9 +47,9 @@ class CartServiceTest {
         // given
         CartAddRequest cartAddRequest = CartAddRequest.builder()
                 .cartId(1L)
-                .itemId(1L)
+                .itemId(2L)
                 .quantity(5)
-                .optionSpecsIds(Arrays.asList(1L, 4L))
+                .optionSpecsIds(Arrays.asList(13L, 16L))
                 .build();
 
         // when

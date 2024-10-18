@@ -19,6 +19,8 @@ public class CartItem {
 
     private Long itemId;
 
+    private String itemName;
+
     private Long cartId;
 
     private int quantity;
@@ -30,9 +32,10 @@ public class CartItem {
 
 
     @Builder
-    public CartItem(Long id, Long itemId, Long cartId, int quantity, Long optionSpecsIds) {
+    public CartItem(Long id, Long itemId, Long cartId, int quantity, Long optionSpecsIds, String itemName) {
         this.id = id;
         this.itemId = itemId;
+        this.itemName = itemName;
         this.cartId = cartId;
         this.quantity = quantity;
         this.optionSpecsIds.add(optionSpecsIds);
