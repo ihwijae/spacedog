@@ -85,7 +85,6 @@ class ItemServiceTest {
     @DisplayName("상품 삭제 테스트")
     void itemDelete () {
 
-
         itemService.itemDelete(1L);
 
     }
@@ -96,7 +95,7 @@ class ItemServiceTest {
 
     private CreateItemRequest createItemRequest () {
         return CreateItemRequest.builder()
-                .name("몬지 연어사료")
+                .name("나우 스몰브리드 퍼피")
                 .description("test description")
                 .price(39000)
                 .stockQuantity(999)
@@ -113,14 +112,14 @@ class ItemServiceTest {
                 .optionSpecsRequest(createOptionSpecsVolume())
                 .build();
 
-        OptionGroupRequest testOptionGroup2 = OptionGroupRequest.builder()
-                .name("나이별 사료")
-                .exclusive(false)
-                .basic(true)
-                .optionSpecsRequest(createOptionSpecsAge())
-                .build();
+//        OptionGroupRequest testOptionGroup2 = OptionGroupRequest.builder()
+//                .name("나이별 사료")
+//                .exclusive(false)
+//                .basic(true)
+//                .optionSpecsRequest(createOptionSpecsAge())
+//                .build();
 
-        return List.of(testOptionGroup1, testOptionGroup2);
+        return List.of(testOptionGroup1);
         // java 9 부터 제공되는 불변 리스트를 생성하는 메서드
         // ArratList 와 다르게 리스트에 요소를 추가하거나 삭제할 수 없다.
     }
@@ -143,25 +142,25 @@ class ItemServiceTest {
 
         return List.of(testOption1, testOption2, testOption3);
     }
-
-    private List<OptionSpecsRequest> createOptionSpecsAge () {
-        OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
-                .name("퍼피")
-                .price(3000)
-                .build();
-
-        OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
-                .name("어덜트")
-                .price(6000)
-                .build();
-
-        OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
-                .name("시니어")
-                .price(9000)
-                .build();
-
-        return List.of(testOption1, testOption2, testOption3);
-    }
+//
+//    private List<OptionSpecsRequest> createOptionSpecsAge () {
+//        OptionSpecsRequest testOption1 = OptionSpecsRequest.builder()
+//                .name("퍼피")
+//                .price(3000)
+//                .build();
+//
+//        OptionSpecsRequest testOption2 = OptionSpecsRequest.builder()
+//                .name("어덜트")
+//                .price(6000)
+//                .build();
+//
+//        OptionSpecsRequest testOption3 = OptionSpecsRequest.builder()
+//                .name("시니어")
+//                .price(9000)
+//                .build();
+//
+//        return List.of(testOption1, testOption2, testOption3);
+//    }
 
     private ItemEditRequest editItemRequest () {
         return ItemEditRequest.builder()

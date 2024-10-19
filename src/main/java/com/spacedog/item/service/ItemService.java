@@ -88,33 +88,35 @@ public class ItemService {
 
 
 
-        createItemRequest.getOptionGroups().stream()
-                .map(optionGroupRequest ->  {
-                    ItemOptionGroupSpecification itemOptionGroup = ItemOptionGroupSpecification.builder()
-                            .name(optionGroupRequest.getName())
-                            .exclusive(optionGroupRequest.isExclusive())
-                            .basic(optionGroupRequest.isBasic())
-                            .item(item)
-                            .build();
+        /** 상품의 옵션이 있으면 옵션을 저장 **/
+        if(createItemRequest.getOptionGroups() != null) {
+            createItemRequest.getOptionGroups().stream()
+                    .map(optionGroupRequest ->  {
+                        ItemOptionGroupSpecification itemOptionGroup = ItemOptionGroupSpecification.builder()
+                                .name(optionGroupRequest.getName())
+                                .exclusive(optionGroupRequest.isExclusive())
+                                .basic(optionGroupRequest.isBasic())
+                                .item(item)
+                                .build();
 
+                        //옵션 그룹 저장
+                        ItemOptionGroupSpecification saveItemOption = optionRepository.save(itemOptionGroup);
 
-                    //옵션 그룹 저장
-                    ItemOptionGroupSpecification saveItemOption = optionRepository.save(itemOptionGroup);
+                        //옵션 사양 추가
+                        optionGroupRequest.getOptionSpecsRequest()
+                                .forEach(optionSpecsRequest -> {
+                                    ItemOptionSpecification itemOptionSpecs = ItemOptionSpecification.builder()
+                                            .name(optionSpecsRequest.getName())
+                                            .additionalPrice(optionSpecsRequest.getPrice())
+                                            .optionGroupSpecification(saveItemOption)
+                                            .build();
+                                    optionSpecsRepository.save(itemOptionSpecs);
+                                });
 
-                    //옵션 사양 추가
-                    optionGroupRequest.getOptionSpecsRequest()
-                            .forEach(optionSpecsRequest -> {
-                                ItemOptionSpecification itemOptionSpecs = ItemOptionSpecification.builder()
-                                        .name(optionSpecsRequest.getName())
-                                                .additionalPrice(optionSpecsRequest.getPrice())
-                                                        .optionGroupSpecification(saveItemOption)
-                                                                .build();
-                                optionSpecsRepository.save(itemOptionSpecs);
-                            });
-
-                    return saveItemOption;
-                })
-                .collect(Collectors.toList());
+                        return saveItemOption;
+                    })
+                    .collect(Collectors.toList());
+        }
 
         return item.getId();
     }

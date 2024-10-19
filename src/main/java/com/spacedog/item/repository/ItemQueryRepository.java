@@ -248,6 +248,8 @@ public class ItemQueryRepository {
 
 
 
+
+
         private BooleanExpression LikeItemName(String searchName) {
         if(StringUtils.hasText(searchName)) {
             return item.name.like("%" + searchName + "%");

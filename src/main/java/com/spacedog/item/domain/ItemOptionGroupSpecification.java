@@ -31,8 +31,9 @@ public class ItemOptionGroupSpecification {
     private boolean exclusive;
     @Column(name = "basic")
     private boolean basic;
-    @ManyToOne(fetch = FetchType.LAZY)
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 

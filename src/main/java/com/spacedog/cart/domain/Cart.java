@@ -13,30 +13,13 @@ public class Cart extends BaseTimeEntity {
     @Column(name = "cart_id")
     private Long id;
 
-    @Column(name = "total_price")
-    private int totalPrice;
-
-    @Column(name = "total_items")
-    private int totalItems;
-
 
     @Builder
     public Cart(Long id, int totalPrice, int totalItems) {
         this.id = id;
-        this.totalPrice = totalPrice;
-        this.totalItems = totalItems;
     }
 
 
     public Cart() {
-
-    }
-
-    public void updateTotalPrice(int totalPrice) {
-        this.totalPrice += totalPrice;
-    }
-
-    public void updateTotalItems(int totalItems) {
-        this.totalItems += totalItems;
     }
 }

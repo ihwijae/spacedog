@@ -13,5 +13,6 @@ public class ItemCartResponse {
         private String itemName;
         private int totalPrice; //각 상품의 가격 (기본가격 + 옵션별 추가 금액)
         private int quantity;
-        private List<CartOptionResponse> options = new ArrayList<>();
+        private List<CartOptionResponse> selectedOptions = new ArrayList<>();
+        private List<CartOptionGroupResponse> availableOptions = new ArrayList<>();
 }

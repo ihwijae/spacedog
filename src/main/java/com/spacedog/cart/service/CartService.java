@@ -1,17 +1,12 @@
 package com.spacedog.cart.service;
 
-import com.spacedog.cart.domain.Cart;
 import com.spacedog.cart.domain.CartItem;
-import com.spacedog.cart.dto.CartAddRequest;
-import com.spacedog.cart.dto.CartOptionResponse;
-import com.spacedog.cart.dto.CartResponse;
-import com.spacedog.cart.dto.ItemCartResponse;
+import com.spacedog.cart.dto.*;
 import com.spacedog.cart.exception.CartException;
 import com.spacedog.cart.repository.CartItemQueryRepository;
 import com.spacedog.cart.repository.CartItemRepository;
 import com.spacedog.cart.repository.CartRepository;
 import com.spacedog.item.domain.Item;
-import com.spacedog.item.domain.ItemOptionSpecification;
 import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.item.repository.ItemRepository;
 import com.spacedog.item.repository.OptionSpecsRepository;
@@ -26,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.spacedog.cart.exception.CartException.*;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,7 +30,6 @@ public class CartService {
     private final MemberService memberService;
     private final CartItemRepository cartItemRepository;
     private final CartItemQueryRepository queryRepository;
-    private final CartRepository cartRepository;
     private final OptionSpecsRepository optionSpecsRepository;
 
 
@@ -55,11 +47,22 @@ public class CartService {
         CartItem cartItem;
 
         if (exist) {
-            log.info("아이템, 옵션 중복이 발생");
-            cartItem = queryRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
-                    .orElseThrow(() -> new CartException("장바구니 아이템을 불러올 수 없습니다"));
+
+            // 옵션이 있을 때
+            if (request.getOptionSpecsIds() != null && !request.getOptionSpecsIds().isEmpty()) {
+                log.info("아이템, 옵션 중복이 발생");
+                cartItem = queryRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
+                        .orElseThrow(() -> new CartException("장바구니 아이템을 불러올 수 없습니다"));
+            } else {
+                log.info("아이템 중복 발생");
+                cartItem = queryRepository.findCartItemsWithNotOptions(request.getItemId())
+                        .orElseThrow(() -> new CartException("장바구니 아이템을 불러올 수 없습니다"));
+            }
+
             cartItem.addQuantity(request.getQuantity());
-        } else {
+        }
+
+        else {
             // 없다면 새로 생성
             log.info("중복 상품이 없으니 새로운 상품 담기");
             cartItem = CartItem.builder()
@@ -98,8 +101,9 @@ public class CartService {
         // 루트 조회
         List<ItemCartResponse> itemCartDetail = queryRepository.findItemCartDetail(cartId);
 
+
         // 컬렉션 한번에 조회
-        Map<Long, List<CartOptionResponse>> cartOptionMap = queryRepository.findCartOptionMap(queryRepository.toCartItemIds(itemCartDetail));
+        Map<Long, List<CartOptionResponse>> cartOptionMap = queryRepository.findCartSelectOptionMap(queryRepository.toCartItemIds(itemCartDetail));
         log.info("cartOptioMap = {}", cartOptionMap);
 
 
@@ -111,6 +115,7 @@ public class CartService {
         // 아이템 정보를 한번에 조회
         Map<Long, List<Item>> itemMap = queryRepository.findItemMap(itemIds);
 
+
         // 루프를 돌면 컬렉션 추가 (추가 쿼리x)
         itemCartDetail
                 .forEach(itemCartResponse -> {
@@ -118,8 +123,8 @@ public class CartService {
                     cartResponse.setCartItems(itemCartDetail);
 
                     log.info("cartOptionResponses = {}", cartOptionResponses);
-                    itemCartResponse.setOptions(cartOptionResponses);
-
+                    itemCartResponse.setSelectedOptions(cartOptionResponses);
+//                    itemCartResponse.setAvailableOptions(optionAll);
                     // 미리 조회한 아이템 정보 가져오기
                     List<Item> items = itemMap.get(itemCartResponse.getItemId());
 
@@ -172,6 +177,11 @@ public class CartService {
 //        return cartResponse;
     }
 
+
+    /** 장바구니 수량, 옵션 변경**/
+    public void editCartItem(Long cartId, CartEditRequest request) {
+
+    }
 
 
 }
