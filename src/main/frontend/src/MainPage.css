@@ -1,0 +1,36 @@
+/* src/Main.css */
+.main-container {
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    color: #333;
+}
+
+.pet-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px; /* 카드 간격 */
+}
+
+.pet-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    width: 200px; /* 카드 너비 */
+    text-align: center;
+    transition: box-shadow 0.3s ease;
+}
+
+.pet-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 카드에 호버 효과 */
+}
+
+.pet-image {
+    width: 100%; /* 이미지가 카드에 맞게 채워지도록 설정 */
+    border-radius: 10px;
+}
