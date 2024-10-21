@@ -1,5 +1,6 @@
 package com.spacedog.cart.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
@@ -40,7 +41,7 @@ public class CartItemQueryRepository {
 
         CartItem cartItem = queryFactory
                 .selectFrom(QCartItem.cartItem)
-                .where(QCartItem.cartItem.id.eq(itemId)
+                .where(QCartItem.cartItem.itemId.eq(itemId)
                         .and(QCartItem.cartItem.optionSpecsIds.any().in(optionSpecsIds)))
                 .fetchOne();
 
@@ -51,19 +52,30 @@ public class CartItemQueryRepository {
 
         CartItem cartItem = queryFactory
                 .selectFrom(QCartItem.cartItem)
-                .where(QCartItem.cartItem.id.eq(itemId))
+                .where(QCartItem.cartItem.itemId.eq(itemId))
                 .fetchOne();
 
         return Optional.ofNullable(cartItem);
     }
 
     @Transactional(readOnly = true)
-    public Boolean exist(Long itemId, List<Long> optionSpecsIds) {
+    public Boolean existByItemWithOptions(Long itemId, List<Long> optionSpecsIds) {
     Integer fetchOne = queryFactory
             .selectOne()
             .from(cartItem)
-            .where(cartItem.id.eq(itemId)
+            .where(cartItem.itemId.eq(itemId)
                     .and(cartItem.optionSpecsIds.any().in(optionSpecsIds)))
+            .fetchFirst();
+
+    return fetchOne != null;
+}
+
+@Transactional(readOnly = true)
+public Boolean existByItem(Long itemId) {
+    Integer fetchOne = queryFactory
+            .selectOne()
+            .from(cartItem)
+            .where(cartItem.id.eq(itemId))
             .fetchFirst();
 
     return fetchOne != null;
@@ -119,6 +131,24 @@ public Map<Long, List<CartOptionResponse>> findCartSelectOptionMap(List<Long> ca
             .collect(Collectors.groupingBy(CartOptionResponse::getCartItemId));
 
     return cartOptionMap;
+}
+
+public Map<Long, List<String>> findCartOptionName(List<Long> cartItemIds) {
+    List<Tuple> cartOptionNames = queryFactory
+            .select(itemOptionSpecification.name, cartOptionSpecs.cartItemId)
+            .from(itemOptionSpecification)
+            .join(cartOptionSpecs).on(itemOptionSpecification.id.eq(cartOptionSpecs.optionSpecsId))
+            .where(cartOptionSpecs.cartItemId.in(cartItemIds))
+            .fetch();
+
+    Map<Long, List<String>> result = cartOptionNames.stream()
+            .collect(Collectors.groupingBy(tuple -> tuple.get(cartOptionSpecs.cartItemId),
+                    Collectors.mapping(
+                            tuple -> tuple.get(itemOptionSpecification.name),
+                            Collectors.toList()
+                    )
+            ));
+    return result;
 }
 
 //public Map<Long, List<CartOptionGroupResponse>> findCartSelectOptionGroupMap(List<Long> cartItemIds) {

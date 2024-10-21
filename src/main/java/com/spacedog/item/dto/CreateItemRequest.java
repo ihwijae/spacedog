@@ -28,7 +28,7 @@ public class CreateItemRequest {
     private int price;
 
     @NotBlank(message = "상품의 재고를 입력하세요")
-    private int stockQuantity;
+    private Integer stockQuantity;
 
     @NotBlank(message = "상품의 카테고리를 입력하세요")
     private List<Long> categoryIds;

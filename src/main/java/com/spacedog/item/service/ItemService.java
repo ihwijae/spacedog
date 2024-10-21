@@ -70,6 +70,8 @@ public class ItemService {
                 .build();
 
 
+        // 옵션이 있는 상품인지 체크
+        item.addIsOptionAvailable(createItemRequest);
 
         item.addMember(member);
         itemRepository.save(item);
@@ -109,6 +111,7 @@ public class ItemService {
                                             .name(optionSpecsRequest.getName())
                                             .additionalPrice(optionSpecsRequest.getPrice())
                                             .optionGroupSpecification(saveItemOption)
+                                            .stockQuantity(optionSpecsRequest.getQuantity())
                                             .build();
                                     optionSpecsRepository.save(itemOptionSpecs);
                                 });
@@ -197,7 +200,10 @@ public class ItemService {
     //cacheNames -> items라는 이름의 캐시 저장소에 캐시를 저장한다. (캐시의 그룹이나 유형을 정의하는것)
     //key -> #pageable을 키로 사용하여 요청에 따라 다른 페이징 결과를 캐시에 저장하겠다. 각 페이징 요청은 서로다른 key를 생성하므로 결과가 다르게 캐시된다. (각 캐시 항목을 구별하는 고유한 식별자)
     public List<FindItemAllResponse> fineItemAll (int pageNo, int pageSize ) {
-       return itemQueryRepository.findItemsAll(pageNo, pageSize);
+        List<FindItemAllResponse> itemsAll = itemQueryRepository.findItemsAll(pageNo, pageSize);
+
+        return itemsAll;
+
     }
 
 
@@ -261,6 +267,7 @@ public class ItemService {
                                                 .name(editOptionSpecsRequest.getName())
                                                 .additionalPrice(editOptionSpecsRequest.getPrice())
                                                 .optionGroupSpecification(itemOptionGroupSpecification)
+                                                .stockQuantity(editOptionSpecsRequest.getQuantity())
                                                 .build()
                                         );
                                 itemOptionSpecification.update(editOptionSpecsRequest, itemOptionGroupSpecification);

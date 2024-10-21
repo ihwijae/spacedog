@@ -1,6 +1,8 @@
 package com.spacedog.cart.domain;
 
 import com.spacedog.cart.dto.CartAddRequest;
+import com.spacedog.item.domain.Item;
+import com.spacedog.item.dto.CreateItemRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,7 +43,17 @@ public class CartItem {
         this.optionSpecsIds.add(optionSpecsIds);
     }
 
+
     public CartItem() {
+    }
+
+    public static CartItem createItem(CartAddRequest cartAddRequest, Item item) {
+        return CartItem.builder()
+                .itemId(cartAddRequest.getItemId())
+                .cartId(cartAddRequest.getCartId())
+                .quantity(cartAddRequest.getQuantity())
+                .itemName(item.getName())
+                .build();
     }
 
     public void addOptionSpecsId(Long optionSpecsId) {
@@ -53,4 +65,6 @@ public class CartItem {
     public void addQuantity(int quantity) {
         this.quantity += quantity;
     }
+
+
 }

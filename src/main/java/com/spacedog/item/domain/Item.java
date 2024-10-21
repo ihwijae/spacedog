@@ -43,11 +43,14 @@ public class Item {
     private int price;
 
     @Column(name = "stock_quantity")
-    private int stockQuantity;
+    private int stockQuantity; //옵션이 없는 상품에 대한 재고 수량
 
+    private boolean isOptionAvailable; // 옵션이 있는 상품인지 여부
 
     @OneToMany(mappedBy = "item")
     private List<CategoryItem> category = new ArrayList<>();
+
+
 
     @Builder
     public Item(Long id, String name, String description, Long memberId, int price, int stockQuantity, CategoryItem category) {
@@ -61,6 +64,18 @@ public class Item {
     }
 
     public Item() {
+    }
+
+    public void addIsOptionAvailable(CreateItemRequest request) {
+
+        if(request.getOptionGroups() != null && !request.getOptionGroups().isEmpty()) {
+            this.isOptionAvailable = true;
+        }
+        this.isOptionAvailable = false;
+    }
+
+    public boolean checkIsOptionAvailable() {
+        return this.isOptionAvailable;
     }
 
 

@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +39,7 @@ public class CartService {
 
         Member member = memberService.getMember();
 
-        Boolean exist = queryRepository.exist(request.getItemId(), request.getOptionSpecsIds());
+        log.info("request ={}", request.toString());
 
         //카테고리 아이템 등록을 위한 item 엔티티 select
         Item item = itemRepository.findById(request.getItemId())
@@ -46,49 +47,42 @@ public class CartService {
 
         CartItem cartItem;
 
-        if (exist) {
 
-            // 옵션이 있을 때
-            if (request.getOptionSpecsIds() != null && !request.getOptionSpecsIds().isEmpty()) {
-                log.info("아이템, 옵션 중복이 발생");
-                cartItem = queryRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
-                        .orElseThrow(() -> new CartException("장바구니 아이템을 불러올 수 없습니다"));
-            } else {
-                log.info("아이템 중복 발생");
+        // 상품에 옵션이 있는 경우 장바구니 담기 요청
+        if(request.getOptionSpecsIds() != null && !request.getOptionSpecsIds().isEmpty()) {
+           if(queryRepository.existByItemWithOptions(request.getItemId(), request.getOptionSpecsIds())) {
+               cartItem = queryRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
+                       .orElseThrow(() -> new CartException("장바구니 아이템과 옵션을 불러올 수 없습니다"));
+               cartItem.addQuantity(request.getQuantity());
+           } else {
+               // 없다면 새로 생성
+               log.info("중복 상품이 없으니 새로운 상품 담기");
+               cartItem = CartItem.createItem(request, item);
+               // 중복 옵션 저장믈 막기위한 코드
+               request.getOptionSpecsIds().stream()
+                       .filter(optionSpecsId -> !cartItem.getOptionSpecsIds().contains(optionSpecsId))
+                       .forEach(optionSpecsId -> cartItem.addOptionSpecsId(optionSpecsId));
+           }
+        }
+
+        // 옵션이 없는 상품을 장바구니 담기 요청
+        else {
+            if(queryRepository.existByItem(request.getItemId())) {
                 cartItem = queryRepository.findCartItemsWithNotOptions(request.getItemId())
                         .orElseThrow(() -> new CartException("장바구니 아이템을 불러올 수 없습니다"));
+                cartItem.addQuantity(request.getQuantity());
+            } else {
+                cartItem = CartItem.createItem(request, item);
             }
-
-            cartItem.addQuantity(request.getQuantity());
         }
-
-        else {
-            // 없다면 새로 생성
-            log.info("중복 상품이 없으니 새로운 상품 담기");
-            cartItem = CartItem.builder()
-                    .itemId(request.getItemId())
-                    .itemName(item.getName())
-                    .quantity(request.getQuantity())
-                    .cartId(member.getId())
-                    .build();
-        }
-
-
-        // 중복 옵션 저장믈 막기위한 코드
-        request.getOptionSpecsIds().stream()
-                .filter(optionSpecsId -> !cartItem.getOptionSpecsIds().contains(optionSpecsId))
-                .forEach(optionSpecsId -> cartItem.addOptionSpecsId(optionSpecsId));
-
 
         CartItem save = cartItemRepository.save(cartItem);
-
         return save.getId();
     }
 
     // 장바구니 조회
     @Transactional(readOnly = true)
     public CartResponse getCart(Long cartId) {
-
 
         /**
          * N+1 문제 해결
@@ -105,7 +99,7 @@ public class CartService {
         // 컬렉션 한번에 조회
         Map<Long, List<CartOptionResponse>> cartOptionMap = queryRepository.findCartSelectOptionMap(queryRepository.toCartItemIds(itemCartDetail));
         log.info("cartOptioMap = {}", cartOptionMap);
-
+        Map<Long, List<String>> cartOptionNameMap = queryRepository.findCartOptionName(queryRepository.toCartItemIds(itemCartDetail));
 
         // 아이템 ID 목록 추출
         List<Long> itemIds = itemCartDetail.stream()
@@ -119,12 +113,17 @@ public class CartService {
         // 루프를 돌면 컬렉션 추가 (추가 쿼리x)
         itemCartDetail
                 .forEach(itemCartResponse -> {
-                    List<CartOptionResponse> cartOptionResponses = cartOptionMap.get(itemCartResponse.getId());
+                    List<CartOptionResponse> cartOptionResponses = cartOptionMap.getOrDefault(itemCartResponse.getId(), Collections.emptyList());
+//                    List<String> optionNames = cartOptionNameMap.get(itemCartResponse.getId());
+
+
                     cartResponse.setCartItems(itemCartDetail);
+
 
                     log.info("cartOptionResponses = {}", cartOptionResponses);
                     itemCartResponse.setSelectedOptions(cartOptionResponses);
-//                    itemCartResponse.setAvailableOptions(optionAll);
+//                    itemCartResponse.setOptionName(optionNames);
+
                     // 미리 조회한 아이템 정보 가져오기
                     List<Item> items = itemMap.get(itemCartResponse.getItemId());
 
@@ -135,14 +134,16 @@ public class CartService {
                         itemTotalPrice += item.getPrice() * itemCartResponse.getQuantity();
                     }
 
-                    // 옵션별 추가 가격 계산
+//                     옵션별 추가 가격 계산
                     for (CartOptionResponse option : cartOptionResponses) {
                         itemTotalPrice += option.getAdditionalPrice() * itemCartResponse.getQuantity();
                     }
 
+                    itemCartResponse.setTotalPrice(itemTotalPrice);
+
                     //각 상품의 총금액, 갯수 설정
                     cartResponse.setTotalPrice(cartResponse.getTotalPrice() + itemTotalPrice);
-                    cartResponse.setTotalItems(cartResponse.getTotalItems() + itemCartResponse.getQuantity());
+                    cartResponse.setTotalItems(cartResponse.getTotalItems() + 1);
 
                 });
         return cartResponse;
