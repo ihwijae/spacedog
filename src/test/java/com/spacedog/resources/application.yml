@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: estapi-practice
+  datasource:
+    url: jdbc:mysql://localhost:3307/test_db
+    username: root
+    password: 1024
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+#        show_sql: true <- 얘는 system.out에 출력함
+        format_sql: true
+
+# 스프링이 기본 제공하는 에러페이지를 끄는 옵션
+#server:
+#  error:
+#    whitelabel:
+#      enabled: false
+
+
+
+## JPA Log
+Logging:
+  level:
+    org.hibernate.SQL: debug  # <- 얘는 log
+    org.hibernate.type: trace
+
+
+## jwt HS256 알고리즘
+jwt:
+  secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
+

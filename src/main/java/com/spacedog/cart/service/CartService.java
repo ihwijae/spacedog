@@ -99,7 +99,7 @@ public class CartService {
         // 컬렉션 한번에 조회
         Map<Long, List<CartOptionResponse>> cartOptionMap = queryRepository.findCartSelectOptionMap(queryRepository.toCartItemIds(itemCartDetail));
         log.info("cartOptioMap = {}", cartOptionMap);
-        Map<Long, List<String>> cartOptionNameMap = queryRepository.findCartOptionName(queryRepository.toCartItemIds(itemCartDetail));
+//        Map<Long, List<String>> cartOptionNameMap = queryRepository.findCartOptionName(queryRepository.toCartItemIds(itemCartDetail));
 
         // 아이템 ID 목록 추출
         List<Long> itemIds = itemCartDetail.stream()
