@@ -69,8 +69,8 @@ public class CategoryQueryRepository {
                         item.id,
                         item.name,
                         item.description,
-                        item.price,
-                        item.stockQuantity))
+                        item.price
+                        ))
                 .from(item)
                 .where(item.id.in(ids))
                 .orderBy(item.id.desc())

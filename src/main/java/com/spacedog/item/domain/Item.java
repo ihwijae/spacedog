@@ -42,8 +42,6 @@ public class Item {
 //    @Convert(converter = MoneyConverter.class)
     private int price;
 
-    @Column(name = "stock_quantity")
-    private int stockQuantity; //옵션이 없는 상품에 대한 재고 수량
 
     private boolean isOptionAvailable; // 옵션이 있는 상품인지 여부
 
@@ -53,13 +51,12 @@ public class Item {
 
 
     @Builder
-    public Item(Long id, String name, String description, Long memberId, int price, int stockQuantity, CategoryItem category) {
+    public Item(Long id, String name, String description, Long memberId, int price, CategoryItem category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.memberId = memberId;
         this.price = price;
-        this.stockQuantity = stockQuantity;
         this.category.add(category);
     }
 
@@ -83,20 +80,20 @@ public class Item {
         this.category.add(category);
     }
 
-    public void addStock(int quantity) {
-        this.stockQuantity += quantity;
-    }
-
-    public void removeStock(int quantity) {
-        int restStock = this.stockQuantity - quantity;
-
-        if (restStock < 0) {
-            throw new NotEnoughStockException("재고가 없습니다");
-        }
-
-        this.stockQuantity = restStock;
-
-    }
+//    public void addStock(int quantity) {
+//        this.stockQuantity += quantity;
+//    }
+//
+//    public void removeStock(int quantity) {
+//        int restStock = this.stockQuantity - quantity;
+//
+//        if (restStock < 0) {
+//            throw new NotEnoughStockException("재고가 없습니다");
+//        }
+//
+//        this.stockQuantity = restStock;
+//
+//    }
 
 
 
@@ -107,15 +104,14 @@ public class Item {
 
    public void itemUpdate(ItemEditRequest request) {
 
-
        // 연관관계 설정
        this.name = request.getName();
         this.description = request.getDescription();
         this.price = request.getPrice();
-        this.stockQuantity = request.getStockQuantity();
-
 
    }
+
+
 
 
 

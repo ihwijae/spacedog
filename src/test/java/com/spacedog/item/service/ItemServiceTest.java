@@ -16,6 +16,9 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import support.TestContainerSupport;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +28,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-class ItemServiceTest {
+class ItemServiceTest extends TestContainerSupport {
+
+
 
 
     @Autowired
@@ -41,6 +46,9 @@ class ItemServiceTest {
 
     @BeforeEach
     void setUp() {
+        
+
+
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("lhj@naver.com", "12345678");
         context.setAuthentication(mockAuthentication);
@@ -67,6 +75,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("상품 수정 테스트")
+
     void itemEdit () {
 
         //given

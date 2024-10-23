@@ -45,7 +45,6 @@ public class ItemQueryRepository {
                                 item.name,
                                 item.description,
                                 item.price,
-                                item.stockQuantity,
                                 member.name.as("memberName")))
                         .from(item)
                         .join(member).on(item.memberId.eq(member.id))
@@ -74,8 +73,8 @@ public class ItemQueryRepository {
                         item.id,
                         item.name,
                         item.description,
-                        item.price,
-                        item.stockQuantity))
+                        item.price
+                        ))
                 .from(item)
                 .where(item.id.in(ids))
                 .orderBy(item.id.desc())
@@ -197,8 +196,7 @@ public class ItemQueryRepository {
                         item.id,
                         item.name,
                         item.description,
-                        item.price,
-                        item.stockQuantity
+                        item.price
                         ))
                 .from(item)
                 .where(item.id.eq(itemId))

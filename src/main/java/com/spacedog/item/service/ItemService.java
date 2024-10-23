@@ -66,12 +66,12 @@ public class ItemService {
                 .name(createItemRequest.getName())
                 .description(createItemRequest.getDescription())
                 .price(createItemRequest.getPrice())
-                .stockQuantity(createItemRequest.getStockQuantity())
                 .build();
 
 
         // 옵션이 있는 상품인지 체크
         item.addIsOptionAvailable(createItemRequest);
+
 
         item.addMember(member);
         itemRepository.save(item);
@@ -93,7 +93,7 @@ public class ItemService {
         /** 상품의 옵션이 있으면 옵션을 저장 **/
         if(createItemRequest.getOptionGroups() != null) {
             createItemRequest.getOptionGroups().stream()
-                    .map(optionGroupRequest ->  {
+                    .map(optionGroupRequest -> {
                         ItemOptionGroupSpecification itemOptionGroup = ItemOptionGroupSpecification.builder()
                                 .name(optionGroupRequest.getName())
                                 .exclusive(optionGroupRequest.isExclusive())
@@ -111,7 +111,7 @@ public class ItemService {
                                             .name(optionSpecsRequest.getName())
                                             .additionalPrice(optionSpecsRequest.getPrice())
                                             .optionGroupSpecification(saveItemOption)
-                                            .stockQuantity(optionSpecsRequest.getQuantity())
+                                            .stockQuantity(optionSpecsRequest.getStockQuantity())
                                             .build();
                                     optionSpecsRepository.save(itemOptionSpecs);
                                 });
@@ -120,6 +120,18 @@ public class ItemService {
                     })
                     .collect(Collectors.toList());
         }
+//        } else { /** 옵션이 없으면 (기본옵션) **/
+//            ItemOptionGroupSpecification.builder()
+//                    .name("default")
+//                    .exclusive(false)
+//                    .basic(false)
+//                    .item(item)
+//                    .build();
+//
+//            ItemOptionSpecification.builder()
+////                    .name("default")
+////                    .stockQuantity()
+//        }
 
         return item.getId();
     }
