@@ -6,13 +6,12 @@ import com.spacedog.category.domain.CategoryItem;
 import com.spacedog.category.exception.CategoryNotFoundException;
 import com.spacedog.category.repository.CategoryItemRepository;
 import com.spacedog.category.repository.CategoryRepository;
-import com.spacedog.category.service.CategoryResponse;
+import com.spacedog.category.service.CategoryService;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.ItemOptionGroupSpecification;
 import com.spacedog.item.domain.ItemOptionSpecification;
 import com.spacedog.item.dto.*;
-import com.spacedog.item.exception.NotEnoughStockException;
-import com.spacedog.item.exception.NotEnoughStockException.CategoryDuplicate;
+
 import com.spacedog.item.repository.ItemQueryRepository;
 import com.spacedog.item.repository.ItemRepository;
 import com.spacedog.item.repository.OptionRepository;
@@ -23,13 +22,9 @@ import com.spacedog.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,30 +38,20 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemQueryRepository itemQueryRepository;
     private final MemberService memberService;
-    private final CategoryRepository categoryRepository;
-    private final CategoryItemRepository categoryItemRepository;
+    private final CategoryService categoryService;
     private final OptionRepository optionRepository;
     private final OptionSpecsRepository optionSpecsRepository;
+    private final OptionService optionService;
 
 
 
     @Transactional
     public Long createItem(CreateItemRequest createItemRequest) {
         Member member = memberService.getMember();
+        validateMember(member);
 
-        if(itemRepository.findByName(createItemRequest.getName()).isPresent()) {
-            throw new ItemDuplicate("이미 존재하는 상품 이름 입니다");
-        }
-
-        if(member == null) {
-            throw new MemberException("유저 정보를 불러올 수 없습니다");
-        }
-
-        Item item = Item.builder()
-                .name(createItemRequest.getName())
-                .description(createItemRequest.getDescription())
-                .price(createItemRequest.getPrice())
-                .build();
+        boolean exist = itemQueryRepository.existByName(createItemRequest.getName());
+        Item item = Item.createItem(createItemRequest, exist);
 
 
         // 옵션이 있는 상품인지 체크
@@ -76,62 +61,13 @@ public class ItemService {
         item.addMember(member);
         itemRepository.save(item);
 
-        List<Long> categoryIds = createItemRequest.getCategoryIds();
-        categoryIds.forEach(categoryId -> {
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow( () -> new CategoryNotFoundException("카테고리를 찾을수 없습니다"));
-
-            //카테고리 아이템 생성
-            CategoryItem categoryItem = CategoryItem.createCategoryItem(category, item);
-
-            categoryItemRepository.save(categoryItem);
-            log.info("item 객체 ={}", item.getCategory().toString());
-        });
-
+        categoryService.saveCategoryItem(createItemRequest, item);
 
 
         /** 상품의 옵션이 있으면 옵션을 저장 **/
         if(createItemRequest.getOptionGroups() != null) {
-            createItemRequest.getOptionGroups().stream()
-                    .map(optionGroupRequest -> {
-                        ItemOptionGroupSpecification itemOptionGroup = ItemOptionGroupSpecification.builder()
-                                .name(optionGroupRequest.getName())
-                                .exclusive(optionGroupRequest.isExclusive())
-                                .basic(optionGroupRequest.isBasic())
-                                .item(item)
-                                .build();
-
-                        //옵션 그룹 저장
-                        ItemOptionGroupSpecification saveItemOption = optionRepository.save(itemOptionGroup);
-
-                        //옵션 사양 추가
-                        optionGroupRequest.getOptionSpecsRequest()
-                                .forEach(optionSpecsRequest -> {
-                                    ItemOptionSpecification itemOptionSpecs = ItemOptionSpecification.builder()
-                                            .name(optionSpecsRequest.getName())
-                                            .additionalPrice(optionSpecsRequest.getPrice())
-                                            .optionGroupSpecification(saveItemOption)
-                                            .stockQuantity(optionSpecsRequest.getStockQuantity())
-                                            .build();
-                                    optionSpecsRepository.save(itemOptionSpecs);
-                                });
-
-                        return saveItemOption;
-                    })
-                    .collect(Collectors.toList());
+            optionService.saveOptionWithItem(createItemRequest, item);
         }
-//        } else { /** 옵션이 없으면 (기본옵션) **/
-//            ItemOptionGroupSpecification.builder()
-//                    .name("default")
-//                    .exclusive(false)
-//                    .basic(false)
-//                    .item(item)
-//                    .build();
-//
-//            ItemOptionSpecification.builder()
-////                    .name("default")
-////                    .stockQuantity()
-//        }
 
         return item.getId();
     }
@@ -360,6 +296,13 @@ public class ItemService {
         return itemQueryRepository.itemDetail(itemId);
     }
 
+    private void validateMember(Member member) {
+
+        if(member == null) {
+            throw new MemberException("유저 정보를 불러올 수 없습니다");
+        }
+
+    }
 
 
 

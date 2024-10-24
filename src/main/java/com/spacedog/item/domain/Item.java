@@ -6,9 +6,11 @@ import com.spacedog.category.domain.CategoryItem;
 import com.spacedog.generic.Money;
 import com.spacedog.generic.MoneyConverter;
 import com.spacedog.item.dto.CreateItemRequest;
+import com.spacedog.item.dto.ItemDetailResponse;
 import com.spacedog.item.dto.ItemEditRequest;
 import com.spacedog.item.dto.OptionGroupRequest;
 import com.spacedog.item.exception.NotEnoughStockException;
+import com.spacedog.item.exception.NotEnoughStockException.ItemDuplicate;
 import com.spacedog.item.service.ItemMapper;
 import com.spacedog.member.domain.Member;
 import jakarta.persistence.*;
@@ -63,6 +65,20 @@ public class Item {
     public Item() {
     }
 
+    public static Item createItem(CreateItemRequest createItemRequest, boolean exist) {
+
+        if(exist) {
+            throw new ItemDuplicate("해당 상품이 이미 존재합니다.");
+        }
+
+        Item item = Item.builder()
+                .name(createItemRequest.getName())
+                .description(createItemRequest.getDescription())
+                .price(createItemRequest.getPrice())
+                .build();
+        return item;
+    }
+
     public void addIsOptionAvailable(CreateItemRequest request) {
 
         if(request.getOptionGroups() != null && !request.getOptionGroups().isEmpty()) {
@@ -110,6 +126,8 @@ public class Item {
         this.price = request.getPrice();
 
    }
+
+
 
 
 

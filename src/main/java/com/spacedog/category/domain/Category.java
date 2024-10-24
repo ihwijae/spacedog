@@ -1,6 +1,7 @@
 package com.spacedog.category.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
@@ -35,6 +36,16 @@ public class Category {
     private List<CategoryItem> categoryItems;
 
 
+    public Category() {
+    }
 
-
+    @Builder
+    public Category(Long id, String name, Long depth, Category parent, List<Category> children, List<CategoryItem> categoryItems) {
+        this.id = id;
+        this.name = name;
+        this.depth = depth;
+        this.parent = parent;
+        this.children = children;
+        this.categoryItems = categoryItems;
+    }
 }

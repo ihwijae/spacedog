@@ -36,6 +36,19 @@ public class ItemQueryRepository {
 
 
 
+    /** 실제 sql의 exist처럼 반환되는 값이 있으면 1이 반환되고 없으면 null이 result에 담긴다
+     * 그럼 이때 return 되는 result는 null인지 아닌지 체크하고 null이 아닌경우 (해당결과가 있는경우 1) true를 반환 null이면 false 반환
+     * **/
+    public boolean existByName(String name) {
+        Integer result = query
+                .selectOne()
+                .from(item)
+                .where(item.name.eq(name))
+                .fetchFirst();
+
+        return result != null;
+    }
+
 
 
     public List<SearchItemResponse> getItems(SearchItemRequest request) {

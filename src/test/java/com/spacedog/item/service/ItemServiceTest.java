@@ -1,12 +1,16 @@
 package com.spacedog.item.service;
 
+import com.spacedog.category.domain.Category;
+import com.spacedog.category.service.CategoryService;
 import com.spacedog.generic.Money;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
 import com.spacedog.item.repository.ItemRepository;
 import com.spacedog.member.repository.MemberRepository;
 import com.spacedog.member.service.MemberService;
+import com.spacedog.member.service.MemberSignUpRequest;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,8 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import support.TestContainerSupport;
@@ -28,6 +34,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
+@WithMockUser()
 class ItemServiceTest extends TestContainerSupport {
 
 
@@ -41,16 +48,33 @@ class ItemServiceTest extends TestContainerSupport {
     private MemberRepository memberRepository;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private CategoryService categoryService;
+
+
 
 
 
     @BeforeEach
     void setUp() {
-        
 
+//        memberService.singUp(
+//                MemberSignUpRequest.builder()
+//                        .name("testUser")
+//                        .email("testUser@email.com")
+//                        .password("testPassword")
+//                        .checkedPassword("testPassword")
+//                        .nickname("testNickName")
+//                        .build()
+//        );
+
+//        Category.builder()
+//                .name("testCategory1")
+//                .depth(0L)
+//                .children(Arrays.asList(Category))
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("lhj@naver.com", "12345678");
+        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("testUser@email.com", "12345678");
         context.setAuthentication(mockAuthentication);
         SecurityContextHolder.setContext(context);
     }
