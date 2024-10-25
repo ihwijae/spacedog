@@ -6,7 +6,6 @@ spring:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:mysql:8.0.30:///  # /// 은 호스트와 DB 이름을 생략한 것이다
 
-
   jpa:
     hibernate:
       ddl-auto: update  # test DB는 편리함을 위해 DDL update 사용.
@@ -14,6 +13,7 @@ spring:
       hibernate:
 #        show_sql: true <- 얘는 system.out에 출력함
         format_sql: true
+
 
 # 스프링이 기본 제공하는 에러페이지를 끄는 옵션
 #server:

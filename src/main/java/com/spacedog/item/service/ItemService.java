@@ -270,8 +270,8 @@ public class ItemService {
         }
 
         //카테고리 아이템 삭제
-        List<CategoryItem> findCategoryItems = categoryItemRepository.findByItemId(itemId);
-        categoryItemRepository.deleteAll(findCategoryItems);
+//        List<CategoryItem> findCategoryItems = categoryItemRepository.findByItemId(itemId);
+//        categoryItemRepository.deleteAll(findCategoryItems);
 
 
         //옵션 그룹 삭제

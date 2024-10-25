@@ -34,7 +34,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-@WithMockUser()
 class ItemServiceTest extends TestContainerSupport {
 
 

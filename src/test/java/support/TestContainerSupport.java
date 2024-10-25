@@ -1,8 +1,6 @@
 package support;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -18,7 +16,7 @@ public class TestContainerSupport {
             .withDatabaseName("testDB")
             .withUsername("testUser")
             .withPassword("testPassword")
-            .withInitScript("init.sql");
+            .withInitScript("data.sql");
 
 
 //    @DynamicPropertySource
