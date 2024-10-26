@@ -108,7 +108,6 @@ public class Item extends BaseTimeEntity {
 
 
    public void itemUpdate(ItemEditRequest request) {
-
        // 연관관계 설정
        this.name = request.getName();
         this.description = request.getDescription();

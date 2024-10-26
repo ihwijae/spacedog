@@ -8,9 +8,7 @@ spring:
     username: sa
     password:
 
-  h2:
-    console:
-      enabled: true
+
 
   jpa:
     hibernate:
@@ -18,7 +16,8 @@ spring:
       hibernate:
 #        show_sql: true <- 얘는 system.out에 출력함
         format_sql: true
-    defer-datasource-initialization: true
+    defer-datasource-initialization: true # spring boot에서 데이터 소 초기화를 지연시키는 설정 (jpa가 먼저 ddl을 사용해서 테이블을 생성하고 그다음 사용자가 정의한 스크립트로 데이터 생성 가능하다)
+    database-platform: org.hibernate.dialect.H2Dialect # sql을 h2 데이터베이스에 맞게 jpa가 변환해주는 설정
   sql:
     init:
       data-locations: classpath:data.sql

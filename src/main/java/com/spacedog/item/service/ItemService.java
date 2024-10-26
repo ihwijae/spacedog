@@ -8,10 +8,7 @@ import com.spacedog.item.domain.ItemOptionGroupSpecification;
 import com.spacedog.item.domain.ItemOptionSpecification;
 import com.spacedog.item.dto.*;
 
-import com.spacedog.item.repository.ItemQueryRepository;
-import com.spacedog.item.repository.ItemRepository;
-import com.spacedog.item.repository.OptionRepository;
-import com.spacedog.item.repository.OptionSpecsRepository;
+import com.spacedog.item.repository.*;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.exception.MemberException;
 import com.spacedog.member.service.MemberService;
@@ -30,11 +27,11 @@ import static com.spacedog.item.exception.NotEnoughStockException.*;
 @Slf4j
 public class ItemService {
 
-    private final ItemRepository itemRepository;
-    private final ItemQueryRepository itemQueryRepository;
+
     private final MemberService memberService;
     private final CategoryService categoryService;
     private final OptionService optionService;
+    private final ItemRepositoryPort itemRepositoryPort;
 
 
 
@@ -43,13 +40,13 @@ public class ItemService {
         Member member = memberService.getMember();
         validateMember(member);
 
-        boolean exist = itemQueryRepository.existByName(createItemRequest.getName());
+        boolean exist = itemRepositoryPort.existByName(createItemRequest.getName());
         Item item = Item.createItem(createItemRequest, exist);
 
 
 
         item.addMember(member);
-        Item saveItem = itemRepository.save(item);
+        Item saveItem = itemRepositoryPort.save(item);
 
         categoryService.saveCategoryItem(createItemRequest, item);
 
@@ -138,7 +135,7 @@ public class ItemService {
     //cacheNames -> items라는 이름의 캐시 저장소에 캐시를 저장한다. (캐시의 그룹이나 유형을 정의하는것)
     //key -> #pageable을 키로 사용하여 요청에 따라 다른 페이징 결과를 캐시에 저장하겠다. 각 페이징 요청은 서로다른 key를 생성하므로 결과가 다르게 캐시된다. (각 캐시 항목을 구별하는 고유한 식별자)
     public List<FindItemAllResponse> fineItemAll (int pageNo, int pageSize ) {
-        List<FindItemAllResponse> itemsAll = itemQueryRepository.findItemsAll(pageNo, pageSize);
+        List<FindItemAllResponse> itemsAll = itemRepositoryPort.findItemsAll(pageNo, pageSize);
 
         return itemsAll;
 
@@ -148,7 +145,7 @@ public class ItemService {
     // 상품 검색
     @Transactional(readOnly = true)
     public List<SearchItemResponse> searchItem(SearchItemRequest request) {
-        return itemQueryRepository.getItems(request);
+        return itemRepositoryPort.getItems(request);
     }
 
 
@@ -159,11 +156,11 @@ public class ItemService {
 
         validateMember(member);
 
-        if (itemRepository.findByName(request.getName()).isPresent()) {
+        if (itemRepositoryPort.findByName(request.getName()).isPresent()) {
             throw new ItemDuplicate("중복된 상품 이름 입니다");
         }
 
-        Item findItem = itemRepository.findById(id)
+        Item findItem = itemRepositoryPort.findById(id)
                 .orElseThrow(() -> new ItemNotFound("해당 상품이 존재하지 않습니다"));
 
         if (!findItem.getMemberId().equals(member.getId())) {
@@ -214,7 +211,7 @@ public class ItemService {
 
         Member member = memberService.getMember();
 
-        Item item = itemRepository.findById(itemId)
+        Item item = itemRepositoryPort.findById(itemId)
                 .orElseThrow(() -> new ItemNotFound("아이템을 찾을 수 없습니다"));
 
         //상품을 등록한 회원과 로그인한 회원이 다르면 예외
@@ -228,7 +225,7 @@ public class ItemService {
         // 옵션 삭제
         optionService.deleteOptionWithItem(itemId);
 
-        itemRepository.delete(item);
+        itemRepositoryPort.delete(itemId);
     }
 
 
@@ -236,7 +233,7 @@ public class ItemService {
     // 상품 상세 조회
     @Transactional(readOnly = true)
     public List<ItemDetailResponse> itemDetail(Long itemId) {
-        return itemQueryRepository.itemDetail(itemId);
+        return itemRepositoryPort.itemDetail(itemId);
     }
 
     private void validateMember(Member member) {

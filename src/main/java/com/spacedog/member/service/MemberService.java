@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final MemberValidate memberValidate;
     private final BCryptPasswordEncoder passwordEncoder;
     private final CartRepository cartRepository;
@@ -35,7 +34,7 @@ public class MemberService {
         member.memberValidate(memberValidate, req);
 
         // 비밀번호 암호화
-        req.setPassword(bCryptPasswordEncoder.encode(req.getPassword()));
+        req.setPassword(passwordEncoder.encode(req.getPassword()));
 
         Member save = memberRepository.save(MemberMapper.INSTANCE.toEntity(req));
 
@@ -88,7 +87,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new MemberException.EmailDuplicateException("가입 되지 않은 이메일 입니다."));
 
-        if (!bCryptPasswordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
             throw new MemberException.PassWordDuplicateException("비밀번호가 틀렸습니다 다시 입력하세요.");
         }
 

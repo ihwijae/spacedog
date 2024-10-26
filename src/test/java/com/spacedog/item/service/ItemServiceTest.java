@@ -6,6 +6,7 @@ import com.spacedog.generic.Money;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
 import com.spacedog.item.repository.ItemRepository;
+import com.spacedog.item.repository.ItemRepositoryPort;
 import com.spacedog.member.repository.MemberRepository;
 import com.spacedog.member.service.MemberService;
 import com.spacedog.member.service.MemberSignUpRequest;
@@ -39,6 +40,8 @@ class ItemServiceTest  {
     private ItemService itemService;
     @Autowired
     private ItemRepository itemRepository;
+    @Autowired
+    private ItemRepositoryPort itemRepositoryPort;
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
@@ -84,7 +87,7 @@ class ItemServiceTest  {
 
         //when
         Long resultId = itemService.createItem(itemRequest);
-        Item findItem = itemRepository.findById(resultId).orElseThrow();
+        Item findItem = itemRepositoryPort.findById(resultId).orElseThrow();
 
         //then
         assertNotNull(resultId); //아이템 id가 null이 아닌지 확인
