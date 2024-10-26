@@ -8,6 +8,7 @@ import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.QItem;
 import com.spacedog.item.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -23,7 +24,7 @@ import static com.spacedog.item.domain.QItemOptionGroupSpecification.itemOptionG
 import static com.spacedog.item.domain.QItemOptionSpecification.itemOptionSpecification;
 import static com.spacedog.member.domain.QMember.member;
 
-@Service
+@Repository
 @RequiredArgsConstructor
 public class ItemRepositoryAdapter implements ItemRepositoryPort {
 

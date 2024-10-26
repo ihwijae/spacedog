@@ -2,7 +2,7 @@ package com.spacedog.item.repository;
 
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
-import com.spacedog.member.domain.Member;
+
 
 import java.util.List;
 import java.util.Optional;
