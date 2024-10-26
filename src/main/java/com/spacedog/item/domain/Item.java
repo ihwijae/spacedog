@@ -12,6 +12,7 @@ import com.spacedog.item.dto.OptionGroupRequest;
 import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.item.exception.NotEnoughStockException.ItemDuplicate;
 import com.spacedog.item.service.ItemMapper;
+import com.spacedog.member.domain.BaseTimeEntity;
 import com.spacedog.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +24,7 @@ import java.util.List;
 @Entity
 @Getter
 @Slf4j
-public class Item {
+public class Item extends BaseTimeEntity {
 
 
 
@@ -45,7 +46,6 @@ public class Item {
     private int price;
 
 
-    private boolean isOptionAvailable; // 옵션이 있는 상품인지 여부
 
     @OneToMany(mappedBy = "item")
     private List<CategoryItem> category = new ArrayList<>();
@@ -79,17 +79,6 @@ public class Item {
         return item;
     }
 
-    public void addIsOptionAvailable(CreateItemRequest request) {
-
-        if(request.getOptionGroups() != null && !request.getOptionGroups().isEmpty()) {
-            this.isOptionAvailable = true;
-        }
-        this.isOptionAvailable = false;
-    }
-
-    public boolean checkIsOptionAvailable() {
-        return this.isOptionAvailable;
-    }
 
 
     public void addCategory(CategoryItem category) {

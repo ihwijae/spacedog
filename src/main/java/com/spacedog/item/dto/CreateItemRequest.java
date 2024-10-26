@@ -18,6 +18,8 @@ import java.util.List;
 public class CreateItemRequest {
 
 
+    private Long id;
+
     @NotBlank(message = "상품의 이름을 입력하세요")
     private String name;
 

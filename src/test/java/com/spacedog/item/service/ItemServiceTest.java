@@ -14,17 +14,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import support.TestContainerSupport;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +30,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest
-class ItemServiceTest extends TestContainerSupport {
+class ItemServiceTest  {
 
 
 
@@ -49,7 +45,6 @@ class ItemServiceTest extends TestContainerSupport {
     private MemberService memberService;
     @Autowired
     private CategoryService categoryService;
-
 
 
 
@@ -73,7 +68,7 @@ class ItemServiceTest extends TestContainerSupport {
 //                .children(Arrays.asList(Category))
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("testUser@email.com", "12345678");
+        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("test@email.com", "12345678");
         context.setAuthentication(mockAuthentication);
         SecurityContextHolder.setContext(context);
     }

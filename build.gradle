@@ -46,10 +46,13 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	// test db container
-	testImplementation "org.testcontainers:testcontainers:1.19.2"
-	testImplementation "org.testcontainers:junit-jupiter:1.19.2"
+//	testImplementation "org.testcontainers:testcontainers:1.19.2"
+//	testImplementation "org.testcontainers:junit-jupiter:1.19.2"
+//	testImplementation "org.testcontainers:mysql:1.19.2"
 
-	testImplementation "org.testcontainers:mysql:1.19.2"
+	// h2 db (test)
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'com.h2database:h2'
 
 
 	// jwt

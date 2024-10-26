@@ -63,4 +63,11 @@ public class CategoryService {
         });
 
     }
+
+    @Transactional
+    public void deleteCategoryItem(Long itemId) {
+
+        List<CategoryItem> findCategoryItems = categoryItemRepository.findByItemId(itemId);
+        categoryItemRepository.deleteAll(findCategoryItems);
+    }
 }

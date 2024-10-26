@@ -1,11 +1,7 @@
 package com.spacedog.item.service;
 
 
-import com.spacedog.category.domain.Category;
-import com.spacedog.category.domain.CategoryItem;
-import com.spacedog.category.exception.CategoryNotFoundException;
-import com.spacedog.category.repository.CategoryItemRepository;
-import com.spacedog.category.repository.CategoryRepository;
+
 import com.spacedog.category.service.CategoryService;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.ItemOptionGroupSpecification;
@@ -26,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.spacedog.item.exception.NotEnoughStockException.*;
 
@@ -39,8 +34,6 @@ public class ItemService {
     private final ItemQueryRepository itemQueryRepository;
     private final MemberService memberService;
     private final CategoryService categoryService;
-    private final OptionRepository optionRepository;
-    private final OptionSpecsRepository optionSpecsRepository;
     private final OptionService optionService;
 
 
@@ -54,12 +47,9 @@ public class ItemService {
         Item item = Item.createItem(createItemRequest, exist);
 
 
-        // 옵션이 있는 상품인지 체크
-        item.addIsOptionAvailable(createItemRequest);
-
 
         item.addMember(member);
-        itemRepository.save(item);
+        Item saveItem = itemRepository.save(item);
 
         categoryService.saveCategoryItem(createItemRequest, item);
 
@@ -69,7 +59,7 @@ public class ItemService {
             optionService.saveOptionWithItem(createItemRequest, item);
         }
 
-        return item.getId();
+        return saveItem.getId();
     }
 
     /**
@@ -167,9 +157,7 @@ public class ItemService {
     public void itemEdit (Long id, ItemEditRequest request) {
         Member member = memberService.getMember();
 
-        if (member == null) {
-            throw new MemberException("유저 정보를 불러올 수 없습니다");
-        }
+        validateMember(member);
 
         if (itemRepository.findByName(request.getName()).isPresent()) {
             throw new ItemDuplicate("중복된 상품 이름 입니다");
@@ -184,44 +172,7 @@ public class ItemService {
 
         findItem.itemUpdate(request);
 
-
-        // 기존 옵션 그룹과 사양을 가져와서 수정
-        List<ItemOptionGroupSpecification> findOptionGroup = optionRepository.findByItemId(findItem.getId());
-
-        request.getItemOption()
-                .forEach(editOptionGroupRequest -> {
-                    //존재하는 옵션그룹이면 업데이트, 아니면 추가
-                    ItemOptionGroupSpecification itemOptionGroupSpecification = findOptionGroup.stream()
-                            .filter(group -> group.getId().equals(editOptionGroupRequest.getId()))
-                            .findFirst()
-                            .orElseGet(() -> ItemOptionGroupSpecification.builder()
-                                    .name(editOptionGroupRequest.getName())
-                                    .exclusive(editOptionGroupRequest.isExclusive())
-                                    .basic(editOptionGroupRequest.isBasic())
-                                    .item(findItem)
-                                    .build());
-
-                    itemOptionGroupSpecification.update(editOptionGroupRequest);
-                    optionRepository.save(itemOptionGroupSpecification);
-
-                    //옵션 스펙 업데이트
-                    editOptionGroupRequest.getOptionSpecsRequest()
-                            .forEach(editOptionSpecsRequest -> {
-                                List<ItemOptionSpecification> optionSpecsList = optionSpecsRepository.findByOptionGroupSpecification_Id(itemOptionGroupSpecification.getId());
-                                ItemOptionSpecification itemOptionSpecification = optionSpecsList.stream()
-                                        .filter(spec -> spec.getId().equals(editOptionSpecsRequest.getId()))
-                                        .findFirst()
-                                        .orElseGet(() -> ItemOptionSpecification.builder()
-                                                .name(editOptionSpecsRequest.getName())
-                                                .additionalPrice(editOptionSpecsRequest.getPrice())
-                                                .optionGroupSpecification(itemOptionGroupSpecification)
-                                                .stockQuantity(editOptionSpecsRequest.getQuantity())
-                                                .build()
-                                        );
-                                itemOptionSpecification.update(editOptionSpecsRequest, itemOptionGroupSpecification);
-                                optionSpecsRepository.save(itemOptionSpecification);
-                            });
-                });
+        optionService.editOptionWithItem(request, findItem);
 
 
         //단일 옵션 일때
@@ -256,6 +207,8 @@ public class ItemService {
 
 
     }
+
+
     @Transactional
     public void itemDelete (Long itemId) {
 
@@ -269,22 +222,12 @@ public class ItemService {
             throw new MemberException("상품을 등록한 회원이 아닙니다");
         }
 
-        //카테고리 아이템 삭제
-//        List<CategoryItem> findCategoryItems = categoryItemRepository.findByItemId(itemId);
-//        categoryItemRepository.deleteAll(findCategoryItems);
+        // 카테고리 아이템 삭제
+        categoryService.deleteCategoryItem(itemId);
 
+        // 옵션 삭제
+        optionService.deleteOptionWithItem(itemId);
 
-        //옵션 그룹 삭제
-        List<ItemOptionGroupSpecification> optionGroup = optionRepository.findByItemId(itemId);
-
-
-        //옵션 스펙 삭제
-        optionGroup.forEach(group -> {
-            List<ItemOptionSpecification> optionSpecs = optionSpecsRepository.findByOptionGroupSpecification_Id(group.getId());
-            optionSpecsRepository.deleteAll(optionSpecs);
-        });
-
-        optionRepository.deleteAll(optionGroup);
         itemRepository.delete(item);
     }
 
