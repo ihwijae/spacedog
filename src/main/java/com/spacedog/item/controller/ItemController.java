@@ -4,6 +4,10 @@ import com.spacedog.global.ApiResponse;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
 import com.spacedog.item.service.ItemService;
+import com.spacedog.member.domain.Member;
+import com.spacedog.member.exception.MemberException;
+import com.spacedog.member.service.MemberService;
+import com.spacedog.member.service.MemberValidate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +24,18 @@ public class ItemController {
 
 
     private final ItemService itemService;
+    private final MemberService memberService;
+    private final MemberValidate memberValidate;
 
 
     // 상품 등록
     @PostMapping("/items")
     public String itemCreate(@RequestBody CreateItemRequest createItemRequest) {
-        Long id = itemService.createItem(createItemRequest);
 
+        Member member = memberService.getMember();
+        validateMember(member);
+
+        Long id = itemService.createItem(createItemRequest, member);
         return id + "아이템 저장 완료";
     }
 
@@ -52,7 +61,10 @@ public class ItemController {
     // 상품 수정
     @PatchMapping("/items")
     public ApiResponse<String> itemEdit(@RequestParam Long id, @RequestBody ItemEditRequest itemEditRequest) {
-        itemService.itemEdit(id, itemEditRequest);
+        Member member = memberService.getMember();
+        validateMember(member);
+
+        itemService.itemEdit(id, itemEditRequest, member);
         return ApiResponse.success(null, "수정 완료");
     }
 
@@ -66,8 +78,20 @@ public class ItemController {
     // 상품 삭제
     @DeleteMapping("/items/{itemId}")
     public ApiResponse<String> itemDelete(@PathVariable Long itemId) {
-        itemService.itemDelete(itemId);
+        Member member = memberService.getMember();
+        validateMember(member);
+
+
+        itemService.itemDelete(itemId, member);
         return ApiResponse.success(null, "삭제 되었습니다.");
+    }
+
+
+    private void validateMember(Member member) {
+
+        if(member == null) {
+            throw new MemberException("유저 정보를 불러올 수 없습니다");
+        }
     }
 
 }

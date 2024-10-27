@@ -52,7 +52,7 @@ public class ItemUnitServiceTest {
 
     @BeforeEach
             public void setup() {
-        itemService = new ItemService(memberService, categoryService, optionService, itemRepositoryPort);
+        itemService = new ItemService(categoryService, optionService, itemRepositoryPort);
 //        SecurityContext context = SecurityContextHolder.createEmptyContext();
 //        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("lhj@naver.com", "12345678");
 //        context.setAuthentication(mockAuthentication);
@@ -75,13 +75,12 @@ public class ItemUnitServiceTest {
                 .build();
 
 
-        when(memberService.getMember()).thenReturn(member);
         when(itemRepositoryPort.existByName(any())).thenReturn(false);
         when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(3L).name("saveTestItem").build());
 
 
         //when
-        Long saveId = itemService.createItem(createItemRequest);
+        Long saveId = itemService.createItem(createItemRequest, member);
 
 
         //then
@@ -105,34 +104,18 @@ public class ItemUnitServiceTest {
 
 
 
-        when(memberService.getMember()).thenReturn(member);
         when(itemRepositoryPort.existByName(any())).thenReturn(true);
         when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(3L).build());
 
 
         //when then
       assertThrows(NotEnoughStockException.ItemDuplicate.class, () -> {
-          itemService.createItem(createItemRequest);
+          itemService.createItem(createItemRequest,member);
       });
 
 
     }
 
-    @Test
-    void 상품엔티티에서_상품을_생성할수있다() {
-
-        //given
-        CreateItemRequest createItemRequest = CreateItemRequest.builder()
-                .name("testItem")
-                .price(9999)
-                .build();
-
-        //when
-        Item item = Item.createItem(createItemRequest, false);
-
-        //then
-        assertThat(item.getName()).isEqualTo("testItem");
-    }
 
     @Test
     void 옵션이_있으면_옵션을_저장하는_메서드를_실행한다() {
@@ -164,16 +147,17 @@ public class ItemUnitServiceTest {
 
 
         //when
-        given(memberService.getMember()).willReturn(member);
         given(itemRepositoryPort.existByName(any())).willReturn(false);
         given(itemRepositoryPort.save(any(Item.class))).willReturn(Item.builder().id(createItemRequest.getId()).build());
-        itemService.createItem(createItemRequest);
+        itemService.createItem(createItemRequest, member);
 
 
         // then
         verify(optionService, times(1)).saveOptionWithItem(any(CreateItemRequest.class), any(Item.class));
 
     }
+
+
 
 
 

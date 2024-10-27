@@ -28,7 +28,6 @@ import static com.spacedog.item.exception.NotEnoughStockException.*;
 public class ItemService {
 
 
-    private final MemberService memberService;
     private final CategoryService categoryService;
     private final OptionService optionService;
     private final ItemRepositoryPort itemRepositoryPort;
@@ -36,9 +35,7 @@ public class ItemService {
 
 
     @Transactional
-    public Long createItem(CreateItemRequest createItemRequest) {
-        Member member = memberService.getMember();
-        validateMember(member);
+    public Long createItem(CreateItemRequest createItemRequest, Member member) {
 
         boolean exist = itemRepositoryPort.existByName(createItemRequest.getName());
         Item item = Item.createItem(createItemRequest, exist);
@@ -151,10 +148,8 @@ public class ItemService {
 
     // 상품 수정
     @Transactional
-    public void itemEdit (Long id, ItemEditRequest request) {
-        Member member = memberService.getMember();
+    public void itemEdit (Long id, ItemEditRequest request, Member member) {
 
-        validateMember(member);
 
         if (itemRepositoryPort.findByName(request.getName()).isPresent()) {
             throw new ItemDuplicate("중복된 상품 이름 입니다");
@@ -162,6 +157,7 @@ public class ItemService {
 
         Item findItem = itemRepositoryPort.findById(id)
                 .orElseThrow(() -> new ItemNotFound("해당 상품이 존재하지 않습니다"));
+
 
         if (!findItem.getMemberId().equals(member.getId())) {
             throw new MemberException("상품을 등록한 사용자가 아닙니다");
@@ -207,9 +203,9 @@ public class ItemService {
 
 
     @Transactional
-    public void itemDelete (Long itemId) {
+    public void itemDelete (Long itemId, Member member) {
 
-        Member member = memberService.getMember();
+
 
         Item item = itemRepositoryPort.findById(itemId)
                 .orElseThrow(() -> new ItemNotFound("아이템을 찾을 수 없습니다"));
@@ -241,7 +237,6 @@ public class ItemService {
         if(member == null) {
             throw new MemberException("유저 정보를 불러올 수 없습니다");
         }
-
     }
 
 
