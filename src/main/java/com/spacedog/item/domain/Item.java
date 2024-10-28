@@ -45,6 +45,8 @@ public class Item extends BaseTimeEntity {
 //    @Convert(converter = MoneyConverter.class)
     private int price;
 
+    @Column(name = "stock_quantity")
+    private int stockQuantity;
 
 
     @OneToMany(mappedBy = "item")
@@ -53,13 +55,14 @@ public class Item extends BaseTimeEntity {
 
 
     @Builder
-    public Item(Long id, String name, String description, Long memberId, int price, CategoryItem category) {
+    public Item(Long id, String name, String description, Long memberId, int price, CategoryItem category, int stockQuantity) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.memberId = memberId;
         this.price = price;
         this.category.add(category);
+        this.stockQuantity = stockQuantity;
     }
 
     public Item() {

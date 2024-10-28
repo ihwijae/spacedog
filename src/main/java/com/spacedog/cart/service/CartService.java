@@ -41,7 +41,7 @@ public class CartService {
 
         log.info("request ={}", request.toString());
 
-        //카테고리 아이템 등록을 위한 item 엔티티 select
+        //cart 아이템 등록을 위한 item 엔티티 select
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("item not found"));
 
@@ -50,7 +50,8 @@ public class CartService {
 
         // 상품에 옵션이 있는 경우 장바구니 담기 요청
         if(request.getOptionSpecsIds() != null && !request.getOptionSpecsIds().isEmpty()) {
-           if(queryRepository.existByItemWithOptions(request.getItemId(), request.getOptionSpecsIds())) {
+           // 이미 장바구니에 있는 상품과 동일한 옵션이면 수량만 추가
+            if(queryRepository.existByItemWithOptions(request.getItemId(), request.getOptionSpecsIds())) {
                cartItem = queryRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
                        .orElseThrow(() -> new CartException("장바구니 아이템과 옵션을 불러올 수 없습니다"));
                cartItem.addQuantity(request.getQuantity());
@@ -67,6 +68,7 @@ public class CartService {
 
         // 옵션이 없는 상품을 장바구니 담기 요청
         else {
+            // 이미 장바구니에 있는 상품이면 수량 추가
             if(queryRepository.existByItem(request.getItemId())) {
                 cartItem = queryRepository.findCartItemsWithNotOptions(request.getItemId())
                         .orElseThrow(() -> new CartException("장바구니 아이템을 불러올 수 없습니다"));

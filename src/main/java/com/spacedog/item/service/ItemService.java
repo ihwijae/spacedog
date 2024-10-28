@@ -4,14 +4,12 @@ package com.spacedog.item.service;
 
 import com.spacedog.category.service.CategoryService;
 import com.spacedog.item.domain.Item;
-import com.spacedog.item.domain.ItemOptionGroupSpecification;
-import com.spacedog.item.domain.ItemOptionSpecification;
+
 import com.spacedog.item.dto.*;
 
 import com.spacedog.item.repository.*;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.exception.MemberException;
-import com.spacedog.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,7 +37,6 @@ public class ItemService {
 
         boolean exist = itemRepositoryPort.existByName(createItemRequest.getName());
         Item item = Item.createItem(createItemRequest, exist);
-
 
 
         item.addMember(member);

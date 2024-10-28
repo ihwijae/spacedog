@@ -1,6 +1,12 @@
 package com.spacedog.item.service;
 
 import com.spacedog.cart.repository.CartRepository;
+import com.spacedog.category.domain.Category;
+import com.spacedog.category.exception.CategoryNotFoundException;
+import com.spacedog.category.exception.CategoryNotFoundException.CategoryOfNot;
+import com.spacedog.category.repository.CategoryItemRepository;
+import com.spacedog.category.repository.CategoryQueryRepository;
+import com.spacedog.category.repository.CategoryRepository;
 import com.spacedog.category.service.CategoryService;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
@@ -11,6 +17,7 @@ import com.spacedog.member.domain.Member;
 import com.spacedog.member.repository.MemberRepository;
 import com.spacedog.member.service.MemberService;
 import com.spacedog.member.service.MemberValidate;
+import jakarta.persistence.CollectionTable;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +37,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
@@ -45,18 +53,25 @@ import static org.mockito.Mockito.*;
 public class ItemUnitServiceTest {
 
     private ItemRepositoryPort itemRepositoryPort = mock(ItemRepositoryPort.class);
-    private MemberService memberService = mock(MemberService.class);
-    private CategoryService categoryService = mock(CategoryService.class);
     private OptionService optionService = mock(OptionService.class);
     private ItemService itemService;
 
+
+    private CategoryRepository categoryRepository = mock(CategoryRepository.class);
+    private CategoryItemRepository categoryItemRepository = mock(CategoryItemRepository.class);
+    private CategoryQueryRepository categoryQueryRepository = mock(CategoryQueryRepository.class);
+    private CategoryService categoryService;
+
+
     @BeforeEach
             public void setup() {
+        categoryService = new CategoryService(categoryRepository,categoryQueryRepository, categoryItemRepository);
         itemService = new ItemService(categoryService, optionService, itemRepositoryPort);
 //        SecurityContext context = SecurityContextHolder.createEmptyContext();
 //        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("lhj@naver.com", "12345678");
 //        context.setAuthentication(mockAuthentication);
 //        SecurityContextHolder.setContext(context);
+
     }
 
     @Test
@@ -72,11 +87,15 @@ public class ItemUnitServiceTest {
                 .id(3L)
                 .name("testItem")
                 .price(9999)
+                .categoryIds(List.of(1L, 2L))
                 .build();
 
 
         when(itemRepositoryPort.existByName(any())).thenReturn(false);
-        when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(3L).name("saveTestItem").build());
+        when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(createItemRequest.getId()).name("saveTestItem").build());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(Category.builder().name("testCategory").build()));
+
+
 
 
         //when
@@ -85,6 +104,33 @@ public class ItemUnitServiceTest {
 
         //then
         assertThat(saveId).isEqualTo(3L);
+
+    }
+
+    @Test
+    void 상품을등록할때_카테고리가_없으면_예외가발생한다 () {
+        //given
+        Member member = Member.builder()
+                .email("test@email.com")
+                .id(1L)
+                .build();
+
+        CreateItemRequest createItemRequest = CreateItemRequest.builder()
+                .id(3L)
+                .name("testItem")
+                .price(9999)
+                .categoryIds(Collections.emptyList())
+                .build();
+
+
+        when(itemRepositoryPort.existByName(any())).thenReturn(false);
+        when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(3L).name("saveTestItem").build());
+
+
+        //when then
+        assertThrows(CategoryOfNot.class, () -> {
+            itemService.createItem(createItemRequest, member);
+        });
     }
 
     @Test
@@ -143,12 +189,15 @@ public class ItemUnitServiceTest {
                 .name("testItem")
                 .price(9999)
                 .optionGroups(List.of(testOptionGroup))
+                .categoryIds(List.of(1L, 2L))
                 .build();
 
 
         //when
         given(itemRepositoryPort.existByName(any())).willReturn(false);
         given(itemRepositoryPort.save(any(Item.class))).willReturn(Item.builder().id(createItemRequest.getId()).build());
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(Category.builder().name("testCategory").build()));
+
         itemService.createItem(createItemRequest, member);
 
 
@@ -161,48 +210,9 @@ public class ItemUnitServiceTest {
 
 
 
-//
-//
-//    @Test
-//    @DisplayName("아이템 생성")
-//    void createItem() {
-//
-//        //given
-//        Member mockMember = Member.builder()
-//                .id(1L)
-//                .name("testMember")
-//                .email("test@example.com")
-//                .build();
-//
-//        // SecurityContext 설정
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(mockMember.getEmail(), null);
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        when(memberService.getMember()).thenReturn(mockMember);
-//        when(memberRepository.findByEmail(mockMember.getEmail())).thenReturn(Optional.of(mockMember));
-//
-//        Item mockItem = Item.builder()
-//                .id(1L)
-//                .name("testItem")
-//                .build();
-//
-//         when(itemRepository.save(any(Item.class))).thenReturn(mockItem);
-//
-//        CreateItemRequest testItemRequest = CreateItemRequest.builder()
-//                .name("testItem")
-//                .description("testDescription")
-//                .price(9999)
-//                .build();
-//
-//        Long itemId = itemService.createItem(testItemRequest);
-//
-//
-//
-//        Assertions.assertThat(itemId).isEqualTo(1L);
-////        verify(memberService).getMember();
-////        verify(itemRepository).save(ArgumentMatchers.any(Item.class));
-//
-//
-//    }
+
+
+
 
 
 

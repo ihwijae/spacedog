@@ -5,6 +5,7 @@ import com.spacedog.category.domain.CategoryItem;
 import com.spacedog.category.dto.CategoryDto;
 import com.spacedog.category.dto.CategoryWithItemResponse;
 import com.spacedog.category.exception.CategoryNotFoundException;
+import com.spacedog.category.exception.CategoryNotFoundException.CategoryOfNot;
 import com.spacedog.category.repository.CategoryItemRepository;
 import com.spacedog.category.repository.CategoryQueryRepository;
 import com.spacedog.category.repository.CategoryRepository;
@@ -53,15 +54,28 @@ public class CategoryService {
     public void saveCategoryItem(CreateItemRequest createItemRequest, Item item) {
         List<Long> categoryIds = createItemRequest.getCategoryIds();
 
-        categoryIds.forEach(c -> {
+        if(categoryIds.isEmpty()) {
+            throw new CategoryOfNot("카테고리가 없으면 등록할 수 없습니다");
+        }
+
+                categoryIds.forEach(c -> {
             Category findCategory = categoryRepository.findById(c)
                     .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다"));
 
-            CategoryItem categoryItem = CategoryItem.createCategoryItem(findCategory, item);
-            categoryItemRepository.save(categoryItem);
-
+                    CategoryItem categoryItem = CategoryItem.createCategoryItem(findCategory, item);
+                   categoryItemRepository.save(categoryItem);
         });
 
+        //        CategoryItem categoryItem = new CategoryItem();
+//
+//        for(Long categoryId : categoryIds) {
+//            Category findCategory = categoryRepository.findById(categoryId)
+//                    .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다"));
+//
+//            CategoryItem result = CategoryItem.createCategoryItem(findCategory, item);
+//            categoryItem = categoryItemRepository.save(result);
+//        }
+//            return categoryItem.getId();
     }
 
     @Transactional
