@@ -1,22 +1,31 @@
 package com.spacedog.cart.repository;
 
+
 import com.spacedog.cart.domain.CartItem;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.spacedog.cart.dto.CartOptionResponse;
+import com.spacedog.cart.dto.ItemCartResponse;
+import com.spacedog.item.domain.Item;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+public interface CartItemRepository {
 
-    boolean existsByItemId(Long itemId);
+    public CartItem save(CartItem cartItem);
+    public Optional<CartItem> findCartItems(Long itemId, List<Long> optionSpecsIds);
+    public Optional<CartItem> findCartItemsWithNotOptions(Long itemId);
+    public Boolean existByItemWithOptions(Long itemId, List<Long> optionSpecsIds);
+    public Boolean existByItem(Long itemId);
+    public Map<Long, List<Item>> findItemMap(List<Long> itemIds);
+    public List<ItemCartResponse> findItemCartDetail(Long cartId);
+    public Map<Long, List<CartOptionResponse>> findCartSelectOptionMap(List<Long> cartItemIds);
+    public Map<Long, List<String>> findCartOptionName(List<Long> cartItemIds);
+    public List<CartOptionResponse> findOptionAll(List<Long> itemIds);
+    public List<Long> toCartItemIds(List<ItemCartResponse> result);
+    public Optional<CartItem> findById(Long id);
 
-//    List<CartItem> findByItemIdAndOptionSpecsIds(Long itemId, List<Long> optionSpecsIds);
 
-//    @Query("select c from CartItem c join c.optionSpecsIds os where c.itemId = :itemId AND os in :optionSpecsIds")
-//    Optional<CartItem> findByItemIdAndOptionSpecsIds(@Param("itemId") Long itemId, @Param("optionSpecsIds") List<Long> optionSpecsIds);
 
-        @Query("select c from CartItem c join c.optionSpecsIds os where c.itemId = :itemId AND os in :optionSpecsIds")
-    boolean existsByItemIdAndOptionSpecsIds(@Param("itemId") Long itemId, @Param("optionSpecsIds") List<Long> optionSpecsIds);
+
 }

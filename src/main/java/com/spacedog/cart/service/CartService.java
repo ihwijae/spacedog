@@ -3,15 +3,10 @@ package com.spacedog.cart.service;
 import com.spacedog.cart.domain.CartItem;
 import com.spacedog.cart.dto.*;
 import com.spacedog.cart.exception.CartException;
-import com.spacedog.cart.repository.CartItemQueryRepository;
 import com.spacedog.cart.repository.CartItemRepository;
-import com.spacedog.cart.repository.CartRepository;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.exception.NotEnoughStockException;
-import com.spacedog.item.repository.ItemRepository;
-import com.spacedog.item.repository.OptionSpecsRepository;
-import com.spacedog.member.domain.Member;
-import com.spacedog.member.service.MemberService;
+import com.spacedog.item.repository.ItemJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,37 +22,35 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CartService {
 
-    private final ItemRepository itemRepository;
-    private final MemberService memberService;
+    private final ItemJpaRepository itemJpaRepository;
     private final CartItemRepository cartItemRepository;
-    private final CartItemQueryRepository queryRepository;
-    private final OptionSpecsRepository optionSpecsRepository;
 
 
     @Transactional
     public Long cartAddItems(CartAddRequest request) {
 
-        Member member = memberService.getMember();
 
         log.info("request ={}", request.toString());
 
+
         //cart 아이템 등록을 위한 item 엔티티 select
-        Item item = itemRepository.findById(request.getItemId())
+        Item item = itemJpaRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("item not found"));
 
         CartItem cartItem;
 
-
         // 상품에 옵션이 있는 경우 장바구니 담기 요청
         if(request.getOptionSpecsIds() != null && !request.getOptionSpecsIds().isEmpty()) {
            // 이미 장바구니에 있는 상품과 동일한 옵션이면 수량만 추가
-            if(queryRepository.existByItemWithOptions(request.getItemId(), request.getOptionSpecsIds())) {
-               cartItem = queryRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
+            log.info("옵션존재");
+            if(cartItemRepository.existByItemWithOptions(request.getItemId(), request.getOptionSpecsIds())) {
+                log.info("중복 상품 존재함");
+               cartItem = cartItemRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
                        .orElseThrow(() -> new CartException("장바구니 아이템과 옵션을 불러올 수 없습니다"));
                cartItem.addQuantity(request.getQuantity());
            } else {
                // 없다면 새로 생성
-               log.info("중복 상품이 없으니 새로운 상품 담기");
+               log.info("장바구니 아이템 새로 생성");
                cartItem = CartItem.createItem(request, item);
                // 중복 옵션 저장믈 막기위한 코드
                request.getOptionSpecsIds().stream()
@@ -68,9 +61,10 @@ public class CartService {
 
         // 옵션이 없는 상품을 장바구니 담기 요청
         else {
+            log.info("옵션 xx");
             // 이미 장바구니에 있는 상품이면 수량 추가
-            if(queryRepository.existByItem(request.getItemId())) {
-                cartItem = queryRepository.findCartItemsWithNotOptions(request.getItemId())
+            if(cartItemRepository.existByItem(request.getItemId())) {
+                cartItem = cartItemRepository.findCartItemsWithNotOptions(request.getItemId())
                         .orElseThrow(() -> new CartException("장바구니 아이템을 불러올 수 없습니다"));
                 cartItem.addQuantity(request.getQuantity());
             } else {
@@ -95,11 +89,11 @@ public class CartService {
                 .build();
 
         // 루트 조회
-        List<ItemCartResponse> itemCartDetail = queryRepository.findItemCartDetail(cartId);
+        List<ItemCartResponse> itemCartDetail = cartItemRepository.findItemCartDetail(cartId);
 
 
         // 컬렉션 한번에 조회
-        Map<Long, List<CartOptionResponse>> cartOptionMap = queryRepository.findCartSelectOptionMap(queryRepository.toCartItemIds(itemCartDetail));
+        Map<Long, List<CartOptionResponse>> cartOptionMap = cartItemRepository.findCartSelectOptionMap(cartItemRepository.toCartItemIds(itemCartDetail));
         log.info("cartOptioMap = {}", cartOptionMap);
 //        Map<Long, List<String>> cartOptionNameMap = queryRepository.findCartOptionName(queryRepository.toCartItemIds(itemCartDetail));
 
@@ -107,9 +101,10 @@ public class CartService {
         List<Long> itemIds = itemCartDetail.stream()
                 .map(ItemCartResponse::getItemId)
                 .collect(Collectors.toList());
+        log.info("itemIds = {}", itemIds);
 
         // 아이템 정보를 한번에 조회
-        Map<Long, List<Item>> itemMap = queryRepository.findItemMap(itemIds);
+        Map<Long, List<Item>> itemMap = cartItemRepository.findItemMap(itemIds);
 
 
         // 루프를 돌면 컬렉션 추가 (추가 쿼리x)

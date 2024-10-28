@@ -32,6 +32,10 @@ import static org.hibernate.Hibernate.list;
 @RequiredArgsConstructor
 public class ItemQueryRepository {
 
+    /**
+     * 미사용
+     */
+
     private final JPAQueryFactory query;
 
 

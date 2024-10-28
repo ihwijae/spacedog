@@ -11,37 +11,21 @@ import com.spacedog.category.service.CategoryService;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
 import com.spacedog.item.exception.NotEnoughStockException;
-import com.spacedog.item.repository.ItemRepository;
+
 import com.spacedog.item.repository.ItemRepositoryPort;
 import com.spacedog.member.domain.Member;
-import com.spacedog.member.repository.MemberRepository;
-import com.spacedog.member.service.MemberService;
-import com.spacedog.member.service.MemberValidate;
-import jakarta.persistence.CollectionTable;
+
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.mockito.stubbing.OngoingStubbing;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.query.FluentQuery;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Function;
+
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

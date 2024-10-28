@@ -1,22 +1,17 @@
 package com.spacedog.item.service;
 
-import com.spacedog.category.domain.Category;
 import com.spacedog.category.service.CategoryService;
-import com.spacedog.generic.Money;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
-import com.spacedog.item.repository.ItemRepository;
+import com.spacedog.item.repository.ItemJpaRepository;
 import com.spacedog.item.repository.ItemRepositoryPort;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.repository.MemberRepository;
 import com.spacedog.member.service.MemberService;
-import com.spacedog.member.service.MemberSignUpRequest;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.TestingAuthenticationToken;
@@ -24,10 +19,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -40,7 +33,7 @@ class ItemServiceTest  {
     @Autowired
     private ItemService itemService;
     @Autowired
-    private ItemRepository itemRepository;
+    private ItemJpaRepository itemJpaRepository;
     @Autowired
     private ItemRepositoryPort itemRepositoryPort;
     @Autowired
@@ -112,7 +105,7 @@ class ItemServiceTest  {
 
         //when
         itemService.itemEdit(1L, itemEditRequest, member);
-        Item item = itemRepository.findById(1L).orElseThrow();
+        Item item = itemJpaRepository.findById(1L).orElseThrow();
 
         //then
         assertNotNull(item.getId());

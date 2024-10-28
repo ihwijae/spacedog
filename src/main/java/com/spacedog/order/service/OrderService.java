@@ -1,10 +1,8 @@
 package com.spacedog.order.service;
 
-import com.spacedog.generic.Money;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.exception.NotEnoughStockException;
-import com.spacedog.item.repository.ItemRepository;
-import com.spacedog.item.service.ItemService;
+import com.spacedog.item.repository.ItemJpaRepository;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.service.MemberService;
 import com.spacedog.order.domain.Order;
@@ -12,7 +10,6 @@ import com.spacedog.order.domain.OrderItems;
 import com.spacedog.order.repository.OrderItemRepository;
 import com.spacedog.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class OrderService {
 
     private final MemberService memberService;
-    private final ItemRepository itemRepository;
+    private final ItemJpaRepository itemJpaRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderRepository orderRepository;
 
@@ -37,7 +34,7 @@ public class OrderService {
 
         // 주문 상품 저장
         request.getOrderItemCreate().forEach(orderItemCreate -> {
-            Item item = itemRepository.findById(orderItemCreate.getItemId())
+            Item item = itemJpaRepository.findById(orderItemCreate.getItemId())
                     .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("상품을 찾을 수 없습니다"));
 
             OrderItems orderItem = OrderItems.createOrderItem(orderItemCreate.getItemId(), order, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount());

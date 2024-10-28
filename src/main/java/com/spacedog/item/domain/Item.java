@@ -78,6 +78,7 @@ public class Item extends BaseTimeEntity {
                 .name(createItemRequest.getName())
                 .description(createItemRequest.getDescription())
                 .price(createItemRequest.getPrice())
+                .stockQuantity(createItemRequest.getStockQuantity())
                 .build();
         return item;
     }

@@ -2,7 +2,6 @@ package com.spacedog.mock;
 
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
-import com.spacedog.item.repository.ItemRepository;
 import com.spacedog.item.repository.ItemRepositoryPort;
 
 import java.util.ArrayList;
