@@ -7,6 +7,7 @@ import com.spacedog.cart.repository.CartItemRepository;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.item.repository.ItemJpaRepository;
+import com.spacedog.item.repository.ItemRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CartService {
 
-    private final ItemJpaRepository itemJpaRepository;
+    private final ItemRepositoryPort itemRepository;
     private final CartItemRepository cartItemRepository;
 
 
@@ -34,7 +35,7 @@ public class CartService {
 
 
         //cart 아이템 등록을 위한 item 엔티티 select
-        Item item = itemJpaRepository.findById(request.getItemId())
+        Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("item not found"));
 
         CartItem cartItem;

@@ -5,6 +5,7 @@ import com.spacedog.cart.dto.CartAddRequest;
 import com.spacedog.cart.repository.CartItemRepository;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.repository.ItemJpaRepository;
+import com.spacedog.item.repository.ItemRepositoryPort;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -35,11 +36,11 @@ public class CartServiceUnitTest {
                 .optionSpecsIds(List.of(1L, 2L))
                 .build();
 
-        ItemJpaRepository itemJpaRepository = mock(ItemJpaRepository.class);
+        ItemRepositoryPort itemRepository = mock(ItemRepositoryPort.class);
         CartItemRepository cartItemRepository = mock(CartItemRepository.class);
-        cartService = new CartService(itemJpaRepository, cartItemRepository);
+        cartService = new CartService(itemRepository, cartItemRepository);
 
-        when(itemJpaRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(cartItemRepository.existByItemWithOptions(anyLong(), anyList())).thenReturn(false);
         when(cartItemRepository.save(any(CartItem.class))).thenReturn(CartItem.builder().id(1L).build());
 
@@ -68,11 +69,11 @@ public class CartServiceUnitTest {
                 .quantity(200)
                 .build();
 
-        ItemJpaRepository itemJpaRepository = mock(ItemJpaRepository.class);
+        ItemRepositoryPort itemRepository = mock(ItemRepositoryPort.class);
         CartItemRepository cartItemRepository = mock(CartItemRepository.class);
-        cartService = new CartService(itemJpaRepository, cartItemRepository);
+        cartService = new CartService(itemRepository, cartItemRepository);
 
-        when(itemJpaRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(cartItemRepository.existByItem(anyLong())).thenReturn(false);
         when(cartItemRepository.save(any(CartItem.class))).thenReturn(CartItem.builder().id(1L).build());
 
