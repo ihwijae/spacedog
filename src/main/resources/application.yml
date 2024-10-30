@@ -34,3 +34,6 @@ Logging:
 jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 
+
+file-dir: /Users/ihwijae/projects/spedok/file
+

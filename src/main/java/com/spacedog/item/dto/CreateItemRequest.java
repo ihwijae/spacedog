@@ -36,6 +36,7 @@ public class CreateItemRequest {
     private List<Long> categoryIds;
 
 
+
     @NotBlank(message = "상품의 옵션을 입력하세요")
     private List<OptionGroupRequest> optionGroups;
 

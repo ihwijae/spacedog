@@ -50,8 +50,12 @@ public class ItemController {
     }
 
 
-
-    // 상품 검색
+    /** 상품 검색 @RequestBody는 쿼리스트링으로 온 데이터를 변환이 불가능하기 때문에
+     * @ModelAttribute 사용해서 쿼리스트링을 객체로 변환한 후 넘긴다.
+     * @ReuqestParam String searchName
+     * @RequestParam String searchContent
+     * 이렇게 받는것과 결과적으로 동일하다.
+     */
     @GetMapping("/items/search")
     public List<SearchItemResponse> searchItems(@ModelAttribute SearchItemRequest searchItemRequest) {
         return itemService.searchItem(searchItemRequest);
