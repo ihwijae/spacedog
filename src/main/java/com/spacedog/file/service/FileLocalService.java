@@ -4,6 +4,7 @@ import com.spacedog.file.domain.FileData;
 import com.spacedog.file.ex.FileException;
 import com.spacedog.file.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileLocalService implements FileService {
 
     private final FileRepository fileRepository;
@@ -27,6 +29,7 @@ public class FileLocalService implements FileService {
 
     @Override
     public String getFullPath(String fileName) {
+        log.info("fileDir: {}", fileDir);
         return fileDir + fileName;
     }
 
@@ -51,9 +54,11 @@ public class FileLocalService implements FileService {
 
         // 사용자가 업로드한 파일명
         String originalFilename = multipartFile.getOriginalFilename();
+        log.info("originalFilename: {}", originalFilename);
 
         // 서버에 저장할 이름
         String storeFileName = createStoreFileName(originalFilename);
+        log.info("storeFileName: {}", storeFileName);
 
         try {
             multipartFile.transferTo(new File(getFullPath(storeFileName)));

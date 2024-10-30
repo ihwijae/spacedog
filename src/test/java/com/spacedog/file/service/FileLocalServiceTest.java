@@ -10,12 +10,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Transactional
 class FileLocalServiceTest {
 
 
@@ -28,7 +30,7 @@ class FileLocalServiceTest {
     @BeforeEach
     void init () {
         fileLocalService = new FileLocalService(fileRepository);
-
+        ReflectionTestUtils.setField(fileLocalService, "fileDir", "/Users/ihwijae/projects/spedok/file/"); //@Value에 넣을수있음
     }
 
     @Test
@@ -36,7 +38,7 @@ class FileLocalServiceTest {
 
         //given
         String fileName = "test.png";
-        ReflectionTestUtils.setField(fileLocalService, "fileDir", "/Users/ihwijae/projects/spedok/file/"); //@Value에 넣을수있음
+
 
         //when
         String fullPath = fileLocalService.getFullPath(fileName);
