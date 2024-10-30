@@ -1,8 +1,6 @@
 package com.spacedog.item.service;
 
-import com.spacedog.cart.repository.CartRepository;
 import com.spacedog.category.domain.Category;
-import com.spacedog.category.exception.CategoryNotFoundException;
 import com.spacedog.category.exception.CategoryNotFoundException.CategoryOfNot;
 import com.spacedog.category.repository.CategoryItemRepository;
 import com.spacedog.category.repository.CategoryQueryRepository;
@@ -15,7 +13,6 @@ import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.item.repository.ItemRepositoryPort;
 import com.spacedog.member.domain.Member;
 
-import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.BeforeEach;
 
@@ -33,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@Slf4j
+
 public class ItemUnitServiceTest {
 
     private ItemRepositoryPort itemRepositoryPort = mock(ItemRepositoryPort.class);
@@ -72,6 +69,7 @@ public class ItemUnitServiceTest {
                 .name("testItem")
                 .price(9999)
                 .categoryIds(List.of(1L, 2L))
+                .stockQuantity(300)
                 .build();
 
 
@@ -104,6 +102,7 @@ public class ItemUnitServiceTest {
                 .name("testItem")
                 .price(9999)
                 .categoryIds(Collections.emptyList())
+                .stockQuantity(300)
                 .build();
 
 
@@ -130,6 +129,7 @@ public class ItemUnitServiceTest {
                 .id(3L)
                 .name("testItem")
                 .price(9999)
+                .stockQuantity(300)
                 .build();
 
 
@@ -174,6 +174,7 @@ public class ItemUnitServiceTest {
                 .price(9999)
                 .optionGroups(List.of(testOptionGroup))
                 .categoryIds(List.of(1L, 2L))
+                .stockQuantity(200)
                 .build();
 
 

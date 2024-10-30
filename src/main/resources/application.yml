@@ -35,5 +35,6 @@ jwt:
   secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
 
 
-file-dir: /Users/ihwijae/projects/spedok/file
+file:
+  dir: /Users/ihwijae/projects/spedok/file
 
