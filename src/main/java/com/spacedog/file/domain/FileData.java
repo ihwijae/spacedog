@@ -19,14 +19,17 @@ public class FileData {
 
     private String storeFileName; // 서버에 저장되는 파일명
 
+    private String filePath;
+
 
 
 
     @Builder
-    public FileData(Long id, String uploadFilename, String storeFilename) {
+    public FileData(Long id, String uploadFilename, String storeFilename, String filePath) {
         this.id = id;
         this.uploadFileName = uploadFilename;
         this.storeFileName = storeFilename;
+        this.filePath = filePath;
     }
 
     public FileData() {

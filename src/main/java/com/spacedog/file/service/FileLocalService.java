@@ -69,11 +69,17 @@ public class FileLocalService implements FileService {
         FileData fileData = FileData.builder()
                 .uploadFilename(originalFilename)
                 .storeFilename(storeFileName)
+                .filePath(getFullPath(storeFileName))
                 .build();
 
         return fileRepository.save(fileData);
 
 
+    }
+
+    @Override
+    public FileData getFile(Long id) {
+        return fileRepository.findById(id).orElseThrow();
     }
 
     /** 서버에 저장할 이름 추출 **/

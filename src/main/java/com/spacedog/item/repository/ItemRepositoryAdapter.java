@@ -7,6 +7,8 @@ import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.QItem;
 import com.spacedog.item.dto.*;
+import com.spacedog.option.domain.QOptionGroupSpecification;
+import com.spacedog.option.domain.QOptionSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -19,9 +21,9 @@ import java.util.Optional;
 import static com.spacedog.category.domain.QCategory.category;
 import static com.spacedog.category.domain.QCategoryItem.categoryItem;
 import static com.spacedog.item.domain.QItem.item;
-import static com.spacedog.item.domain.QItemOptionGroupSpecification.itemOptionGroupSpecification;
-import static com.spacedog.item.domain.QItemOptionSpecification.itemOptionSpecification;
 import static com.spacedog.member.domain.QMember.member;
+import static com.spacedog.option.domain.QOptionGroupSpecification.optionGroupSpecification;
+import static com.spacedog.option.domain.QOptionSpecification.optionSpecification;
 
 @Repository
 @RequiredArgsConstructor
@@ -131,20 +133,34 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
         return Optional.ofNullable(item);
     }
 
+//    @Override
+//    public List<ItemDetailResponse> itemDetail(Long itemId) {
+//        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
+//        itemDetail.forEach(
+//                itemDetailResponse -> {
+//                    List<OptionGroupResponse> optionGroup = findOptionGroup(itemId);
+//                    List<CategoryResponse> categoryResponses = findCategory(itemId);
+//                    itemDetailResponse.setCategory(categoryResponses);
+//                    itemDetailResponse.setOptionGroup(optionGroup);
+//
+//                    optionGroup.forEach(optionGroupResponse -> {
+//                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs(optionGroupResponse.getId());
+//                        optionGroupResponse.setOptionSpecs(optionSpecs);
+//                    });
+//                }
+//        );
+//        return itemDetail;
+//    }
+
     @Override
     public List<ItemDetailResponse> itemDetail(Long itemId) {
         List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
         itemDetail.forEach(
                 itemDetailResponse -> {
-                    List<OptionGroupResponse> optionGroup = findOptionGroup(itemId);
+                    List<OptionGroupResponse> optionGroupWithSpecs = findOptionGroupWithSpecs(itemId);
                     List<CategoryResponse> categoryResponses = findCategory(itemId);
                     itemDetailResponse.setCategory(categoryResponses);
-                    itemDetailResponse.setOptionGroup(optionGroup);
-
-                    optionGroup.forEach(optionGroupResponse -> {
-                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs(optionGroupResponse.getId());
-                        optionGroupResponse.setOptionSpecs(optionSpecs);
-                    });
+                    itemDetailResponse.setOptionGroup(optionGroupWithSpecs);
                 }
         );
         return itemDetail;
@@ -178,29 +194,60 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
                 .fetch();
     }
 
+
+
     private List<OptionGroupResponse> findOptionGroup(Long itemId) {
         return query
-                .selectDistinct(Projections.fields(OptionGroupResponse.class,
-                        itemOptionGroupSpecification.id,
-                        itemOptionGroupSpecification.name,
-                        itemOptionGroupSpecification.basic,
-                        itemOptionGroupSpecification.exclusive))
-                .from(itemOptionGroupSpecification)
-                .join(item).on(itemOptionGroupSpecification.item.id.eq(item.id))
-                .where(itemOptionGroupSpecification.item.id.eq(itemId))
+                .select(Projections.fields(OptionGroupResponse.class,
+                        optionGroupSpecification.id,
+                        optionGroupSpecification.name,
+                        optionGroupSpecification.basic,
+                        optionGroupSpecification.exclusive))
+                .from(optionGroupSpecification)
+                .join(item).on(optionGroupSpecification.item.id.eq(item.id))
+                .where(optionGroupSpecification.item.id.eq(itemId))
                 .fetch();
     }
 
+    private List<OptionGroupResponse> findOptionGroupWithSpecs(Long itemId) {
+        List<OptionGroupResponse> optionGroup = query
+                .select(Projections.fields(OptionGroupResponse.class,
+                        optionGroupSpecification.id,
+                        optionGroupSpecification.name,
+                        optionGroupSpecification.basic,
+                        optionGroupSpecification.exclusive))
+                .from(optionGroupSpecification)
+                .join(item).on(optionGroupSpecification.item.id.eq(item.id))
+                .where(optionGroupSpecification.item.id.eq(itemId))
+                .fetch();
+
+        optionGroup.forEach(
+                group -> {
+                    List<OptionSpecsResponse> optionSpecs = query
+                            .select(Projections.fields(OptionSpecsResponse.class,
+                                    optionSpecification.id,
+                                    optionSpecification.name,
+                                    optionSpecification.additionalPrice
+                            ))
+                            .from(optionSpecification)
+                            .where(optionSpecification.optionGroupSpecification.id.eq(group.getId()))
+                            .fetch();
+                    group.setOptionSpecs(optionSpecs);
+                });
+        return optionGroup;
+    }
+
+
     private List<OptionSpecsResponse> findOptionSpecs (Long optionGroupId) {
         return query
-                .selectDistinct(Projections.fields(OptionSpecsResponse.class,
-                        itemOptionSpecification.id,
-                        itemOptionSpecification.name,
-                        itemOptionSpecification.additionalPrice
+                .select(Projections.fields(OptionSpecsResponse.class,
+                        optionSpecification.id,
+                        optionSpecification.name,
+                        optionSpecification.additionalPrice
                 ))
-                .from(itemOptionSpecification)
-                .join(itemOptionGroupSpecification).on(itemOptionSpecification.optionGroupSpecification.id.eq(itemOptionGroupSpecification.id))
-                .where(itemOptionGroupSpecification.id.eq(optionGroupId))
+                .from(optionSpecification)
+                .join(optionGroupSpecification).on(optionSpecification.optionGroupSpecification.id.eq(optionGroupSpecification.id))
+                .where(optionGroupSpecification.id.eq(optionGroupId))
                 .fetch();
     }
 
@@ -220,6 +267,7 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
             return item.description.like("%" + searchContent + "%");
         }
         return null;
+
     }
 
 

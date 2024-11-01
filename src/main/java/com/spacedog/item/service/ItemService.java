@@ -10,6 +10,7 @@ import com.spacedog.item.dto.*;
 import com.spacedog.item.repository.*;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.exception.MemberException;
+import com.spacedog.option.service.OptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;

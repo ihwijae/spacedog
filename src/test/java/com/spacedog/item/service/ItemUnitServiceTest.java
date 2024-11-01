@@ -14,6 +14,7 @@ import com.spacedog.item.repository.ItemRepositoryPort;
 import com.spacedog.member.domain.Member;
 
 
+import com.spacedog.option.service.OptionService;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.Test;

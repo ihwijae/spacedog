@@ -1,24 +1,17 @@
-package com.spacedog.item.domain;
+package com.spacedog.option.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.EditOptionGroupRequest;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nonapi.io.github.classgraph.utils.LogNode;
-import org.hibernate.engine.internal.Cascade;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Table(name = "option_group_specs")
 @Slf4j
-public class ItemOptionGroupSpecification {
+public class OptionGroupSpecification {
 
 
     @Id
@@ -39,11 +32,11 @@ public class ItemOptionGroupSpecification {
 
 
 
-    public ItemOptionGroupSpecification() {
+    public OptionGroupSpecification() {
     }
 
     @Builder
-    public ItemOptionGroupSpecification(Long id, String name, boolean exclusive, boolean basic, Item item) {
+    public OptionGroupSpecification(Long id, String name, boolean exclusive, boolean basic, Item item) {
         this.id = id;
         this.name = name;
         this.exclusive = exclusive;

@@ -8,6 +8,8 @@ import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.QItem;
 import com.spacedog.item.dto.*;
+import com.spacedog.option.domain.QOptionGroupSpecification;
+import com.spacedog.option.domain.QOptionSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -23,9 +25,9 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.spacedog.category.domain.QCategory.category;
 import static com.spacedog.category.domain.QCategoryItem.categoryItem;
 import static com.spacedog.item.domain.QItem.item;
-import static com.spacedog.item.domain.QItemOptionGroupSpecification.itemOptionGroupSpecification;
-import static com.spacedog.item.domain.QItemOptionSpecification.itemOptionSpecification;
 import static com.spacedog.member.domain.QMember.member;
+import static com.spacedog.option.domain.QOptionGroupSpecification.optionGroupSpecification;
+import static com.spacedog.option.domain.QOptionSpecification.optionSpecification;
 import static org.hibernate.Hibernate.list;
 
 @Repository
@@ -238,26 +240,26 @@ public class ItemQueryRepository {
     private List<OptionGroupResponse> findOptionGroup(Long itemId) {
         return query
                 .selectDistinct(Projections.fields(OptionGroupResponse.class,
-                        itemOptionGroupSpecification.id,
-                        itemOptionGroupSpecification.name,
-                        itemOptionGroupSpecification.basic,
-                        itemOptionGroupSpecification.exclusive))
-                .from(itemOptionGroupSpecification)
-                .join(item).on(itemOptionGroupSpecification.item.id.eq(item.id))
-                .where(itemOptionGroupSpecification.item.id.eq(itemId))
+                        optionGroupSpecification.id,
+                        optionGroupSpecification.name,
+                        optionGroupSpecification.basic,
+                        optionGroupSpecification.exclusive))
+                .from(optionGroupSpecification)
+                .join(item).on(optionGroupSpecification.item.id.eq(item.id))
+                .where(optionGroupSpecification.item.id.eq(itemId))
                 .fetch();
     }
 
     private List<OptionSpecsResponse> findOptionSpecs (Long optionGroupId) {
         return query
                 .selectDistinct(Projections.fields(OptionSpecsResponse.class,
-                        itemOptionSpecification.id,
-                        itemOptionSpecification.name,
-                        itemOptionSpecification.additionalPrice
+                        optionSpecification.id,
+                        optionSpecification.name,
+                        optionSpecification.additionalPrice
                         ))
-                .from(itemOptionSpecification)
-                .join(itemOptionGroupSpecification).on(itemOptionSpecification.optionGroupSpecification.id.eq(itemOptionGroupSpecification.id))
-                .where(itemOptionGroupSpecification.id.eq(optionGroupId))
+                .from(optionSpecification)
+                .join(optionGroupSpecification).on(optionSpecification.optionGroupSpecification.id.eq(optionGroupSpecification.id))
+                .where(optionGroupSpecification.id.eq(optionGroupId))
                 .fetch();
     }
 

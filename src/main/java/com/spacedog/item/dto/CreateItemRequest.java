@@ -1,8 +1,5 @@
 package com.spacedog.item.dto;
 
-import com.spacedog.category.domain.Category;
-import com.spacedog.generic.Money;
-import com.spacedog.item.domain.ItemOptionGroupSpecification;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

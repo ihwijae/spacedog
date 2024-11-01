@@ -12,7 +12,7 @@ public class CategoryWithItemResponse {
     private String name;
 
     private String description;
-    private Money price;
+    private int price;
     private int stockQuantity;
 
 
@@ -20,7 +20,7 @@ public class CategoryWithItemResponse {
     }
 
     @Builder
-    public CategoryWithItemResponse(String name, String description, Money price, int stockQuantity) {
+    public CategoryWithItemResponse(String name, String description, int price, int stockQuantity) {
         this.name = name;
         this.description = description;
         this.price = price;

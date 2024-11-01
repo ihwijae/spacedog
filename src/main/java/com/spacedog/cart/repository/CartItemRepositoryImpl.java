@@ -9,6 +9,8 @@ import com.spacedog.cart.domain.QCartItem;
 import com.spacedog.cart.dto.CartOptionResponse;
 import com.spacedog.cart.dto.ItemCartResponse;
 import com.spacedog.item.domain.Item;
+import com.spacedog.option.domain.QOptionGroupSpecification;
+import com.spacedog.option.domain.QOptionSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,8 +23,8 @@ import static com.spacedog.cart.domain.QCart.cart;
 import static com.spacedog.cart.domain.QCartItem.cartItem;
 import static com.spacedog.cart.domain.QCartOptionSpecs.cartOptionSpecs;
 import static com.spacedog.item.domain.QItem.item;
-import static com.spacedog.item.domain.QItemOptionGroupSpecification.itemOptionGroupSpecification;
-import static com.spacedog.item.domain.QItemOptionSpecification.itemOptionSpecification;
+import static com.spacedog.option.domain.QOptionGroupSpecification.optionGroupSpecification;
+import static com.spacedog.option.domain.QOptionSpecification.optionSpecification;
 
 @Repository
 @RequiredArgsConstructor
@@ -120,13 +122,12 @@ public class CartItemRepositoryImpl implements CartItemRepository {
     public Map<Long, List<CartOptionResponse>> findCartSelectOptionMap(List<Long> cartItemIds) {
         List<CartOptionResponse> cartOptions = queryFactory
                 .select(Projections.fields(CartOptionResponse.class,
-                        itemOptionSpecification.id,
-                        itemOptionSpecification.name,
-                        itemOptionSpecification.additionalPrice,
+                        optionSpecification.name,
+                        optionSpecification.additionalPrice,
                         cartOptionSpecs.cartItemId
                 ))
-                .from(itemOptionSpecification)
-                .join(cartOptionSpecs).on(itemOptionSpecification.id.eq(cartOptionSpecs.optionSpecsId))
+                .from(optionSpecification)
+                .join(cartOptionSpecs).on(optionSpecification.id.eq(cartOptionSpecs.optionSpecsId))
                 .where(cartOptionSpecs.cartItemId.in(cartItemIds))
                 .fetch();
 
@@ -139,16 +140,16 @@ public class CartItemRepositoryImpl implements CartItemRepository {
     @Override
     public Map<Long, List<String>> findCartOptionName(List<Long> cartItemIds) {
         List<Tuple> cartOptionNames = queryFactory
-                .select(itemOptionSpecification.name, cartOptionSpecs.cartItemId)
-                .from(itemOptionSpecification)
-                .join(cartOptionSpecs).on(itemOptionSpecification.id.eq(cartOptionSpecs.optionSpecsId))
+                .select(optionSpecification.name, cartOptionSpecs.cartItemId)
+                .from(optionSpecification)
+                .join(cartOptionSpecs).on(optionSpecification.id.eq(cartOptionSpecs.optionSpecsId))
                 .where(cartOptionSpecs.cartItemId.in(cartItemIds))
                 .fetch();
 
         Map<Long, List<String>> result = cartOptionNames.stream()
                 .collect(Collectors.groupingBy(tuple -> tuple.get(cartOptionSpecs.cartItemId),
                         Collectors.mapping(
-                                tuple -> tuple.get(itemOptionSpecification.name),
+                                tuple -> tuple.get(optionSpecification.name),
                                 Collectors.toList()
                         )
                 ));
@@ -160,13 +161,13 @@ public class CartItemRepositoryImpl implements CartItemRepository {
     public List<CartOptionResponse> findOptionAll(List<Long> itemIds) {
         return queryFactory
                 .select(Projections.fields(CartOptionResponse.class,
-                        itemOptionSpecification.id,
-                        itemOptionSpecification.name,
-                        itemOptionSpecification.additionalPrice
+                        optionSpecification.id,
+                        optionSpecification.name,
+                        optionSpecification.additionalPrice
                 ))
-                .from(itemOptionSpecification)
-                .join(itemOptionGroupSpecification).on(itemOptionSpecification.optionGroupSpecification.id.eq(itemOptionGroupSpecification.id))
-                .join(item).on(itemOptionGroupSpecification.item.id.eq(item.id))
+                .from(optionSpecification)
+                .join(optionGroupSpecification).on(optionSpecification.optionGroupSpecification.id.eq(optionGroupSpecification.id))
+                .join(item).on(optionGroupSpecification.item.id.eq(item.id))
                 .where(item.id.in(itemIds))
                 .fetch();
     }

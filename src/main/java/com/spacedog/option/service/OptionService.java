@@ -1,12 +1,12 @@
-package com.spacedog.item.service;
+package com.spacedog.option.service;
 
 import com.spacedog.item.domain.Item;
-import com.spacedog.item.domain.ItemOptionGroupSpecification;
-import com.spacedog.item.domain.ItemOptionSpecification;
+import com.spacedog.option.domain.OptionGroupSpecification;
+import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.item.dto.CreateItemRequest;
 import com.spacedog.item.dto.ItemEditRequest;
-import com.spacedog.item.repository.OptionRepository;
-import com.spacedog.item.repository.OptionSpecsRepository;
+import com.spacedog.option.repository.OptionRepository;
+import com.spacedog.option.repository.OptionSpecsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ public class OptionService {
 
         createItemRequest.getOptionGroups().stream()
                 .map(optionGroupRequest -> {
-                    ItemOptionGroupSpecification itemOptionGroup = ItemOptionGroupSpecification.builder()
+                    OptionGroupSpecification itemOptionGroup = OptionGroupSpecification.builder()
                             .name(optionGroupRequest.getName())
                             .exclusive(optionGroupRequest.isExclusive())
                             .basic(optionGroupRequest.isBasic())
@@ -35,12 +35,12 @@ public class OptionService {
                             .build();
 
                     //옵션 그룹 저장
-                    ItemOptionGroupSpecification saveItemOption = optionRepository.save(itemOptionGroup);
+                    OptionGroupSpecification saveItemOption = optionRepository.save(itemOptionGroup);
 
                     //옵션 사양 추가
                     optionGroupRequest.getOptionSpecsRequest()
                             .forEach(optionSpecsRequest -> {
-                                ItemOptionSpecification itemOptionSpecs = ItemOptionSpecification.builder()
+                                OptionSpecification itemOptionSpecs = OptionSpecification.builder()
                                         .name(optionSpecsRequest.getName())
                                         .additionalPrice(optionSpecsRequest.getPrice())
                                         .optionGroupSpecification(saveItemOption)
@@ -75,11 +75,11 @@ public class OptionService {
     @Transactional
     public void deleteOptionWithItem(Long itemId) {
 
-        List<ItemOptionGroupSpecification> optionGroup = optionRepository.findByItemId(itemId);
+        List<OptionGroupSpecification> optionGroup = optionRepository.findByItemId(itemId);
 
         optionGroup
                 .forEach(o -> {
-                    List<ItemOptionSpecification> optionSpecs = optionSpecsRepository.findByOptionGroupSpecification_Id(o.getId());
+                    List<OptionSpecification> optionSpecs = optionSpecsRepository.findByOptionGroupSpecification_Id(o.getId());
                     optionSpecsRepository.deleteAll(optionSpecs);
                 });
 
@@ -90,40 +90,40 @@ public class OptionService {
     public void editOptionWithItem(ItemEditRequest request, Item item) {
 
         // 기존 옵션 그룹을 가져와서
-        List<ItemOptionGroupSpecification> findOptionGroup = optionRepository.findByItemId(item.getId());
+        List<OptionGroupSpecification> findOptionGroup = optionRepository.findByItemId(item.getId());
 
         request.getItemOption()
                 .forEach(editOptionGroupRequest -> {
                     //존재하는 옵션그룹이면 업데이트, 아니면 추가
-                    ItemOptionGroupSpecification itemOptionGroupSpecification = findOptionGroup.stream()
+                    OptionGroupSpecification optionGroupSpecification = findOptionGroup.stream()
                             .filter(group -> group.getId().equals(editOptionGroupRequest.getId()))
                             .findFirst()
-                            .orElseGet(() -> ItemOptionGroupSpecification.builder()
+                            .orElseGet(() -> OptionGroupSpecification.builder()
                                     .name(editOptionGroupRequest.getName())
                                     .exclusive(editOptionGroupRequest.isExclusive())
                                     .basic(editOptionGroupRequest.isBasic())
                                     .item(item)
                                     .build());
 
-                    itemOptionGroupSpecification.update(editOptionGroupRequest);
-                    optionRepository.save(itemOptionGroupSpecification);
+                    optionGroupSpecification.update(editOptionGroupRequest);
+                    optionRepository.save(optionGroupSpecification);
 
                     //옵션 스펙 업데이트
                     editOptionGroupRequest.getOptionSpecsRequest()
                             .forEach(editOptionSpecsRequest -> {
-                                List<ItemOptionSpecification> optionSpecsList = optionSpecsRepository.findByOptionGroupSpecification_Id(itemOptionGroupSpecification.getId());
-                                ItemOptionSpecification itemOptionSpecification = optionSpecsList.stream()
+                                List<OptionSpecification> optionSpecsList = optionSpecsRepository.findByOptionGroupSpecification_Id(optionGroupSpecification.getId());
+                                OptionSpecification optionSpecification = optionSpecsList.stream()
                                         .filter(spec -> spec.getId().equals(editOptionSpecsRequest.getId()))
                                         .findFirst()
-                                        .orElseGet(() -> ItemOptionSpecification.builder()
+                                        .orElseGet(() -> OptionSpecification.builder()
                                                 .name(editOptionSpecsRequest.getName())
                                                 .additionalPrice(editOptionSpecsRequest.getPrice())
-                                                .optionGroupSpecification(itemOptionGroupSpecification)
+                                                .optionGroupSpecification(optionGroupSpecification)
                                                 .stockQuantity(editOptionSpecsRequest.getQuantity())
                                                 .build()
                                         );
-                                itemOptionSpecification.update(editOptionSpecsRequest, itemOptionGroupSpecification);
-                                optionSpecsRepository.save(itemOptionSpecification);
+                                optionSpecification.update(editOptionSpecsRequest, optionGroupSpecification);
+                                optionSpecsRepository.save(optionSpecification);
                             });
                 });
     }

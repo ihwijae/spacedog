@@ -1,7 +1,5 @@
-package com.spacedog.item.domain;
+package com.spacedog.option.domain;
 
-import com.spacedog.generic.Money;
-import com.spacedog.generic.MoneyConverter;
 import com.spacedog.item.dto.EditOptionSpecsRequest;
 import com.spacedog.item.exception.NotEnoughStockException;
 import jakarta.persistence.*;
@@ -16,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "option_specs")
-public class ItemOptionSpecification {
+public class OptionSpecification {
 
 
     @Id
@@ -36,11 +34,15 @@ public class ItemOptionSpecification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_spec_id")
-    private ItemOptionGroupSpecification optionGroupSpecification;
+    private OptionGroupSpecification optionGroupSpecification;
 
 
+    public void addOptionGroup () {
 
-    public void update (EditOptionSpecsRequest request, ItemOptionGroupSpecification optionGroupSpec) {
+    }
+
+
+    public void update (EditOptionSpecsRequest request, OptionGroupSpecification optionGroupSpec) {
         this.name = request.getName();
         this.additionalPrice = request.getPrice();
         this.optionGroupSpecification = optionGroupSpec;
