@@ -68,13 +68,14 @@ public class Item extends BaseTimeEntity {
     public Item() {
     }
 
-    public static Item createItem(CreateItemRequest createItemRequest, boolean exist) {
+    public static Item createItem(Long itemId, CreateItemRequest createItemRequest, boolean exist) {
 
         if(exist) {
             throw new ItemDuplicate("해당 상품이 이미 존재합니다.");
         }
 
         Item item = Item.builder()
+                .id(itemId)
                 .name(createItemRequest.getName())
                 .description(createItemRequest.getDescription())
                 .price(createItemRequest.getPrice())
@@ -82,6 +83,21 @@ public class Item extends BaseTimeEntity {
                 .build();
         return item;
     }
+
+    public void finalCreateItem(Long itemId, CreateItemRequest createItemRequest, boolean exist) {
+
+        if(exist) {
+            throw new ItemDuplicate("해당 상품이 이미 존재합니다.");
+        }
+
+        this.id = itemId;
+        this.name = createItemRequest.getName();
+        this.description = createItemRequest.getDescription();
+        this.price = createItemRequest.getPrice();
+        this.stockQuantity = createItemRequest.getStockQuantity();
+    }
+
+
 
 
 

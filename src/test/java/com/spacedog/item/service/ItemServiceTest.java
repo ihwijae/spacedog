@@ -83,7 +83,7 @@ class ItemServiceTest  {
 
 
         //when
-        Long resultId = itemService.createItem(itemRequest, member);
+        Long resultId = itemService.createItem(1L, itemRequest, member);
         Item findItem = itemRepositoryPort.findById(resultId).orElseThrow();
 
         //then

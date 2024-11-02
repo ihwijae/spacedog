@@ -55,7 +55,7 @@ class FileLocalServiceTest {
 
 
         //when
-        FileData fileData = fileLocalService.uploadFile(multipartFile);
+        FileData fileData = fileLocalService.uploadFile(1L, multipartFile);
 
         //then
         Assertions.assertThat(fileData).isNotNull();

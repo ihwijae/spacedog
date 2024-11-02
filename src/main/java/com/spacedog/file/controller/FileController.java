@@ -28,16 +28,17 @@ public class FileController {
 
     private final FileService fileService;
 
-    @PostMapping("/files")
-    public ApiResponse<List<Long>> uploadFile(@RequestPart List<MultipartFile> multipartFiles) {
+    @PostMapping("/files/{itemId}")
+    public ApiResponse<List<String>> uploadFile(@PathVariable Long itemId, @RequestPart List<MultipartFile> multipartFiles) {
         log.info("파일 업로드 컨트롤러");
-        List<FileData> fileData = fileService.uploadFiles(multipartFiles);
+        List<FileData> fileData = fileService.uploadFiles(itemId, multipartFiles);
 
-        List<Long> result = fileData.stream()
-                .map(f -> f.getId())
+
+        List<String> resultPath = fileData.stream()
+                .map(f -> f.getFilePath())
                 .collect(Collectors.toList());
 
-        return ApiResponse.success(result, "파일 업로드 완료");
+        return ApiResponse.success(resultPath, "파일 업로드 완료");
     }
 
 

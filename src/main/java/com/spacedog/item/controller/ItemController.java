@@ -9,6 +9,7 @@ import com.spacedog.member.exception.MemberException;
 import com.spacedog.member.service.MemberService;
 import com.spacedog.member.service.MemberValidate;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Slf4j
 public class ItemController {
 
 
@@ -28,14 +30,24 @@ public class ItemController {
     private final MemberValidate memberValidate;
 
 
-    // 상품 등록
+
+    //상품 등록과 동시에 임시 상품 반환
     @PostMapping("/items")
-    public String itemCreate(@RequestBody CreateItemRequest createItemRequest) {
+    public ApiResponse<Long> createTemporaryItem() {
+        Long temporaryItem = itemService.createTemporaryItem();
+        return ApiResponse.success(temporaryItem, "상품 임시 생성");
+    }
+
+
+    // 상품 등록
+    @PutMapping("/items/{itemId}")
+    public String itemCreate(@PathVariable Long itemId, @RequestBody CreateItemRequest createItemRequest) {
 
         Member member = memberService.getMember();
         validateMember(member);
+        log.info("요청 id ={}", itemId);
 
-        Long id = itemService.createItem(createItemRequest, member);
+        Long id = itemService.createItem(itemId, createItemRequest, member);
         return id + "아이템 저장 완료";
     }
 

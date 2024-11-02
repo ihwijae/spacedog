@@ -34,10 +34,21 @@ public class ItemService {
 
 
     @Transactional
-    public Long createItem(CreateItemRequest createItemRequest, Member member) {
+    public Long createTemporaryItem() {
+        Item item = itemRepositoryPort.save(new Item());
+        return item.getId();
+    }
+
+
+
+    @Transactional
+    public Long createItem(Long itemId, CreateItemRequest createItemRequest, Member member) {
 
         boolean exist = itemRepositoryPort.existByName(createItemRequest.getName());
-        Item item = Item.createItem(createItemRequest, exist);
+//        Item item = Item.createItem(itemId, createItemRequest, exist); -> 이건 새로생성하는거니까 수정해야함
+        Item item = itemRepositoryPort.findById(itemId)
+                .orElseThrow(() -> new ItemNotFound("상품을 찾을수 없습니다"));
+        item.finalCreateItem(itemId, createItemRequest, exist);
 
 
         item.addMember(member);

@@ -34,12 +34,12 @@ public class FileLocalService implements FileService {
     }
 
     @Override
-    public List<FileData> uploadFiles(List<MultipartFile> multipartFiles) {
+    public List<FileData> uploadFiles(Long itemId, List<MultipartFile> multipartFiles) {
         List<FileData> files = new ArrayList<>();
 
         multipartFiles.forEach(f -> {
             if(!multipartFiles.isEmpty()) {
-                FileData fileData = uploadFile(f);
+                FileData fileData = uploadFile(itemId, f);
                 files.add(fileData);
             }
         });
@@ -47,7 +47,7 @@ public class FileLocalService implements FileService {
     }
 
     @Override
-    public FileData uploadFile(MultipartFile multipartFile) {
+    public FileData uploadFile(Long itemId, MultipartFile multipartFile) {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -67,6 +67,7 @@ public class FileLocalService implements FileService {
         }
 
         FileData fileData = FileData.builder()
+                .id(itemId)
                 .uploadFilename(originalFilename)
                 .storeFilename(storeFileName)
                 .filePath(getFullPath(storeFileName))

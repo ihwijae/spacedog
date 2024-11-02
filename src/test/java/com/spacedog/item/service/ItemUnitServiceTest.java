@@ -82,7 +82,7 @@ public class ItemUnitServiceTest {
 
 
         //when
-        Long saveId = itemService.createItem(createItemRequest, member);
+        Long saveId = itemService.createItem(1L, createItemRequest, member);
 
 
         //then
@@ -113,7 +113,7 @@ public class ItemUnitServiceTest {
 
         //when then
         assertThrows(CategoryOfNot.class, () -> {
-            itemService.createItem(createItemRequest, member);
+            itemService.createItem(1L, createItemRequest, member);
         });
     }
 
@@ -141,7 +141,7 @@ public class ItemUnitServiceTest {
 
         //when then
       assertThrows(NotEnoughStockException.ItemDuplicate.class, () -> {
-          itemService.createItem(createItemRequest,member);
+          itemService.createItem(1L, createItemRequest,member);
       });
 
 
@@ -184,7 +184,7 @@ public class ItemUnitServiceTest {
         given(itemRepositoryPort.save(any(Item.class))).willReturn(Item.builder().id(createItemRequest.getId()).build());
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(Category.builder().name("testCategory").build()));
 
-        itemService.createItem(createItemRequest, member);
+        itemService.createItem(1L, createItemRequest, member);
 
 
         // then
