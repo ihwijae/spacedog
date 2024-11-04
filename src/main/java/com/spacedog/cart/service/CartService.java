@@ -31,9 +31,6 @@ public class CartService {
     public Long cartAddItems(CartAddRequest request) {
 
 
-        log.info("request ={}", request.toString());
-
-
         //cart 아이템 등록을 위한 item 엔티티 select
         Item item = itemRepository.findById(request.getItemId())
                 .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("item not found"));
@@ -43,15 +40,12 @@ public class CartService {
         // 상품에 옵션이 있는 경우 장바구니 담기 요청
         if(request.getOptionSpecsIds() != null && !request.getOptionSpecsIds().isEmpty()) {
            // 이미 장바구니에 있는 상품과 동일한 옵션이면 수량만 추가
-            log.info("옵션존재");
             if(cartItemRepository.existByItemWithOptions(request.getItemId(), request.getOptionSpecsIds())) {
-                log.info("중복 상품 존재함");
                cartItem = cartItemRepository.findCartItems(request.getItemId(), request.getOptionSpecsIds())
                        .orElseThrow(() -> new CartException("장바구니 아이템과 옵션을 불러올 수 없습니다"));
                cartItem.addQuantity(request.getQuantity());
            } else {
                // 없다면 새로 생성
-               log.info("장바구니 아이템 새로 생성");
                cartItem = CartItem.createItem(request, item);
                // 중복 옵션 저장믈 막기위한 코드
                request.getOptionSpecsIds().stream()
@@ -62,7 +56,6 @@ public class CartService {
 
         // 옵션이 없는 상품을 장바구니 담기 요청
         else {
-            log.info("옵션 xx");
             // 이미 장바구니에 있는 상품이면 수량 추가
             if(cartItemRepository.existByItem(request.getItemId())) {
                 cartItem = cartItemRepository.findCartItemsWithNotOptions(request.getItemId())

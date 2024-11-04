@@ -30,6 +30,8 @@ public class Order {
    @Column(name = "customer_id")
     private Long customerId;
 
+
+
    @Column(name = "customer_name")
    private String name;
 
@@ -59,6 +61,8 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private OrderStatus orderStatus;
+
+
 
     public Order() {
     }

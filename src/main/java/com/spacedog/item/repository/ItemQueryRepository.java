@@ -195,6 +195,8 @@ public class ItemQueryRepository {
         List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
         itemDetail.forEach(
                 itemDetailResponse -> {
+
+
                     List<OptionGroupResponse> optionGroup = findOptionGroup(itemId);
                     List<CategoryResponse> categoryResponses = findCategory(itemId);
                     itemDetailResponse.setCategory(categoryResponses);

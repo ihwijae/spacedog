@@ -50,7 +50,7 @@ public class CategoryService {
         return categoryQueryRepository.findCategoryItems(categoryId, pageNo, pageSize);
     }
 
-    @Transactional
+
     public void saveCategoryItem(CreateItemRequest createItemRequest, Item item) {
         List<Long> categoryIds = createItemRequest.getCategoryIds();
 

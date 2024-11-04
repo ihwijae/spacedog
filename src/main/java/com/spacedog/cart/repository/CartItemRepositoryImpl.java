@@ -83,7 +83,7 @@ public class CartItemRepositoryImpl implements CartItemRepository {
         Integer fetchOne = queryFactory
                 .selectOne()
                 .from(cartItem)
-                .where(cartItem.id.eq(itemId))
+                .where(cartItem.itemId.eq(itemId))
                 .fetchFirst();
 
         return fetchOne != null;

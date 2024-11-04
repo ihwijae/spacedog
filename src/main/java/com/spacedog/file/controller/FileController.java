@@ -63,5 +63,12 @@ public class FileController {
                 .body(urlResource);
     }
 
+    @GetMapping("/items/{itemId}/images")
+    public ApiResponse<List<String>> getImages(@PathVariable Long itemId) {
+        List<String> filePath = fileService.getFile(itemId);
+
+        return ApiResponse.success(filePath, "이미지 조회");
+    }
+
 
 }

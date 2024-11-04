@@ -1,36 +1,23 @@
 package com.spacedog.item.repository;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
-import com.spacedog.item.domain.QItem;
 import com.spacedog.item.dto.*;
-import com.spacedog.option.domain.QOptionGroupSpecification;
-import com.spacedog.option.domain.QOptionSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.spacedog.category.domain.QCategory.category;
-import static com.spacedog.category.domain.QCategoryItem.categoryItem;
 import static com.spacedog.item.domain.QItem.item;
-import static com.spacedog.member.domain.QMember.member;
-import static com.spacedog.option.domain.QOptionGroupSpecification.optionGroupSpecification;
-import static com.spacedog.option.domain.QOptionSpecification.optionSpecification;
 
 @Repository
 @RequiredArgsConstructor
 public class ItemRepositoryAdapter implements ItemRepositoryPort {
 
     private final ItemJpaRepository repository;
-    private final JPAQueryFactory query;
+    private final ItemQueryRepository queryRepository;
 
     @Override
     public Optional<Item> findByName(String name) {
@@ -67,188 +54,33 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
 
     @Override
     public boolean existByName(String name) {
-        Integer result = query
-                .selectOne()
-                .from(item)
-                .where(item.name.eq(name))
-                .fetchFirst();
 
-        return result != null;
+        return queryRepository.existByName(name);
     }
 
     @Override
     public List<SearchItemResponse> getItems(SearchItemRequest request) {
-        return
-                query
-                        .select(Projections.fields(SearchItemResponse.class,
-                                item.name,
-                                item.description,
-                                item.price,
-                                member.name.as("memberName")))
-                        .from(item)
-                        .join(member).on(item.memberId.eq(member.id))
-                        .where(
-                                LikeItemName(request.getSearchName()),
-                                LikeItemContent(request.getSearchContent())
-                        )
-                        .fetch();
+
+        return queryRepository.getItems(request);
+
     }
 
     @Override
     public List<FindItemAllResponse> findItemsAll(int pageNo, int pageSize) {
-        List<Long> ids = query
-                .select(item.id)
-                .from(item)
-                .orderBy(item.id.desc())
-                .limit(pageSize)
-                .offset(pageNo * pageSize)
-                .fetch();
 
-        if (CollectionUtils.isEmpty(ids)) {
-            return new ArrayList<>();
-        }
+        return queryRepository.findItemsAll(pageNo, pageSize);
 
-        return query
-                .select(Projections.fields(FindItemAllResponse.class,
-                        item.id,
-                        item.name,
-                        item.description,
-                        item.price
-                ))
-                .from(item)
-                .where(item.id.in(ids))
-                .orderBy(item.id.desc())
-                .fetch();
     }
 
     @Override
     public Optional<Item> findByItemWithCategory(Long id) {
-        Item item = query
-                .select(QItem.item)
-                .from(QItem.item)
-                .join(QItem.item.category, categoryItem).fetchJoin()
-                .join(categoryItem.category, category).fetchJoin()
-                .where(QItem.item.id.eq(id))
-                .fetchOne();
-        return Optional.ofNullable(item);
+        return queryRepository.findByItemWithCategory(id);
     }
 
-//    @Override
-//    public List<ItemDetailResponse> itemDetail(Long itemId) {
-//        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
-//        itemDetail.forEach(
-//                itemDetailResponse -> {
-//                    List<OptionGroupResponse> optionGroup = findOptionGroup(itemId);
-//                    List<CategoryResponse> categoryResponses = findCategory(itemId);
-//                    itemDetailResponse.setCategory(categoryResponses);
-//                    itemDetailResponse.setOptionGroup(optionGroup);
-//
-//                    optionGroup.forEach(optionGroupResponse -> {
-//                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs(optionGroupResponse.getId());
-//                        optionGroupResponse.setOptionSpecs(optionSpecs);
-//                    });
-//                }
-//        );
-//        return itemDetail;
-//    }
 
     @Override
     public List<ItemDetailResponse> itemDetail(Long itemId) {
-        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
-        itemDetail.forEach(
-                itemDetailResponse -> {
-                    List<OptionGroupResponse> optionGroupWithSpecs = findOptionGroupWithSpecs(itemId);
-                    List<CategoryResponse> categoryResponses = findCategory(itemId);
-                    itemDetailResponse.setCategory(categoryResponses);
-                    itemDetailResponse.setOptionGroup(optionGroupWithSpecs);
-                }
-        );
-        return itemDetail;
-    }
-
-    private List<ItemDetailResponse> findItemDetail(Long itemId) {
-        return query
-                .selectDistinct(Projections.fields(ItemDetailResponse.class,
-                        item.id,
-                        item.name,
-                        item.description,
-                        item.price
-                ))
-                .from(item)
-                .where(item.id.eq(itemId))
-                .fetch();
-    }
-
-
-
-    private List<CategoryResponse> findCategory(Long itemId) {
-        return query
-                .select(Projections.fields(CategoryResponse.class,
-                        category.id,
-                        category.name,
-                        category.depth))
-                .from(categoryItem) // categoryItem을 먼저 조인
-                .join(categoryItem.category, category) // categoryItem과 category 조인
-                .join(categoryItem.item, item) // categoryItem과 item 조인
-                .where(categoryItem.item.id.eq(itemId)) // 조건 설정
-                .fetch();
-    }
-
-
-
-    private List<OptionGroupResponse> findOptionGroup(Long itemId) {
-        return query
-                .select(Projections.fields(OptionGroupResponse.class,
-                        optionGroupSpecification.id,
-                        optionGroupSpecification.name,
-                        optionGroupSpecification.basic,
-                        optionGroupSpecification.exclusive))
-                .from(optionGroupSpecification)
-                .join(item).on(optionGroupSpecification.item.id.eq(item.id))
-                .where(optionGroupSpecification.item.id.eq(itemId))
-                .fetch();
-    }
-
-    private List<OptionGroupResponse> findOptionGroupWithSpecs(Long itemId) {
-        List<OptionGroupResponse> optionGroup = query
-                .select(Projections.fields(OptionGroupResponse.class,
-                        optionGroupSpecification.id,
-                        optionGroupSpecification.name,
-                        optionGroupSpecification.basic,
-                        optionGroupSpecification.exclusive))
-                .from(optionGroupSpecification)
-                .join(item).on(optionGroupSpecification.item.id.eq(item.id))
-                .where(optionGroupSpecification.item.id.eq(itemId))
-                .fetch();
-
-        optionGroup.forEach(
-                group -> {
-                    List<OptionSpecsResponse> optionSpecs = query
-                            .select(Projections.fields(OptionSpecsResponse.class,
-                                    optionSpecification.id,
-                                    optionSpecification.name,
-                                    optionSpecification.additionalPrice
-                            ))
-                            .from(optionSpecification)
-                            .where(optionSpecification.optionGroupSpecification.id.eq(group.getId()))
-                            .fetch();
-                    group.setOptionSpecs(optionSpecs);
-                });
-        return optionGroup;
-    }
-
-
-    private List<OptionSpecsResponse> findOptionSpecs (Long optionGroupId) {
-        return query
-                .select(Projections.fields(OptionSpecsResponse.class,
-                        optionSpecification.id,
-                        optionSpecification.name,
-                        optionSpecification.additionalPrice
-                ))
-                .from(optionSpecification)
-                .join(optionGroupSpecification).on(optionSpecification.optionGroupSpecification.id.eq(optionGroupSpecification.id))
-                .where(optionGroupSpecification.id.eq(optionGroupId))
-                .fetch();
+       return queryRepository.itemDetail(itemId);
     }
 
 

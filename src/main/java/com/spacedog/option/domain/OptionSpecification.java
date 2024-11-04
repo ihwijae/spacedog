@@ -37,9 +37,6 @@ public class OptionSpecification {
     private OptionGroupSpecification optionGroupSpecification;
 
 
-    public void addOptionGroup () {
-
-    }
 
 
     public void update (EditOptionSpecsRequest request, OptionGroupSpecification optionGroupSpec) {

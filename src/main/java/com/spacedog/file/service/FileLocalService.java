@@ -3,6 +3,7 @@ package com.spacedog.file.service;
 import com.spacedog.file.domain.FileData;
 import com.spacedog.file.ex.FileException;
 import com.spacedog.file.repository.FileRepository;
+import com.spacedog.item.exception.NotEnoughStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -79,8 +81,14 @@ public class FileLocalService implements FileService {
     }
 
     @Override
-    public FileData getFile(Long id) {
-        return fileRepository.findById(id).orElseThrow();
+    public List<String> getFile(Long itemId) {
+        List<FileData> fileData = fileRepository.findByItemId(itemId);
+
+        List<String> result = fileData.stream()
+                .map(f -> f.getFilePath())
+                .collect(Collectors.toList());
+
+        return result;
     }
 
     /** 서버에 저장할 이름 추출 **/

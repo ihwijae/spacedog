@@ -11,5 +11,5 @@ public interface FileService {
     String getFullPath(String fileName);
     FileData uploadFile(Long itemId, MultipartFile multipartFile);
     List<FileData> uploadFiles(Long itemId, List<MultipartFile> multipartFiles);
-    FileData getFile(Long id);
+    List<String> getFile(Long id);
 }

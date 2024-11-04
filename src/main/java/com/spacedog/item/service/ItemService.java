@@ -240,6 +240,7 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<ItemDetailResponse> itemDetail(Long itemId) {
         return itemRepositoryPort.itemDetail(itemId);
+
     }
 
     private void validateMember(Member member) {

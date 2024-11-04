@@ -5,6 +5,7 @@ import com.spacedog.file.domain.FileData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,5 +23,10 @@ public class FileRepositoryImpl implements FileRepository {
     @Override
     public Optional<FileData> findById(Long id) {
         return fileJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<FileData> findByItemId(Long itemId) {
+        return fileJpaRepository.findByItemId(itemId);
     }
 }
