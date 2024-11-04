@@ -21,15 +21,18 @@ public class FileData {
 
     private String filePath;
 
+    private Long itemId;
+
 
 
 
     @Builder
-    public FileData(Long id, String uploadFilename, String storeFilename, String filePath) {
+    public FileData(Long id, String uploadFilename, String storeFilename, String filePath, Long itemId) {
         this.id = id;
         this.uploadFileName = uploadFilename;
         this.storeFileName = storeFilename;
         this.filePath = filePath;
+        this.itemId = itemId;
     }
 
     public FileData() {

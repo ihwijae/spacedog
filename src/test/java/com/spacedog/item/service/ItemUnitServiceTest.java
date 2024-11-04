@@ -14,10 +14,13 @@ import com.spacedog.item.repository.ItemRepositoryPort;
 import com.spacedog.member.domain.Member;
 
 
+import com.spacedog.mock.FakeItemRepository;
 import com.spacedog.option.service.OptionService;
 import org.junit.jupiter.api.BeforeEach;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import java.util.Collections;
@@ -31,12 +34,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-
+@ExtendWith(MockitoExtension.class)
 public class ItemUnitServiceTest {
 
-    private ItemRepositoryPort itemRepositoryPort = mock(ItemRepositoryPort.class);
     private OptionService optionService = mock(OptionService.class);
     private ItemService itemService;
+//    private ItemRepositoryPort itemRepositoryPort = new FakeItemRepository();
+    private ItemRepositoryPort itemRepositoryPort = mock(ItemRepositoryPort.class);
 
 
     private CategoryRepository categoryRepository = mock(CategoryRepository.class);
@@ -73,7 +77,15 @@ public class ItemUnitServiceTest {
                 .stockQuantity(300)
                 .build();
 
+        Item item = Item.builder()
+                .id(1L)
+                .name("testItem")
+                .description("testDescription")
+                .price(999)
+                .build();
 
+
+        when(itemRepositoryPort.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(itemRepositoryPort.existByName(any())).thenReturn(false);
         when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(createItemRequest.getId()).name("saveTestItem").build());
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(Category.builder().name("testCategory").build()));
@@ -82,7 +94,7 @@ public class ItemUnitServiceTest {
 
 
         //when
-        Long saveId = itemService.createItem(1L, createItemRequest, member);
+        Long saveId = itemService.createItem(createItemRequest, member);
 
 
         //then
@@ -106,14 +118,22 @@ public class ItemUnitServiceTest {
                 .stockQuantity(300)
                 .build();
 
+        Item item = Item.builder()
+                .id(1L)
+                .name("testItem")
+                .description("testDescription")
+                .price(999)
+                .build();
 
+
+        when(itemRepositoryPort.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(itemRepositoryPort.existByName(any())).thenReturn(false);
         when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(3L).name("saveTestItem").build());
 
 
         //when then
         assertThrows(CategoryOfNot.class, () -> {
-            itemService.createItem(1L, createItemRequest, member);
+            itemService.createItem(createItemRequest, member);
         });
     }
 
@@ -133,15 +153,23 @@ public class ItemUnitServiceTest {
                 .stockQuantity(300)
                 .build();
 
+        Item item = Item.builder()
+                .id(1L)
+                .name("testItem")
+                .description("testDescription")
+                .price(999)
+                .build();
 
 
+
+        when(itemRepositoryPort.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         when(itemRepositoryPort.existByName(any())).thenReturn(true);
         when(itemRepositoryPort.save(any(Item.class))).thenReturn(Item.builder().id(3L).build());
 
 
         //when then
       assertThrows(NotEnoughStockException.ItemDuplicate.class, () -> {
-          itemService.createItem(1L, createItemRequest,member);
+          itemService.createItem(createItemRequest,member);
       });
 
 
@@ -155,6 +183,13 @@ public class ItemUnitServiceTest {
         Member member = Member.builder()
                 .email("test@email.com")
                 .id(1L)
+                .build();
+
+        Item item = Item.builder()
+                .id(1L)
+                .name("testItem")
+                .description("testDescription")
+                .price(999)
                 .build();
 
 
@@ -180,16 +215,16 @@ public class ItemUnitServiceTest {
 
 
         //when
+        when(itemRepositoryPort.findById(anyLong())).thenReturn(Optional.ofNullable(item));
         given(itemRepositoryPort.existByName(any())).willReturn(false);
         given(itemRepositoryPort.save(any(Item.class))).willReturn(Item.builder().id(createItemRequest.getId()).build());
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.ofNullable(Category.builder().name("testCategory").build()));
 
-        itemService.createItem(1L, createItemRequest, member);
+        itemService.createItem(createItemRequest, member);
 
 
-        // then
+         //then
         verify(optionService, times(1)).saveOptionWithItem(any(CreateItemRequest.class), any(Item.class));
-
     }
 
 

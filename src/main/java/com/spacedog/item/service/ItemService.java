@@ -42,13 +42,14 @@ public class ItemService {
 
 
     @Transactional
-    public Long createItem(Long itemId, CreateItemRequest createItemRequest, Member member) {
+    public Long createItem(CreateItemRequest createItemRequest, Member member) {
 
-        boolean exist = itemRepositoryPort.existByName(createItemRequest.getName());
+        boolean isValid = itemRepositoryPort.existByName(createItemRequest.getName());
 //        Item item = Item.createItem(itemId, createItemRequest, exist); -> 이건 새로생성하는거니까 수정해야함
-        Item item = itemRepositoryPort.findById(itemId)
+
+        Item item = itemRepositoryPort.findById(createItemRequest.getId())
                 .orElseThrow(() -> new ItemNotFound("상품을 찾을수 없습니다"));
-        item.finalCreateItem(itemId, createItemRequest, exist);
+        item.finalCreateItem(createItemRequest, isValid);
 
 
         item.addMember(member);
@@ -62,7 +63,7 @@ public class ItemService {
             optionService.saveOptionWithItem(createItemRequest, item);
         }
 
-        return saveItem.getId();
+        return createItemRequest.getId();
     }
 
     /**

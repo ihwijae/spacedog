@@ -76,14 +76,19 @@ class ItemServiceTest  {
     void itemCreate() {
 
         //given
-        CreateItemRequest itemRequest = createItemRequest();
+        CreateItemRequest createItemRequest = CreateItemRequest.builder()
+                .id(1L)
+                .name("testItem")
+                .description("testItemDescription")
+                .price(5000)
+                .build();
         Member member = Member.builder()
                 .email("test@email.com")
                 .build();
 
 
         //when
-        Long resultId = itemService.createItem(1L, itemRequest, member);
+        Long resultId = itemService.createItem(createItemRequest, member);
         Item findItem = itemRepositoryPort.findById(resultId).orElseThrow();
 
         //then

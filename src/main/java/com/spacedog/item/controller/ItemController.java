@@ -40,15 +40,14 @@ public class ItemController {
 
 
     // 상품 등록
-    @PutMapping("/items/{itemId}")
-    public String itemCreate(@PathVariable Long itemId, @RequestBody CreateItemRequest createItemRequest) {
+    @PutMapping("/items")
+    public ApiResponse<Long> itemCreate(@RequestBody CreateItemRequest createItemRequest) {
 
         Member member = memberService.getMember();
         validateMember(member);
-        log.info("요청 id ={}", itemId);
 
-        Long id = itemService.createItem(itemId, createItemRequest, member);
-        return id + "아이템 저장 완료";
+        Long id = itemService.createItem(createItemRequest, member);
+        return ApiResponse.success(id, "아이템 생성");
     }
 
 

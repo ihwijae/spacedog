@@ -67,10 +67,10 @@ public class FileLocalService implements FileService {
         }
 
         FileData fileData = FileData.builder()
-                .id(itemId)
                 .uploadFilename(originalFilename)
                 .storeFilename(storeFileName)
                 .filePath(getFullPath(storeFileName))
+                .itemId(itemId)
                 .build();
 
         return fileRepository.save(fileData);
