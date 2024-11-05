@@ -105,20 +105,20 @@ public class Item extends BaseTimeEntity {
         this.category.add(category);
     }
 
-//    public void addStock(int quantity) {
-//        this.stockQuantity += quantity;
-//    }
-//
-//    public void removeStock(int quantity) {
-//        int restStock = this.stockQuantity - quantity;
-//
-//        if (restStock < 0) {
-//            throw new NotEnoughStockException("재고가 없습니다");
-//        }
-//
-//        this.stockQuantity = restStock;
-//
-//    }
+    public void addStock(int quantity) {
+        this.stockQuantity += quantity;
+    }
+
+    public void removeStock(int quantity) {
+        int restStock = this.stockQuantity - quantity;
+
+        if (restStock < 0) {
+            throw new NotEnoughStockException("재고가 없습니다");
+        }
+
+        this.stockQuantity = restStock;
+
+    }
 
 
 

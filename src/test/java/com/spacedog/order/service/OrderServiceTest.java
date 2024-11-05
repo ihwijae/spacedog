@@ -2,6 +2,7 @@ package com.spacedog.order.service;
 
 import com.spacedog.generic.Money;
 import com.spacedog.member.domain.Address;
+import com.spacedog.member.domain.Member;
 import com.spacedog.order.domain.Order;
 import com.spacedog.order.repository.OrderRepository;
 import org.assertj.core.api.Assertions;
@@ -50,8 +51,13 @@ class OrderServiceTest {
                 .orderItemCreate(createOrderItems())
                 .build();
 
+        Member member = Member.builder()
+                .id(1L)
+                .email("lhj@gmail.com")
+                .build();
 
-        Long orderId = orderService.createOrder(orderCreateRequest);
+
+        Long orderId = orderService.createOrder(orderCreateRequest, member);
         Order order = orderRepository.findById(orderId).orElseThrow();
 
 

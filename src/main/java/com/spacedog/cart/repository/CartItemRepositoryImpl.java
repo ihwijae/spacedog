@@ -122,6 +122,7 @@ public class CartItemRepositoryImpl implements CartItemRepository {
     public Map<Long, List<CartOptionResponse>> findCartSelectOptionMap(List<Long> cartItemIds) {
         List<CartOptionResponse> cartOptions = queryFactory
                 .select(Projections.fields(CartOptionResponse.class,
+                        optionSpecification.id,
                         optionSpecification.name,
                         optionSpecification.additionalPrice,
                         cartOptionSpecs.cartItemId
@@ -181,6 +182,20 @@ public class CartItemRepositoryImpl implements CartItemRepository {
         return cartItemIds;
     }
 
+    @Override
+    public void delete(CartItem cartItem) {
+        cartItemJpaRepository.delete(cartItem);
+    }
+
+    @Override
+    public Optional<CartItem> findByItemIdWithMember(Long itemId, Long memberId) {
+        CartItem cartItem = queryFactory
+                .selectFrom(QCartItem.cartItem)
+                .where(QCartItem.cartItem.itemId.eq(itemId).and(QCartItem.cartItem.cartId.eq(memberId)))
+                .fetchOne();
+
+        return Optional.ofNullable(cartItem);
+    }
 
     //    private Map<Long, List<OptionGroupResponse>> findOptionGroupMap(List<Long> itemIds) {
 //        List<OptionGroupResponse> optionGroupResponses = query

@@ -38,9 +38,6 @@ public class Order {
    @Column(name = "phone")
    private String phone;
 
-    @Embedded
-    private Address address;
-
     @Column(name = "requirement")
     private String requirement; // 요청사항
 
@@ -68,12 +65,11 @@ public class Order {
     }
 
     @Builder
-    public Order(Long id, Long customerId, String name, String phone, Address address, String requirement, int totalPrice, LocalDateTime orderDate, Long deliveryId, OrderStatus orderStatus) {
+    public Order(Long id, Long customerId, String name, String phone, String requirement, int totalPrice, LocalDateTime orderDate, Long deliveryId, OrderStatus orderStatus) {
         this.id = id;
         this.customerId = customerId;
         this.name = name;
         this.phone = phone;
-        this.address = address;
         this.requirement = requirement;
         this.totalPrice = totalPrice;
         this.orderDate = orderDate;
@@ -83,7 +79,7 @@ public class Order {
 
 
     // 주문 생성 메서드
-    public static Order create(OrderCreateRequest request, Member member) {
+    public static Order create(OrderCreateRequest request, Member member, Long deliveryId) {
 
 //
 //        int totalPrice = request.getOrderItemCreate()
@@ -106,10 +102,10 @@ public class Order {
                 .customerId(member.getId())
                 .name(request.getName())
                 .phone(request.getPhone())
-                .address(request.getAddress())
                 .orderDate(LocalDateTime.now())
                 .totalPrice(totalPrice)  // 최종 금액 설정
                 .orderStatus(OrderStatus.ORDER)
+                .deliveryId(deliveryId)
                 .build();
     }
 

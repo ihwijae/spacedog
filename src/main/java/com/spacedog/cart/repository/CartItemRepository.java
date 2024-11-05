@@ -24,6 +24,9 @@ public interface CartItemRepository {
     public List<CartOptionResponse> findOptionAll(List<Long> itemIds);
     public List<Long> toCartItemIds(List<ItemCartResponse> result);
     public Optional<CartItem> findById(Long id);
+    void delete(CartItem cartItem);
+    Optional<CartItem> findByItemIdWithMember(Long itemId, Long memberId);
+
 
 
 

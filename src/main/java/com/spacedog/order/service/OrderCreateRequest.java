@@ -1,6 +1,6 @@
 package com.spacedog.order.service;
 
-import com.spacedog.generic.Money;
+import com.spacedog.item.dto.OptionSpecsRequest;
 import com.spacedog.member.domain.Address;
 import jakarta.persistence.Embedded;
 import lombok.Builder;
@@ -41,16 +41,20 @@ public class OrderCreateRequest {
         private Long itemId;
         private int amount; //상품 수량
         private int orderPrice;
+        private Long optionId;
+        private String optionName;
 
         public OrderItemCreate() {
 
         }
 
         @Builder
-        public OrderItemCreate(Long itemId, int amount, int orderPrice) {
+        public OrderItemCreate(Long itemId, int amount, int orderPrice, Long optionId, String optionName) {
             this.itemId = itemId;
             this.amount = amount;
             this.orderPrice = orderPrice;
+            this.optionId = optionId;
+            this.optionName = optionName;
         }
     }
 }

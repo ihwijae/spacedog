@@ -1,5 +1,6 @@
 package com.spacedog.option.domain;
 
+import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.EditOptionSpecsRequest;
 import com.spacedog.item.exception.NotEnoughStockException;
 import jakarta.persistence.*;
@@ -50,7 +51,7 @@ public class OptionSpecification {
         this.stockQuantity += quantity;
     }
 
-    public void removeQuantity(int quantity) {
+    public void removeQuantity(int quantity, Item item) {
         int restStock = this.stockQuantity - quantity;
 
         if (restStock < 0) {
@@ -59,6 +60,8 @@ public class OptionSpecification {
 
         this.stockQuantity = restStock;
 
+
+        item.removeStock(quantity);
     }
 
 
