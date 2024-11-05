@@ -13,7 +13,7 @@ import java.util.List;
 public class OrderCreateRequest {
 
 
-    private String name;
+    private String customerName;
 
     private String phone;
 
@@ -27,7 +27,7 @@ public class OrderCreateRequest {
 
     @Builder
     public OrderCreateRequest(String name, String phone, Address address, List<OrderItemCreate> orderItemCreate) {
-        this.name = name;
+        this.customerName = name;
         this.phone = phone;
         this.address = address;
         this.orderItemCreate = orderItemCreate;

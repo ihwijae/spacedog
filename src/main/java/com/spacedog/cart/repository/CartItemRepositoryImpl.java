@@ -9,8 +9,6 @@ import com.spacedog.cart.domain.QCartItem;
 import com.spacedog.cart.dto.CartOptionResponse;
 import com.spacedog.cart.dto.ItemCartResponse;
 import com.spacedog.item.domain.Item;
-import com.spacedog.option.domain.QOptionGroupSpecification;
-import com.spacedog.option.domain.QOptionSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

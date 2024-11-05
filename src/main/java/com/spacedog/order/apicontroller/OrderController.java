@@ -20,15 +20,13 @@ public class OrderController {
 
 
 
-    private final MemberService memberService;
     private final OrderService orderService;
 
 
     @PostMapping("/orders")
     public ApiResponse<Long> createOrder(@RequestBody OrderCreateRequest request) {
-        Member member = memberService.getMember();
 
-        Long result = orderService.createOrder(request, member);
+        Long result = orderService.createOrder(request);
 
         return ApiResponse.success(result, "주문 생성");
     }

@@ -79,7 +79,7 @@ public class Order {
 
 
     // 주문 생성 메서드
-    public static Order create(OrderCreateRequest request, Member member, Long deliveryId) {
+    public static Order create(OrderCreateRequest request, Long memberId, Long deliveryId) {
 
 //
 //        int totalPrice = request.getOrderItemCreate()
@@ -99,8 +99,8 @@ public class Order {
 
         // 누적된 totalPrice로 주문 생성
         return Order.builder()
-                .customerId(member.getId())
-                .name(request.getName())
+                .customerId(memberId)
+                .name(request.getCustomerName())
                 .phone(request.getPhone())
                 .orderDate(LocalDateTime.now())
                 .totalPrice(totalPrice)  // 최종 금액 설정

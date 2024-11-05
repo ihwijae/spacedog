@@ -57,7 +57,7 @@ class OrderServiceTest {
                 .build();
 
 
-        Long orderId = orderService.createOrder(orderCreateRequest, member);
+        Long orderId = orderService.createOrder(orderCreateRequest);
         Order order = orderRepository.findById(orderId).orElseThrow();
 
 

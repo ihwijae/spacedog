@@ -1,6 +1,5 @@
 package com.spacedog.order.domain;
 
-import com.spacedog.generic.Money;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +32,7 @@ public class OrderItems {
 
     @Column(name = "order_count")
     private int orderCount;
+
 
     @Builder
     public OrderItems(Long id, Long itemId, Order order, int orderPrice, int orderCount) {
