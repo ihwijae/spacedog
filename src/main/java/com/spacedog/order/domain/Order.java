@@ -77,7 +77,7 @@ public class Order {
 
 
     // 주문 생성 메서드
-    public static Order create(OrderCreateRequest request, Long memberId, Long deliveryId) {
+    public static Order create(OrderCreateRequest request, Long memberId, Long deliveryId, String orderNumber) {
 
 //
 //        int totalPrice = request.getOrderItemCreate()
@@ -104,8 +104,7 @@ public class Order {
                 .totalPrice(totalPrice)  // 최종 금액 설정
                 .orderStatus(OrderStatus.ORDER)
                 .deliveryId(deliveryId)
-                .orderNumber(UUID.randomUUID().toString())
-
+                .orderNumber(orderNumber)
                 .build();
     }
 

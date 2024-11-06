@@ -5,9 +5,9 @@ import com.spacedog.member.domain.Member;
 import com.spacedog.member.service.MemberReader;
 import com.spacedog.order.domain.Order;
 import com.spacedog.order.impl.OrderCreateRequest;
+import com.spacedog.order.impl.OrderNumberGenerator;
 import com.spacedog.order.impl.OrderWriter;
 
-import com.spacedog.order.impl.Time;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,7 @@ public class OrderService {
     private final MemberReader memberReader;
     private final DeliveryWriter deliveryWriter;
     private final OrderWriter orderWriter;
-    private final Time time;
+    private final OrderNumberGenerator orderNumberGenerator;
 
 
 
@@ -37,7 +37,8 @@ public class OrderService {
         Long deliveryId = deliveryWriter.createDelivery(request.getAddress());
 
 
-        Order order =  orderWriter.createOrder(request, member.getId(), deliveryId);
+        String orderNumber = orderNumberGenerator.OrderNumberCreate();
+        Order order =  orderWriter.createOrder(request, member.getId(), deliveryId, orderNumber);
 
 
         orderWriter.createOrderItems(request, member.getId(), order);
@@ -47,8 +48,5 @@ public class OrderService {
     }
 
 
-    // 주문 내역 조회
-    public List<OrderResponse> findOrders() {
 
-    }
 }

@@ -27,10 +27,10 @@ public class OrderWriter {
 
 
 
-    public Order createOrder(OrderCreateRequest request, Long memberId, Long deliveryId) {
+    public Order createOrder(OrderCreateRequest request, Long memberId, Long deliveryId, String orderNumber) {
 
         // 주문 생성
-        Order order = Order.create(request, memberId, deliveryId);
+        Order order = Order.create(request, memberId, deliveryId, orderNumber);
 
         // 주문 저장
         Order saveOrder = orderRepository.save(order);
