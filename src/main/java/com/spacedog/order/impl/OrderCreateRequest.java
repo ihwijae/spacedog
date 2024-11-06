@@ -1,6 +1,5 @@
-package com.spacedog.order.service;
+package com.spacedog.order.impl;
 
-import com.spacedog.item.dto.OptionSpecsRequest;
 import com.spacedog.member.domain.Address;
 import jakarta.persistence.Embedded;
 import lombok.Builder;

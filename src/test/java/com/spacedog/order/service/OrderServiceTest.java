@@ -1,9 +1,9 @@
 package com.spacedog.order.service;
 
-import com.spacedog.generic.Money;
 import com.spacedog.member.domain.Address;
 import com.spacedog.member.domain.Member;
 import com.spacedog.order.domain.Order;
+import com.spacedog.order.impl.OrderCreateRequest;
 import com.spacedog.order.repository.OrderRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +15,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class OrderServiceTest {

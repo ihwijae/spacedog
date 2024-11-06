@@ -1,18 +1,12 @@
 package com.spacedog.order.domain;
 
-import com.spacedog.generic.Money;
-import com.spacedog.generic.MoneyConverter;
-import com.spacedog.member.domain.Address;
-import com.spacedog.member.domain.BaseTimeEntity;
-import com.spacedog.member.domain.Member;
-import com.spacedog.order.service.OrderCreateRequest;
+import com.spacedog.order.impl.OrderCreateRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -59,13 +53,16 @@ public class Order {
     @Column(name = "status")
     private OrderStatus orderStatus;
 
+    @Column(name = "order_number")
+    private String orderNumber;
+
 
 
     public Order() {
     }
 
     @Builder
-    public Order(Long id, Long customerId, String name, String phone, String requirement, int totalPrice, LocalDateTime orderDate, Long deliveryId, OrderStatus orderStatus) {
+    public Order(Long id, Long customerId, String name, String phone, String requirement, int totalPrice, LocalDateTime orderDate, Long deliveryId, OrderStatus orderStatus, String orderNumber) {
         this.id = id;
         this.customerId = customerId;
         this.name = name;
@@ -75,6 +72,7 @@ public class Order {
         this.orderDate = orderDate;
         this.deliveryId = deliveryId;
         this.orderStatus = orderStatus;
+        this.orderNumber = orderNumber;
     }
 
 
@@ -106,6 +104,8 @@ public class Order {
                 .totalPrice(totalPrice)  // 최종 금액 설정
                 .orderStatus(OrderStatus.ORDER)
                 .deliveryId(deliveryId)
+                .orderNumber(UUID.randomUUID().toString())
+
                 .build();
     }
 

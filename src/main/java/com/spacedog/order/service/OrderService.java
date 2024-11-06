@@ -4,11 +4,15 @@ import com.spacedog.delivery.impl.DeliveryWriter;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.service.MemberReader;
 import com.spacedog.order.domain.Order;
+import com.spacedog.order.impl.OrderCreateRequest;
 import com.spacedog.order.impl.OrderWriter;
 
+import com.spacedog.order.impl.Time;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -19,6 +23,9 @@ public class OrderService {
     private final MemberReader memberReader;
     private final DeliveryWriter deliveryWriter;
     private final OrderWriter orderWriter;
+    private final Time time;
+
+
 
     // 주문 생성
     @Transactional
@@ -37,5 +44,11 @@ public class OrderService {
 
 
         return order.getId();
+    }
+
+
+    // 주문 내역 조회
+    public List<OrderResponse> findOrders() {
+
     }
 }

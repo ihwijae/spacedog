@@ -11,9 +11,9 @@ import com.spacedog.order.domain.Order;
 import com.spacedog.order.domain.OrderItems;
 import com.spacedog.order.repository.OrderItemRepository;
 import com.spacedog.order.repository.OrderRepository;
-import com.spacedog.order.service.OrderCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +24,8 @@ public class OrderWriter {
     private final ItemReader itemReader;
     private final OptionSpecsRepository optionSpecsRepository;
     private final CartItemRepository cartItemRepository;
-    
+
+
 
     public Order createOrder(OrderCreateRequest request, Long memberId, Long deliveryId) {
 
@@ -37,7 +38,9 @@ public class OrderWriter {
         return saveOrder;
     }
 
+
     public void createOrderItems(OrderCreateRequest request, Long memberId, Order order) {
+
         request.getOrderItemCreate().forEach(orderItemCreate -> {
 
 

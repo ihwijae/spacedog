@@ -1,9 +1,7 @@
 package com.spacedog.order.apicontroller;
 
 import com.spacedog.global.ApiResponse;
-import com.spacedog.member.domain.Member;
-import com.spacedog.member.service.MemberService;
-import com.spacedog.order.service.OrderCreateRequest;
+import com.spacedog.order.impl.OrderCreateRequest;
 import com.spacedog.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
