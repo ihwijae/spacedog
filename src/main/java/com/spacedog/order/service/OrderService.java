@@ -62,4 +62,8 @@ public class OrderService {
 
     }
 
+    //주문 상세 조회
+    @Transactional(readOnly = true)
+
+
 }
