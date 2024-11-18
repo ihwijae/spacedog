@@ -4,6 +4,7 @@ import com.spacedog.cart.domain.CartItem;
 import com.spacedog.cart.repository.CartItemRepository;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.exception.NotEnoughStockException;
+import com.spacedog.item.exception.NotEnoughStockException.OptionSpecsNotFound;
 import com.spacedog.item.impl.ItemReader;
 import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.option.repository.OptionSpecsRepository;
@@ -46,19 +47,23 @@ public class OrderWriter {
 
             Item item = itemReader.findById(orderItemCreate.getItemId());
 
+
+            //옵션 추출
+            OptionSpecification optionSpec = optionSpecsRepository.findById(orderItemCreate.getOptionId())
+                    .orElseThrow(() -> new OptionSpecsNotFound("option specs not found"));
+
+
             // 주문시 재고 처리
             if(orderItemCreate.getOptionId() != null) {
-                OptionSpecification optionSpec = optionSpecsRepository.findById(orderItemCreate.getOptionId())
-                        .orElseThrow(() -> new NotEnoughStockException.OptionSpecsNotFound("option specs not found"));
 
                 optionSpec.removeQuantity(orderItemCreate.getAmount(), item);
+
             } else {
                 item.removeStock(orderItemCreate.getAmount());
             }
 
-
             OrderItems orderItem = OrderItems.createOrderItem(
-                    orderItemCreate.getItemId(), order, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount());
+                    orderItemCreate.getItemId(), order, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), optionSpec.getId());
             orderItemRepository.save(orderItem);
 
             CartItem cartItem = cartItemRepository.findByItemIdWithMember(

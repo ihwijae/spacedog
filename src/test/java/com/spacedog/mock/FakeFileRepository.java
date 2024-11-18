@@ -43,4 +43,9 @@ public class FakeFileRepository implements FileRepository {
                 .filter(f -> f.getId().equals(id))
                 .findAny();
     }
+
+    @Override
+    public List<FileData> findByItemId(Long itemId) {
+        return List.of();
+    }
 }

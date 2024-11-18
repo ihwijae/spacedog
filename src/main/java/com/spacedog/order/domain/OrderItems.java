@@ -16,10 +16,11 @@ public class OrderItems {
     private Long id;
 
 
-
-
     @Column(name = "item_id")
     private Long itemId;
+
+    @Column(name = "option_id")
+    private Long optionId;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,23 +36,25 @@ public class OrderItems {
 
 
     @Builder
-    public OrderItems(Long id, Long itemId, Order order, int orderPrice, int orderCount) {
+    public OrderItems(Long id, Long itemId, Order order, int orderPrice, int orderCount, Long optionId) {
         this.id = id;
         this.itemId = itemId;
         this.order = order;
         this.orderPrice = orderPrice;
         this.orderCount = orderCount;
+        this.optionId = optionId;
     }
 
     public OrderItems() {
     }
 
-    public static OrderItems createOrderItem(Long itemId, Order order, int orderPrice, int orderCount) {
+    public static OrderItems createOrderItem(Long itemId, Order order, int orderPrice, int orderCount, Long optionId) {
         return OrderItems.builder()
                 .itemId(itemId)
                 .order(order)
                 .orderPrice(orderPrice)
                 .orderCount(orderCount)
+                .optionId(optionId)
                 .build();
     }
 }

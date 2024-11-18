@@ -55,7 +55,7 @@ class OrderServiceTest {
 
 
         Long orderId = orderService.createOrder(orderCreateRequest);
-        Order order = orderRepository.findById(orderId).orElseThrow();
+        Order order = orderRepository.findById(orderId);
 
 
         Assertions.assertThat(orderId).isEqualTo(order.getId());

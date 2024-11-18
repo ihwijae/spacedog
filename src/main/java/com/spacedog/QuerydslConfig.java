@@ -1,13 +1,12 @@
 package com.spacedog;
 
-import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
 public class QuerydslConfig {
 
 
@@ -17,6 +16,6 @@ public class QuerydslConfig {
 
     @Bean
     public JPAQueryFactory jpaQueryFactory() {
-        return new JPAQueryFactory(JPQLTemplates.DEFAULT, em);
+        return new JPAQueryFactory(em);
     }
 }

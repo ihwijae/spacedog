@@ -39,3 +39,6 @@ out/
 
 ### image ###
 /file
+
+### compile ###
+src/main/generated/
