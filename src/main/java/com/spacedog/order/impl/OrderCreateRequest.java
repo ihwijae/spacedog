@@ -16,7 +16,7 @@ public class OrderCreateRequest {
 
     private String phone;
 
-    @Embedded
+
     private Address address;
 
 

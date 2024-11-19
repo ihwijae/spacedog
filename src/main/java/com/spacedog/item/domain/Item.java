@@ -14,6 +14,7 @@ import com.spacedog.item.exception.NotEnoughStockException.ItemDuplicate;
 import com.spacedog.item.service.ItemMapper;
 import com.spacedog.member.domain.BaseTimeEntity;
 import com.spacedog.member.domain.Member;
+import com.spacedog.order.service.OrderException;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -133,6 +134,12 @@ public class Item extends BaseTimeEntity {
         this.description = request.getDescription();
         this.price = request.getPrice();
 
+   }
+
+   public void checkQuantity(int quantity) {
+        if(this.stockQuantity < quantity) {
+            throw new OrderException("재고가 부족합니다. 남은 재고 : " + this.stockQuantity);
+        }
    }
 
 

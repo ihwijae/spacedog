@@ -27,6 +27,8 @@ public class OrderService {
     private final OrderWriter orderWriter;
     private final OrderNumberGenerator orderNumberGenerator;
     private final OrderFinder orderFinder;
+    private final StockManager stockManager;
+
 
 
 
@@ -40,6 +42,13 @@ public class OrderService {
         Long deliveryId = deliveryWriter.createDelivery(request.getAddress());
 
 
+        // 재고 확인
+        stockManager.checkQuantity(request);
+
+        // 재고 처리
+
+
+
         // 주문 번호 생성
         String orderNumber = orderNumberGenerator.OrderNumberCreate();
 
@@ -48,6 +57,7 @@ public class OrderService {
 
 
         orderWriter.createOrderItems(request, member.getId(), order);
+        orderWriter.createOrderItemOption();
 
 
         return order.getId();
@@ -63,7 +73,9 @@ public class OrderService {
     }
 
     //주문 상세 조회
-    @Transactional(readOnly = true)
-
+//    @Transactional(readOnly = true)
+//    public OrderResponse getOrderDetail(Long orderId) {
+//
+//    }
 
 }

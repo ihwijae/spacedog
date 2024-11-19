@@ -3,6 +3,7 @@ package com.spacedog.option.domain;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.EditOptionSpecsRequest;
 import com.spacedog.item.exception.NotEnoughStockException;
+import com.spacedog.order.service.OrderException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class OptionSpecification {
 
     private String name;
 
-    @Column(name = "additional_amount")
+    @Column(name = "additional_price")
 //    @Convert(converter = MoneyConverter.class)
     private int additionalPrice; //옵션에 따른 추가금액 0일수도 아닐수도
 
@@ -47,6 +48,7 @@ public class OptionSpecification {
     }
 
 
+
     public void addQuantity(int quantity) {
         this.stockQuantity += quantity;
     }
@@ -64,6 +66,12 @@ public class OptionSpecification {
         item.removeStock(quantity);
     }
 
+    public void checkQuantity(int quantity) {
+
+        if (this.stockQuantity < quantity) {
+            throw new OrderException("재고가 부족합니다. 남은 재고 : " + this.stockQuantity );
+        }
+    }
 
 
 }
