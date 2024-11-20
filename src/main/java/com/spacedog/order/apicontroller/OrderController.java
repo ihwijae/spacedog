@@ -1,6 +1,7 @@
 package com.spacedog.order.apicontroller;
 
 import com.spacedog.global.ApiResponse;
+import com.spacedog.order.dto.OrderDetailResponse;
 import com.spacedog.order.impl.OrderCreateRequest;
 import com.spacedog.order.service.OrderResponse;
 import com.spacedog.order.service.OrderService;
@@ -34,5 +35,13 @@ public class OrderController {
         List<OrderResponse> orders = orderService.getOrders();
 
         return ApiResponse.success(orders, "주문 전체 조회");
+    }
+
+    @GetMapping("/orders/{orderId}")
+    public ApiResponse<OrderDetailResponse> getOrderDetail(@PathVariable("orderId") Long orderId) {
+        log.info("orderId={}", orderId);
+        OrderDetailResponse orderDetail = orderService.getOrderDetail(orderId);
+
+        return ApiResponse.success(orderDetail, "주문 상세 조회");
     }
 }

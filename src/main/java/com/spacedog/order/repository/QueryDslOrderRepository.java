@@ -2,10 +2,13 @@ package com.spacedog.order.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spacedog.delivery.domain.QDelivery;
 import com.spacedog.item.domain.QItem;
 import com.spacedog.option.domain.QOptionSpecification;
 import com.spacedog.order.domain.QOrder;
+import com.spacedog.order.domain.QOrderItemOption;
 import com.spacedog.order.domain.QOrderItems;
+import com.spacedog.order.dto.OrderDetailResponse;
 import com.spacedog.order.service.OrderItemResponse;
 import com.spacedog.order.service.OrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.spacedog.delivery.domain.QDelivery.delivery;
 import static com.spacedog.item.domain.QItem.item;
 import static com.spacedog.option.domain.QOptionSpecification.optionSpecification;
 import static com.spacedog.order.domain.QOrder.order;
+import static com.spacedog.order.domain.QOrderItemOption.orderItemOption;
 import static com.spacedog.order.domain.QOrderItems.orderItems;
 
 @Repository
@@ -48,13 +53,13 @@ public class QueryDslOrderRepository {
                         orderItems.order.id.as("orderId"),
                         orderItems.itemId,
                         item.name.as("itemName"),
-                        optionSpecification.name.as("optionName"),
+                        orderItemOption.optionName.as("optionName"),
                         orderItems.orderCount.as("quantity"),
                         orderItems.orderPrice.as("price")
                 ))
                 .from(orderItems)
                 .join(item).on(orderItems.itemId.eq(item.id))
-                .join(optionSpecification).on(orderItems.optionId.eq(optionSpecification.id))
+                .leftJoin(orderItemOption).on(orderItems.id.eq(orderItemOption.orderItemId))
                 .where(orderItems.order.id.in(orderIds))
                 .fetch();
 
@@ -62,6 +67,24 @@ public class QueryDslOrderRepository {
                 .collect(Collectors.groupingBy(OrderItemResponse::getOrderId));
 
         return resultMap;
+    }
+
+    public OrderDetailResponse findOrderDetail(Long orderId) {
+
+       return queryFactory.select(
+                Projections.fields(OrderDetailResponse.class,
+                        order.id.as("orderId"),
+                        order.orderNumber.as("orderNumber"),
+                        order.orderDate.as("orderDate"),
+                        order.name.as("receiver"),
+                        order.phone.as("receiverPhone"),
+                        delivery.address.as("receiverAddress"),
+                        order.requirement.as("deliveryRequest")
+                        ))
+                .from(order)
+                .join(delivery).on(order.deliveryId.eq(delivery.id))
+                .where(order.id.eq(orderId))
+                .fetchOne();
     }
 
 

@@ -8,6 +8,7 @@ import com.spacedog.member.service.MemberReader;
 import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.order.domain.Order;
 import com.spacedog.order.domain.OrderItemOption;
+import com.spacedog.order.dto.OrderDetailResponse;
 import com.spacedog.order.impl.OrderCreateRequest;
 import com.spacedog.order.impl.OrderNumberGenerator;
 import com.spacedog.order.impl.OrderFinder;
@@ -65,7 +66,7 @@ public class OrderService {
         List<OptionSpecification> optionSpecs = optionReader.findOptionSpecs(orderItemCreate);
 
 
-        Order order = orderFinder.findDetailOrder(orderId);
+        Order order = orderFinder.find(orderId);
 
         orderWriter.createOrderItems(orderItemCreate, order, cartItem, optionSpecs);
 
@@ -83,9 +84,10 @@ public class OrderService {
     }
 
     //주문 상세 조회
-//    @Transactional(readOnly = true)
-//    public OrderResponse getOrderDetail(Long orderId) {
-//
-//    }
+    @Transactional(readOnly = true)
+    public OrderDetailResponse getOrderDetail(Long orderId) {
+
+        return orderFinder.findDetailOrder(orderId);
+    }
 
 }

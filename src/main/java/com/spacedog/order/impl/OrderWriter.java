@@ -31,7 +31,6 @@ public class OrderWriter {
 
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
-    private final OptionSpecsRepository optionSpecsRepository;
     private final CartItemRepository cartItemRepository;
     private final OrderItemOptionRepository orderItemOptionRepository;
 

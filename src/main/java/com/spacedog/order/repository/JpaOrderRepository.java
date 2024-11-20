@@ -1,6 +1,7 @@
 package com.spacedog.order.repository;
 
 import com.spacedog.order.domain.Order;
+import com.spacedog.order.dto.OrderDetailResponse;
 import com.spacedog.order.service.OrderException;
 import com.spacedog.order.service.OrderItemResponse;
 import com.spacedog.order.service.OrderResponse;
@@ -37,5 +38,10 @@ public class JpaOrderRepository implements OrderRepository {
     public Map<Long, List<OrderItemResponse>> findOrderItems(List<Long> orderIds) {
         Map<Long, List<OrderItemResponse>> orderItems = queryDslRepository.findOrderItems(orderIds);
         return orderItems;
+    }
+
+    @Override
+    public OrderDetailResponse findOrderDetail(long orderId) {
+        return queryDslRepository.findOrderDetail(orderId);
     }
 }

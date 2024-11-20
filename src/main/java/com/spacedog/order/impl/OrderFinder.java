@@ -1,6 +1,7 @@
 package com.spacedog.order.impl;
 
 import com.spacedog.order.domain.Order;
+import com.spacedog.order.dto.OrderDetailResponse;
 import com.spacedog.order.repository.OrderRepository;
 import com.spacedog.order.service.OrderItemResponse;
 import com.spacedog.order.service.OrderResponse;
@@ -19,6 +20,9 @@ public class OrderFinder {
         this.orderRepository = orderRepository;
     }
 
+    public Order find(Long orderId) {
+        return orderRepository.findById(orderId);
+    }
 
 
     public List<OrderResponse> findOrders(Long memberId) {
@@ -40,7 +44,7 @@ public class OrderFinder {
         return orders;
     }
 
-    public Order findDetailOrder(Long orderId) {
-       return orderRepository.findById(orderId);
+    public OrderDetailResponse findDetailOrder(Long orderId) {
+        return orderRepository.findOrderDetail(orderId);
     }
 }
