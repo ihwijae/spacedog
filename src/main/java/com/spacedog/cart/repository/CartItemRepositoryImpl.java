@@ -195,6 +195,11 @@ public class CartItemRepositoryImpl implements CartItemRepository {
         return Optional.ofNullable(cartItem);
     }
 
+    @Override
+    public void deleteAll(List<CartItem> cartItems) {
+        cartItemJpaRepository.deleteAll(cartItems);
+    }
+
     //    private Map<Long, List<OptionGroupResponse>> findOptionGroupMap(List<Long> itemIds) {
 //        List<OptionGroupResponse> optionGroupResponses = query
 //                .select(Projections.fields(OptionGroupResponse.class,

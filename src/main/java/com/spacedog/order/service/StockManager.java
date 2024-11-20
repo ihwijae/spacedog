@@ -14,13 +14,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class StockManager {
 
-    private final ItemRepositoryPort itemRepository;
     private final OptionSpecsRepository optionSpecsRepository;
     private final ItemReader itemReader;
 
     public void checkQuantity(OrderCreateRequest request) {
-
-
 
         request.getOrderItemCreate()
                 .forEach(orderItem -> {
@@ -32,9 +29,7 @@ public class StockManager {
                         option.checkQuantity(orderItem.getAmount());
 
                     } else {
-                        Item item = itemRepository.findById(orderItem.getItemId())
-                                .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("상품을 찾을 수 없습니다"));
-
+                        Item item = itemReader.findById(orderItem.getItemId());
                         item.checkQuantity(orderItem.getAmount());
                     }
                 });

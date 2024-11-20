@@ -1,5 +1,6 @@
 package com.spacedog.order.domain;
 
+import com.spacedog.member.domain.Member;
 import com.spacedog.order.impl.OrderCreateRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -77,7 +78,7 @@ public class Order {
 
 
     // 주문 생성 메서드
-    public static Order create(OrderCreateRequest request, Long memberId, Long deliveryId, String orderNumber) {
+    public static Order create(OrderCreateRequest request, Member member, Long deliveryId, String orderNumber) {
 
 //
 //        int totalPrice = request.getOrderItemCreate()
@@ -97,8 +98,8 @@ public class Order {
 
         // 누적된 totalPrice로 주문 생성
         return Order.builder()
-                .customerId(memberId)
-                .name(request.getCustomerName())
+                .customerId(member.getId())
+                .name(member.getName())
                 .phone(request.getPhone())
                 .orderDate(LocalDateTime.now())
                 .totalPrice(totalPrice)  // 최종 금액 설정

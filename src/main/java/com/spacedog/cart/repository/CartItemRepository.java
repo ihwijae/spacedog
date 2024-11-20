@@ -26,6 +26,7 @@ public interface CartItemRepository {
     public Optional<CartItem> findById(Long id);
     void delete(CartItem cartItem);
     Optional<CartItem> findByItemIdWithMember(Long itemId, Long memberId);
+    void deleteAll(List<CartItem> cartItems);
 
 
 

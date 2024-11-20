@@ -6,6 +6,7 @@ import com.spacedog.item.domain.Item;
 import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.item.exception.NotEnoughStockException.OptionSpecsNotFound;
 import com.spacedog.item.impl.ItemReader;
+import com.spacedog.member.domain.Member;
 import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.option.repository.OptionSpecsRepository;
 import com.spacedog.order.domain.Order;
@@ -19,6 +20,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.Option;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.spacedog.order.impl.OrderCreateRequest.*;
 
 @Component
 @RequiredArgsConstructor
@@ -32,57 +37,43 @@ public class OrderWriter {
 
 
 
-    public Order createOrder(OrderCreateRequest request, Long memberId, Long deliveryId, String orderNumber) {
+    public Long createOrder(OrderCreateRequest request, Member member, Long deliveryId, String orderNumber) {
 
         // 주문 생성
-        Order order = Order.create(request, memberId, deliveryId, orderNumber);
+        Order order = Order.create(request, member, deliveryId, orderNumber);
 
         // 주문 저장
         Order saveOrder = orderRepository.save(order);
 
 
-        return saveOrder;
+        return saveOrder.getId();
     }
 
 
-    public void createOrderItems(OrderCreateRequest request, Long memberId, Order order) {
+    public void createOrderItems(List<OrderItemCreate> orderItemCreates,
+                                   Order order,
+                                   List<CartItem> cartItems,
+                                   List<OptionSpecification> optionSpecifications) {
 
-        request.getOrderItemCreate().forEach(orderItemCreate -> {
+        List<OrderItems> orderItemsList = orderItemCreates.stream()
+                .map(orderItem -> OrderItems.createOrderItem(
+                        orderItem.getItemId(), order, orderItem.getOrderPrice(), orderItem.getAmount()))
+                .collect(Collectors.toList());
 
-            OrderItems orderItem;
-            OptionSpecification optionSpec = null;
+        List<OrderItems> resultOrderItems = orderItemRepository.saveAll(orderItemsList);
 
-            if(orderItemCreate.getOptionId() != null) {
-                optionSpec = optionSpecsRepository.findById(orderItemCreate.getOptionId())
-                        .orElseThrow(() -> new OptionSpecsNotFound("옵션을 찾을 수 없습니다"));
 
-                orderItem = OrderItems.createOrderItem(
-                        orderItemCreate.getItemId(), order, orderItemCreate.getOrderPrice(), orderItemCreate.getAmount(), optionSpec.getId());
+        if(!optionSpecifications.isEmpty()) {
 
-            } else {
+            // OptionSpecifications를 OrderItems와 매핑하여 OrderItemOption 생성
+            List<OrderItemOption> orderItemOptions = OrderItemOption.create(resultOrderItems, optionSpecifications);
+            orderItemOptionRepository.saveAll(orderItemOptions);
 
-                orderItem = OrderItems.builder()
-                        .itemId(orderItemCreate.getItemId())
-                        .order(order)
-                        .orderPrice(orderItemCreate.getOrderPrice())
-                        .orderCount(orderItemCreate.getAmount())
-                        .build();
+        }
 
-            }
-
-            OrderItems resultOrderItems = orderItemRepository.save(orderItem);
-            OrderItemOption orderItemOption = OrderItemOption.create(orderItem.getId(), optionSpec);
-            orderItemOptionRepository.save(orderItemOption);
-
-            CartItem cartItem = cartItemRepository.findByItemIdWithMember(
-                            resultOrderItems.getItemId(), memberId)
-                    .orElseThrow(() -> new NotEnoughStockException("장바구니에 상품이 존재하지 않습니다"));
-            cartItemRepository.delete(cartItem);
-        });
-    }
-
-    public void createOrderItemOption() {
-
+        cartItemRepository.deleteAll(cartItems);
 
     }
+
+
 }

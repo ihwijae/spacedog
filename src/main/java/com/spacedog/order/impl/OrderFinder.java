@@ -1,5 +1,6 @@
 package com.spacedog.order.impl;
 
+import com.spacedog.order.domain.Order;
 import com.spacedog.order.repository.OrderRepository;
 import com.spacedog.order.service.OrderItemResponse;
 import com.spacedog.order.service.OrderResponse;
@@ -37,5 +38,9 @@ public class OrderFinder {
         });
 
         return orders;
+    }
+
+    public Order findDetailOrder(Long orderId) {
+       return orderRepository.findById(orderId);
     }
 }

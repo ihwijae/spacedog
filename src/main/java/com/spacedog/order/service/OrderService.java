@@ -1,9 +1,13 @@
 package com.spacedog.order.service;
 
+import com.spacedog.cart.domain.CartItem;
 import com.spacedog.delivery.impl.DeliveryWriter;
+import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.service.MemberReader;
+import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.order.domain.Order;
+import com.spacedog.order.domain.OrderItemOption;
 import com.spacedog.order.impl.OrderCreateRequest;
 import com.spacedog.order.impl.OrderNumberGenerator;
 import com.spacedog.order.impl.OrderFinder;
@@ -13,8 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static com.spacedog.order.impl.OrderCreateRequest.*;
 
 
 @Service
@@ -28,6 +33,8 @@ public class OrderService {
     private final OrderNumberGenerator orderNumberGenerator;
     private final OrderFinder orderFinder;
     private final StockManager stockManager;
+    private final CartItemReader cartItemReader;
+    private final OptionReader optionReader;
 
 
 
@@ -35,6 +42,8 @@ public class OrderService {
     // 주문 생성
     @Transactional
     public Long createOrder(OrderCreateRequest request) {
+
+        List<OrderItemCreate> orderItemCreate = request.getOrderItemCreate();
 
         Member member = memberReader.getMember();
 
@@ -44,20 +53,21 @@ public class OrderService {
 
         // 재고 확인
         stockManager.checkQuantity(request);
-
-        // 재고 처리
-
+        stockManager.stockDecrease(request);
 
 
         // 주문 번호 생성
         String orderNumber = orderNumberGenerator.OrderNumberCreate();
 
+        Long orderId = orderWriter.createOrder(request, member, deliveryId, orderNumber);
 
-        Order order =  orderWriter.createOrder(request, member.getId(), deliveryId, orderNumber);
+        List<CartItem> cartItem = cartItemReader.getCartItem(orderItemCreate, member.getId());
+        List<OptionSpecification> optionSpecs = optionReader.findOptionSpecs(orderItemCreate);
 
 
-        orderWriter.createOrderItems(request, member.getId(), order);
-        orderWriter.createOrderItemOption();
+        Order order = orderFinder.findDetailOrder(orderId);
+
+        orderWriter.createOrderItems(orderItemCreate, order, cartItem, optionSpecs);
 
 
         return order.getId();
