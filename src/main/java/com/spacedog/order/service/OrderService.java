@@ -39,7 +39,6 @@ public class OrderService {
 
 
 
-
     // 주문 생성
     @Transactional
     public Long createOrder(OrderCreateRequest request) {
@@ -48,11 +47,11 @@ public class OrderService {
 
         Member member = memberReader.getMember();
 
-        // 배송지
+        // 배송지 생성
         Long deliveryId = deliveryWriter.createDelivery(request.getAddress());
 
 
-        // 재고 확인
+        // 재고 확인 -> 재고 감소
         stockManager.checkQuantity(request);
         stockManager.stockDecrease(request);
 
