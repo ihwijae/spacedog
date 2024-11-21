@@ -22,3 +22,6 @@
 
 <br>
 
+## 🔍 ERD
+![erd.png](./erd.png)
+
