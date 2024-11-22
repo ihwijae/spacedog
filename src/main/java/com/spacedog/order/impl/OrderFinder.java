@@ -3,6 +3,7 @@ package com.spacedog.order.impl;
 import com.spacedog.order.domain.Order;
 import com.spacedog.order.dto.OrderDetailResponse;
 import com.spacedog.order.repository.OrderRepository;
+import com.spacedog.order.service.OrderException;
 import com.spacedog.order.service.OrderItemResponse;
 import com.spacedog.order.service.OrderResponse;
 import org.springframework.stereotype.Component;
@@ -47,4 +48,14 @@ public class OrderFinder {
     public OrderDetailResponse findDetailOrder(Long orderId) {
         return orderRepository.findOrderDetail(orderId);
     }
+
+    public void orderValidator(Long itemId, Long memberId) {
+        boolean result = orderRepository.existsByMemberIdAndItemId(itemId, memberId);
+
+        if(!result) {
+            throw new OrderException("상품을 구매한 사용자만 리뷰 작성이 가능합니다");
+        }
+    }
+
+
 }

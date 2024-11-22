@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spacedog.delivery.domain.QDelivery;
 import com.spacedog.item.domain.QItem;
+import com.spacedog.member.domain.QMember;
 import com.spacedog.option.domain.QOptionSpecification;
 import com.spacedog.order.domain.QOrder;
 import com.spacedog.order.domain.QOrderItemOption;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.spacedog.delivery.domain.QDelivery.delivery;
 import static com.spacedog.item.domain.QItem.item;
+import static com.spacedog.member.domain.QMember.member;
 import static com.spacedog.option.domain.QOptionSpecification.optionSpecification;
 import static com.spacedog.order.domain.QOrder.order;
 import static com.spacedog.order.domain.QOrderItemOption.orderItemOption;
@@ -85,6 +87,20 @@ public class QueryDslOrderRepository {
                 .join(delivery).on(order.deliveryId.eq(delivery.id))
                 .where(order.id.eq(orderId))
                 .fetchOne();
+    }
+
+    public boolean existsByMemberIdAndItemId(Long memberId, Long itemId) {
+
+        Integer result = queryFactory
+                .selectOne()
+                .from(order)
+                .join(orderItems).on(order.id.eq(orderItems.order.id))
+                .where(order.customerId.eq(memberId)
+                        .and(orderItems.itemId.eq(itemId)))
+                .fetchFirst();
+
+        return result != null;
+
     }
 
 

@@ -44,4 +44,9 @@ public class JpaOrderRepository implements OrderRepository {
     public OrderDetailResponse findOrderDetail(long orderId) {
         return queryDslRepository.findOrderDetail(orderId);
     }
+
+    @Override
+    public boolean existsByMemberIdAndItemId(Long itemId, Long memberId) {
+        return queryDslRepository.existsByMemberIdAndItemId(itemId, memberId);
+    }
 }

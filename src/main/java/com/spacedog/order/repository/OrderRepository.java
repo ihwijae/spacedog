@@ -18,5 +18,7 @@ public interface OrderRepository {
 
     OrderDetailResponse findOrderDetail(long orderId);
 
+    boolean existsByMemberIdAndItemId(Long itemId, Long memberId);
+
 
 }
