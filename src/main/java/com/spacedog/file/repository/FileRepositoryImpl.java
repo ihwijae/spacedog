@@ -1,7 +1,7 @@
 package com.spacedog.file.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spacedog.file.domain.FileData;
+import com.spacedog.file.domain.ItemImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,17 +16,17 @@ public class FileRepositoryImpl implements FileRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public FileData save(FileData fileData) {
-        return fileJpaRepository.save(fileData);
+    public ItemImage save(ItemImage itemImage) {
+        return fileJpaRepository.save(itemImage);
     }
 
     @Override
-    public Optional<FileData> findById(Long id) {
+    public Optional<ItemImage> findById(Long id) {
         return fileJpaRepository.findById(id);
     }
 
     @Override
-    public List<FileData> findByItemId(Long itemId) {
+    public List<ItemImage> findByItemId(Long itemId) {
         return fileJpaRepository.findByItemId(itemId);
     }
 }

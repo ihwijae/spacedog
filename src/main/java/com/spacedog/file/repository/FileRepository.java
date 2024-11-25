@@ -1,6 +1,6 @@
 package com.spacedog.file.repository;
 
-import com.spacedog.file.domain.FileData;
+import com.spacedog.file.domain.ItemImage;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface FileRepository {
 
 
-    public FileData save (FileData fileData);
-    public Optional<FileData> findById(Long id);
-    public List<FileData> findByItemId(Long itemId);
+    public ItemImage save (ItemImage itemImage);
+    public Optional<ItemImage> findById(Long id);
+    public List<ItemImage> findByItemId(Long itemId);
 }

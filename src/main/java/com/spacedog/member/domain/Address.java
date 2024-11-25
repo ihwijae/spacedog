@@ -1,3 +1,4 @@
+
 package com.spacedog.member.domain;
 
 import jakarta.persistence.Embeddable;

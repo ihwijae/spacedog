@@ -1,9 +1,8 @@
 package com.spacedog.file.service;
 
 
-import com.spacedog.file.domain.FileData;
+import com.spacedog.file.domain.ItemImage;
 import com.spacedog.file.repository.FileRepository;
-import com.spacedog.file.repository.FileRepositoryImpl;
 import com.spacedog.mock.FakeFileRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,22 +14,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Transactional
-class FileLocalServiceTest {
+class ImageServiceTest {
 
 
     private FileRepository fileRepository = new FakeFileRepository();
-    private FileLocalService fileLocalService;
+    private ImageService imageService;
 
 
 
 
     @BeforeEach
     void init () {
-        fileLocalService = new FileLocalService(fileRepository);
-        ReflectionTestUtils.setField(fileLocalService, "fileDir", "/Users/ihwijae/projects/spedok/file/"); //@Value에 넣을수있음
+//        itemImageService = new ItemImageService(fileRepository);
+        ReflectionTestUtils.setField(imageService, "fileDir", "/Users/ihwijae/projects/spedok/file/"); //@Value에 넣을수있음
     }
 
     @Test
@@ -41,7 +39,7 @@ class FileLocalServiceTest {
 
 
         //when
-        String fullPath = fileLocalService.getFullPath(fileName);
+        String fullPath = imageService.getItemImageFullPath(fileName);
 
         //then
         Assertions.assertThat(fullPath).isEqualTo("/Users/ihwijae/projects/spedok/file/test.png");
@@ -55,12 +53,12 @@ class FileLocalServiceTest {
 
 
         //when
-        FileData fileData = fileLocalService.uploadFile(1L, multipartFile);
+        ItemImage itemImage = imageService.uploadItemFile(1L, multipartFile);
 
         //then
-        Assertions.assertThat(fileData).isNotNull();
-        Assertions.assertThat(fileData.getId()).isEqualTo(1L);
-        Assertions.assertThat(fileData.getUploadFileName()).isEqualTo("test.png");
+        Assertions.assertThat(itemImage).isNotNull();
+        Assertions.assertThat(itemImage.getId()).isEqualTo(1L);
+        Assertions.assertThat(itemImage.getUploadFileName()).isEqualTo("test.png");
     }
 
     @Test
@@ -75,7 +73,7 @@ class FileLocalServiceTest {
         multipartFiles.add(multipartFile2);
 
         //when
-        List<FileData> fileData = fileLocalService.uploadFiles(itemId, multipartFiles);
+        List<ItemImage> fileData = imageService.uploadItemFiles(itemId, multipartFiles);
 
 
 

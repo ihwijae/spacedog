@@ -2,6 +2,7 @@ package com.spacedog.review.domain;
 
 import com.spacedog.member.domain.BaseTimeEntity;
 import com.spacedog.review.dto.ReviewCreateRequest;
+import com.spacedog.review.dto.ReviewEditRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,13 +39,23 @@ public class Review extends BaseTimeEntity {
     public Review() {
     }
 
-    public static Review createReview(Long memberId, Long itemId,ReviewCreateRequest request) {
+    public void createReview(ReviewCreateRequest request) {
 
-        return Review.builder()
-                .memberId(memberId)
-                .itemId(itemId)
-                .content(request.getComment())
-                .rating(request.getRating())
-                .build();
+       this.content = request.getComment();
+       this.rating = request.getRating();
+
+    }
+
+    public void editReview(ReviewEditRequest request) {
+        this.content = request.getContent();
+        this.rating = request.getRating();
+    }
+
+    public static Review createTemporaryReview(Long itemId, Long memberId) {
+        return
+                Review.builder()
+                        .itemId(itemId)
+                        .memberId(memberId)
+                        .build();
     }
 }

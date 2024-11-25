@@ -89,7 +89,7 @@ public class QueryDslOrderRepository {
                 .fetchOne();
     }
 
-    public boolean existsByMemberIdAndItemId(Long memberId, Long itemId) {
+    public boolean existsByMemberIdAndItemId(Long itemId, Long memberId) {
 
         Integer result = queryFactory
                 .selectOne()

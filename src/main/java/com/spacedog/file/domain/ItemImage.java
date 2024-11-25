@@ -6,8 +6,8 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@Table(name = "file_data")
-public class FileData {
+@Table(name = "item_image")
+public class ItemImage {
 
 
     @Id
@@ -27,7 +27,7 @@ public class FileData {
 
 
     @Builder
-    public FileData(Long id, String uploadFilename, String storeFilename, String filePath, Long itemId) {
+    public ItemImage(Long id, String uploadFilename, String storeFilename, String filePath, Long itemId) {
         this.id = id;
         this.uploadFileName = uploadFilename;
         this.storeFileName = storeFilename;
@@ -35,6 +35,6 @@ public class FileData {
         this.itemId = itemId;
     }
 
-    public FileData() {
+    public ItemImage() {
     }
 }

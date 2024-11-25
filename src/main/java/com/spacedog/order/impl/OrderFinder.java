@@ -6,13 +6,17 @@ import com.spacedog.order.repository.OrderRepository;
 import com.spacedog.order.service.OrderException;
 import com.spacedog.order.service.OrderItemResponse;
 import com.spacedog.order.service.OrderResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
+@Transactional(readOnly = true)
 public class OrderFinder {
 
     private final OrderRepository orderRepository;
@@ -50,7 +54,12 @@ public class OrderFinder {
     }
 
     public void orderValidator(Long itemId, Long memberId) {
+
+        log.info("itemId={}, memberId={}", itemId, memberId);
+
         boolean result = orderRepository.existsByMemberIdAndItemId(itemId, memberId);
+
+        log.info("result={}", String.valueOf(result));
 
         if(!result) {
             throw new OrderException("상품을 구매한 사용자만 리뷰 작성이 가능합니다");

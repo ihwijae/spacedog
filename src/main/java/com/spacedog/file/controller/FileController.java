@@ -1,9 +1,9 @@
 package com.spacedog.file.controller;
 
-import com.spacedog.file.domain.FileData;
-import com.spacedog.file.service.FileService;
+import com.spacedog.file.domain.ItemImage;
+import com.spacedog.file.domain.ReviewImage;
+import com.spacedog.file.service.ImageService;
 import com.spacedog.global.ApiResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -26,12 +26,13 @@ import java.util.stream.Collectors;
 public class FileController {
 
 
-    private final FileService fileService;
+    private final ImageService imageService;
 
-    @PostMapping("/files/{itemId}")
-    public ApiResponse<List<String>> uploadFile(@PathVariable Long itemId, @RequestPart List<MultipartFile> multipartFiles) {
+
+    @PostMapping("/itemFiles/{itemId}")
+    public ApiResponse<List<String>> uploadFile(@PathVariable("itemId") Long itemId, @RequestPart("multipartFiles") List<MultipartFile> multipartFiles) {
         log.info("파일 업로드 컨트롤러");
-        List<FileData> fileData = fileService.uploadFiles(itemId, multipartFiles);
+        List<ItemImage> fileData = imageService.uploadItemFiles(itemId, multipartFiles);
 
 
         List<String> resultPath = fileData.stream()
@@ -42,13 +43,13 @@ public class FileController {
     }
 
 
-    @GetMapping("/files/{filename}")
-    public ResponseEntity<Resource> downloadImage(@PathVariable String filename) throws IOException {
+    @GetMapping("/itemFiles/{filename}")
+    public ResponseEntity<Resource> downloadImage(@PathVariable("filename") String filename) throws IOException {
         log.info("filename: {}", filename);
-        UrlResource urlResource = new UrlResource("file:" + fileService.getFullPath(filename));
+        UrlResource urlResource = new UrlResource("file:" + imageService.getItemImageFullPath(filename));
 
         String contentType =
-                Files.probeContentType(Paths.get(fileService.getFullPath(filename)));
+                Files.probeContentType(Paths.get(imageService.getItemImageFullPath(filename)));
 
         MediaType mediaType;
         if (contentType != null) {
@@ -64,11 +65,33 @@ public class FileController {
     }
 
     @GetMapping("/items/{itemId}/images")
-    public ApiResponse<List<String>> getImages(@PathVariable Long itemId) {
-        List<String> filePath = fileService.getFile(itemId);
+    public ApiResponse<List<String>> getImages(@PathVariable("itemId") Long itemId) {
+        List<String> filePath = imageService.getItemFile(itemId);
 
         return ApiResponse.success(filePath, "이미지 조회");
     }
 
+
+    @PostMapping("/reviewFiles/{reviewId}")
+    public ApiResponse<List<String>> uploadReviewFile(@PathVariable Long reviewId, @RequestPart List<MultipartFile> multipartFiles) {
+        log.info("리뷰 이미지 파일 컨트롤러");
+        List<ReviewImage> fileData = imageService.uploadReviewFiles(reviewId, multipartFiles);
+
+
+        List<String> resultPath = fileData.stream()
+                .map(f -> f.getFilePath())
+                .collect(Collectors.toList());
+
+        return ApiResponse.success(resultPath, "파일 업로드 완료");
+    }
+
+
+
+    @GetMapping("/review/{reviewId}/images")
+    public ApiResponse<List<String>> getReviewImage(@PathVariable Long reviewId) {
+        List<String> filePath = imageService.getReviewFile(reviewId);
+
+        return ApiResponse.success(filePath, "이미지 조회");
+    }
 
 }

@@ -1,12 +1,12 @@
 package com.spacedog.file.repository;
 
-import com.spacedog.file.domain.FileData;
+import com.spacedog.file.domain.ItemImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface FileJpaRepository extends JpaRepository<FileData, Long> {
+public interface FileJpaRepository extends JpaRepository<ItemImage, Long> {
 
-    List<FileData> findByItemId(Long id);
+    List<ItemImage> findByItemId(Long id);
+
 }

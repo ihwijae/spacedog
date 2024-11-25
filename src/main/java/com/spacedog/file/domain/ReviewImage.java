@@ -1,4 +1,4 @@
-package com.spacedog.review.domain;
+package com.spacedog.file.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
