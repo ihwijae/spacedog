@@ -4,6 +4,7 @@ import com.spacedog.member.domain.Member;
 import com.spacedog.member.service.MemberReader;
 import com.spacedog.order.impl.OrderFinder;
 import com.spacedog.review.domain.Review;
+import com.spacedog.review.domain.ReviewReply;
 import com.spacedog.review.dto.ReviewCreateRequest;
 import com.spacedog.review.dto.ReviewEditRequest;
 import com.spacedog.review.dto.ReviewReplyCreateRequest;
@@ -24,6 +25,7 @@ public class ReviewService {
     private final ReviewReader reviewReader;
     private final ReviewValidator reviewValidator;
     private final ReviewReplyManager reviewReplyManager;
+    private final ReviewReplyReader reviewReplyReader;
 
 
     public List<ReviewResponse> findReviewAll(Long itemId, int pageNo, int pageSize) {
@@ -89,6 +91,10 @@ public class ReviewService {
 
         reviewValidator.writeReviewMemberCheck(member.getId(), review.getId());
 
+
+        List<ReviewReply> reviewReply = reviewReplyReader.findReviewReply(reviewId);
+
+        reviewReplyManager.deleteReviewReply(reviewReply);
         reviewManager.deleteReview(review);
 
     }
