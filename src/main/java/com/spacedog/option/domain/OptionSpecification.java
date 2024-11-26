@@ -53,6 +53,7 @@ public class OptionSpecification {
         this.stockQuantity += quantity;
     }
 
+
     public void removeQuantity(int quantity, Item item) {
         int restStock = this.stockQuantity - quantity;
 

@@ -103,10 +103,14 @@ public class Order {
                 .phone(request.getPhone())
                 .orderDate(LocalDateTime.now())
                 .totalPrice(totalPrice)  // 최종 금액 설정
-                .orderStatus(OrderStatus.ORDER)
+                .orderStatus(OrderStatus.PENDING)
                 .deliveryId(deliveryId)
                 .orderNumber(orderNumber)
                 .build();
+    }
+
+    public void cancel() {
+        this.orderStatus = OrderStatus.CANCLE;
     }
 
 

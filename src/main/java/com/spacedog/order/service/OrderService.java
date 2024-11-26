@@ -2,12 +2,14 @@ package com.spacedog.order.service;
 
 import com.spacedog.cart.domain.CartItem;
 import com.spacedog.delivery.impl.DeliveryWriter;
-import com.spacedog.item.exception.NotEnoughStockException;
+import com.spacedog.item.domain.Item;
+import com.spacedog.item.impl.ItemReader;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.service.MemberReader;
 import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.order.domain.Order;
 import com.spacedog.order.domain.OrderItemOption;
+import com.spacedog.order.domain.OrderItems;
 import com.spacedog.order.dto.OrderDetailResponse;
 import com.spacedog.order.impl.OrderCreateRequest;
 import com.spacedog.order.impl.OrderNumberGenerator;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.spacedog.order.impl.OrderCreateRequest.*;
 
@@ -36,6 +39,7 @@ public class OrderService {
     private final StockManager stockManager;
     private final CartItemReader cartItemReader;
     private final OptionReader optionReader;
+    private final ItemReader itemReader;
 
 
 
@@ -89,6 +93,43 @@ public class OrderService {
         return orderFinder.findDetailOrder(orderId);
     }
 
-    
+
+    public void cancelOrder(Long orderId) {
+        Order order = orderFinder.orderCancleCheck(orderId);
+
+        order.cancel();
+
+        List<OrderItems> orderItems = orderFinder.findOrderItems(orderId);
+
+        orderItems.forEach(orderItem -> {
+            orderItem.cancel();
+            Item item = itemReader.findById(orderItem.getItemId());
+            List<OrderItemOption> orderItemOptions = orderFinder.findOrderItemOptions(orderItem.getId());
+
+            orderItemOptions.forEach(orderItemOption -> {
+                Long optionId = orderItemOption.getOptionId();
+                
+            });
+
+
+
+        });
+
+
+
+        List<Integer> orderStock = orderItems.stream()
+                .map(orderItem -> orderItem.getOrderCount())
+                .collect(Collectors.toList());
+
+//        List<Long> orderItemOptionIds = orderFinder.findOrderItemOptions(orderItems);
+
+        List<OptionSpecification> optionSpecifications = optionReader.orderCancleWithOption(orderItemOptionIds);
+
+        List<Item> items = itemReader.findByOrderItem(orderItems);
+
+        stockManager.orderCancelToStock(items, optionSpecifications, orderItems);
+
+
+    }
 
 }

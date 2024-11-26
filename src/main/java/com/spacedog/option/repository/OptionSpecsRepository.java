@@ -8,4 +8,5 @@ import java.util.List;
 public interface OptionSpecsRepository extends JpaRepository<OptionSpecification, Long> {
 
     List<OptionSpecification> findByOptionGroupSpecification_Id(Long id);
+    List<OptionSpecification> findByIdIn(List<Long> optionIds);
 }

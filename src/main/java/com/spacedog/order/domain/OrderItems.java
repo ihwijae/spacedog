@@ -1,8 +1,11 @@
 package com.spacedog.order.domain;
 
+import com.spacedog.item.domain.Item;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "order_item")
@@ -31,6 +34,10 @@ public class OrderItems {
     @Column(name = "order_count")
     private int orderCount;
 
+    @Enumerated(EnumType.STRING)
+    private OrderItemStatus status;
+
+
 
     @Builder
     public OrderItems(Long id, Long itemId, Order order, int orderPrice, int orderCount) {
@@ -52,4 +59,13 @@ public class OrderItems {
                 .orderCount(orderCount)
                 .build();
     }
+
+    public void cancel() {
+        this.status = OrderItemStatus.CANCELLED;
+
+
+
+    }
+
+
 }

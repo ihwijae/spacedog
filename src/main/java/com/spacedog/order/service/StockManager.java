@@ -6,9 +6,12 @@ import com.spacedog.item.impl.ItemReader;
 import com.spacedog.item.repository.ItemRepositoryPort;
 import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.option.repository.OptionSpecsRepository;
+import com.spacedog.order.domain.OrderItems;
 import com.spacedog.order.impl.OrderCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -53,6 +56,14 @@ public class StockManager {
                         item.removeStock(orderItem.getAmount());
                     }
                 });
+    }
+
+    public void orderCancelToStock(List<Item> items, List<OptionSpecification> options, List<OrderItems> orderItems) {
+
+        if (options != null && !options.isEmpty()) {
+
+        }
+
     }
 
 }

@@ -8,6 +8,7 @@ import com.spacedog.order.impl.OrderCreateRequest.OrderItemCreate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,16 @@ public class OptionReader {
        } else {
            return Collections.emptyList(); //빈 리스트 반환
        }
+    }
+
+    public List<OptionSpecification> orderCancleWithOption(List<Long> optionIds) {
+
+        // null 또는 비어있는 리스트 처리
+        if (optionIds == null || optionIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return optionSpecsRepository.findByIdIn(optionIds);
     }
 
 

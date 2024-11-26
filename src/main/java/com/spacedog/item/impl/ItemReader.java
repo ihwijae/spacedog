@@ -2,9 +2,14 @@ package com.spacedog.item.impl;
 
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.exception.NotEnoughStockException;
+import com.spacedog.item.exception.NotEnoughStockException.ItemNotFound;
 import com.spacedog.item.repository.ItemRepositoryPort;
+import com.spacedog.order.domain.OrderItems;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -15,8 +20,22 @@ public class ItemReader {
 
     public Item findById(Long itemId) {
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NotEnoughStockException.ItemNotFound("item not found"));
+                .orElseThrow(() -> new ItemNotFound("item not found"));
 
         return item;
     }
+
+    public List<Item> findByOrderItem(List<OrderItems> orderItems) {
+
+        List<Long> itemIds = orderItems.stream()
+                .map(orderItem -> orderItem.getItemId())
+                .collect(Collectors.toList());
+
+        List<Item> items = itemRepository.findByIdIn(itemIds);
+
+        return items;
+    }
+
+
+
 }

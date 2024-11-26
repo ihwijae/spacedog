@@ -22,5 +22,6 @@ public interface ItemRepositoryPort {
     public List<FindItemAllResponse> findItemsAll(int pageNo, int pageSize);
     public Optional<Item> findByItemWithCategory(Long id);
     public List<ItemDetailResponse> itemDetail(Long itemId);
+    public List<Item> findByIdIn(List<Long> ids);
 
 }

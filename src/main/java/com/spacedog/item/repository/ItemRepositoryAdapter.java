@@ -14,10 +14,17 @@ import static com.spacedog.item.domain.QItem.item;
 
 @Repository
 @RequiredArgsConstructor
+
 public class ItemRepositoryAdapter implements ItemRepositoryPort {
 
     private final ItemJpaRepository repository;
     private final ItemQueryRepository queryRepository;
+
+    @Override
+    public List<Item> findByIdIn(List<Long> ids) {
+        List<Item> Items = repository.findByIdIn(ids);
+        return Items;
+    }
 
     @Override
     public Optional<Item> findByName(String name) {
