@@ -85,11 +85,8 @@ public class Item extends BaseTimeEntity {
         return item;
     }
 
-    public void finalCreateItem(CreateItemRequest createItemRequest, boolean isValid) {
+    public void finalCreateItem(CreateItemRequest createItemRequest) {
 
-        if(isValid) {
-            throw new ItemDuplicate("해당 상품이 이미 존재합니다.");
-        }
 
         this.id = createItemRequest.getId();
         this.name = createItemRequest.getName();

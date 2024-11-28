@@ -52,7 +52,7 @@ public class ItemUnitServiceTest {
     @BeforeEach
             public void setup() {
         categoryService = new CategoryService(categoryRepository,categoryQueryRepository, categoryItemRepository);
-        itemService = new ItemService(categoryService, optionService, itemRepositoryPort);
+//        itemService = new ItemService(categoryService, optionService, itemRepositoryPort);
 //        SecurityContext context = SecurityContextHolder.createEmptyContext();
 //        TestingAuthenticationToken mockAuthentication = new TestingAuthenticationToken("lhj@naver.com", "12345678");
 //        context.setAuthentication(mockAuthentication);

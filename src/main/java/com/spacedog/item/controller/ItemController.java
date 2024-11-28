@@ -27,7 +27,6 @@ public class ItemController {
 
     private final ItemService itemService;
     private final MemberService memberService;
-    private final MemberValidate memberValidate;
 
 
 

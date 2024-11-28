@@ -10,7 +10,11 @@ import com.spacedog.item.dto.*;
 import com.spacedog.item.repository.*;
 import com.spacedog.member.domain.Member;
 import com.spacedog.member.exception.MemberException;
+import com.spacedog.option.domain.OptionGroupSpecification;
+import com.spacedog.option.service.OptionGroupManager;
+import com.spacedog.option.service.OptionManager;
 import com.spacedog.option.service.OptionService;
+import com.spacedog.stock.service.StockDomainManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -30,6 +34,10 @@ public class ItemService {
     private final CategoryService categoryService;
     private final OptionService optionService;
     private final ItemRepositoryPort itemRepositoryPort;
+    private final OptionManager optionManager;
+    private final StockDomainManager stockDomainManager;
+    private final ItemFinder itemFinder;
+    private final OptionGroupManager optionGroupManager;
 
 
 
@@ -44,25 +52,35 @@ public class ItemService {
     @Transactional
     public Long createItem(CreateItemRequest createItemRequest, Member member) {
 
-        boolean isValid = itemRepositoryPort.existByName(createItemRequest.getName());
-//        Item item = Item.createItem(itemId, createItemRequest, exist); -> 이건 새로생성하는거니까 수정해야함
 
-        Item item = itemRepositoryPort.findById(createItemRequest.getId())
-                .orElseThrow(() -> new ItemNotFound("상품을 찾을수 없습니다"));
-        item.finalCreateItem(createItemRequest, isValid);
+        itemFinder.validateItemName(createItemRequest.getName());
+        Item item = itemFinder.find(createItemRequest.getId());
 
-
+        item.finalCreateItem(createItemRequest);
         item.addMember(member);
-        Item saveItem = itemRepositoryPort.save(item);
 
         categoryService.saveCategoryItem(createItemRequest, item);
 
 
-        /** 상품의 옵션이 있으면 옵션을 저장 **/
-        if(createItemRequest.getOptionGroups() != null) {
-            optionService.saveOptionWithItem(createItemRequest, item);
+        List<OptionGroupRequest> optionGroups = createItemRequest.getOptionGroups();
+
+        if(optionGroups == null || optionGroups.isEmpty()) {
+            Long defaultOptionId = optionManager.saveDefaultOption(item);
+            stockDomainManager.createNotOptionItemStock(item.getId(), defaultOptionId, createItemRequest.getStockQuantity());
         }
 
+
+        optionGroups.forEach(optionGroup -> {
+            OptionGroupSpecification optionGroupResult = optionGroupManager.createOptionGroup(item, optionGroup);
+            List<OptionSpecsRequest> optionSpecsRequest = optionGroup.getOptionSpecsRequest();
+
+            optionSpecsRequest.forEach(optionSpec -> {
+                Long optionId = optionManager.saveOptionV3(optionGroupResult, optionSpec);
+                stockDomainManager.createExistOptionItemStock(item.getId(), optionId, optionSpec.getStockQuantity());
+            });
+        });
+
+        da
         return createItemRequest.getId();
     }
 
@@ -243,12 +261,6 @@ public class ItemService {
 
     }
 
-    private void validateMember(Member member) {
-
-        if(member == null) {
-            throw new MemberException("유저 정보를 불러올 수 없습니다");
-        }
-    }
 
 
 

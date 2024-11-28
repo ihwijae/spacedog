@@ -26,7 +26,7 @@ public class OptionService {
     @Transactional
     public void saveOptionWithItem(CreateItemRequest createItemRequest, Item item) {
 
-        createItemRequest.getOptionGroups().stream()
+        List<OptionGroupSpecification> collect = createItemRequest.getOptionGroups().stream()
                 .map(optionGroupRequest -> {
                     OptionGroupSpecification itemOptionGroup = OptionGroupSpecification.builder()
                             .name(optionGroupRequest.getName())

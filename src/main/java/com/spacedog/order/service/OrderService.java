@@ -93,43 +93,43 @@ public class OrderService {
         return orderFinder.findDetailOrder(orderId);
     }
 
-
-    public void cancelOrder(Long orderId) {
-        Order order = orderFinder.orderCancleCheck(orderId);
-
-        order.cancel();
-
-        List<OrderItems> orderItems = orderFinder.findOrderItems(orderId);
-
-        orderItems.forEach(orderItem -> {
-            orderItem.cancel();
-            Item item = itemReader.findById(orderItem.getItemId());
-            List<OrderItemOption> orderItemOptions = orderFinder.findOrderItemOptions(orderItem.getId());
-
-            orderItemOptions.forEach(orderItemOption -> {
-                Long optionId = orderItemOption.getOptionId();
-                
-            });
-
-
-
-        });
-
-
-
-        List<Integer> orderStock = orderItems.stream()
-                .map(orderItem -> orderItem.getOrderCount())
-                .collect(Collectors.toList());
-
-//        List<Long> orderItemOptionIds = orderFinder.findOrderItemOptions(orderItems);
-
-        List<OptionSpecification> optionSpecifications = optionReader.orderCancleWithOption(orderItemOptionIds);
-
-        List<Item> items = itemReader.findByOrderItem(orderItems);
-
-        stockManager.orderCancelToStock(items, optionSpecifications, orderItems);
-
-
-    }
+//
+//    public void cancelOrder(Long orderId) {
+//        Order order = orderFinder.orderCancleCheck(orderId);
+//
+//        order.cancel();
+//
+//        List<OrderItems> orderItems = orderFinder.findOrderItems(orderId);
+//
+//        orderItems.forEach(orderItem -> {
+//            orderItem.cancel();
+//            Item item = itemReader.findById(orderItem.getItemId());
+//            List<OrderItemOption> orderItemOptions = orderFinder.findOrderItemOptions(orderItem.getId());
+//
+//            orderItemOptions.forEach(orderItemOption -> {
+//                Long optionId = orderItemOption.getOptionId();
+//
+//            });
+//
+//
+//
+//        });
+//
+//
+//
+//        List<Integer> orderStock = orderItems.stream()
+//                .map(orderItem -> orderItem.getOrderCount())
+//                .collect(Collectors.toList());
+//
+////        List<Long> orderItemOptionIds = orderFinder.findOrderItemOptions(orderItems);
+//
+//        List<OptionSpecification> optionSpecifications = optionReader.orderCancleWithOption(orderItemOptionIds);
+//
+//        List<Item> items = itemReader.findByOrderItem(orderItems);
+//
+//        stockManager.orderCancelToStock(items, optionSpecifications, orderItems);
+//
+//
+//    }
 
 }

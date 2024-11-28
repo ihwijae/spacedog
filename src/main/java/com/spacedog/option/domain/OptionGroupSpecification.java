@@ -2,6 +2,7 @@ package com.spacedog.option.domain;
 
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.EditOptionGroupRequest;
+import com.spacedog.item.dto.OptionGroupRequest;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,6 +50,18 @@ public class OptionGroupSpecification {
         this.name = request.getName();
         this.exclusive = request.isExclusive();
         this.basic = request.isBasic();
+    }
+
+    public static OptionGroupSpecification create(Item item, OptionGroupRequest request) {
+
+        return
+                OptionGroupSpecification
+                        .builder()
+                        .name(request.getName())
+                        .item(item)
+                        .basic(request.isBasic())
+                        .exclusive(request.isExclusive())
+                        .build();
     }
 
 

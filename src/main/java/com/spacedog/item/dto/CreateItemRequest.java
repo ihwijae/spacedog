@@ -26,6 +26,7 @@ public class CreateItemRequest {
     @NotBlank(message = "상품의 가격을 입력하세요")
     private int price;
 
+
     @NotBlank(message = "상품의 재고를 입력하세요")
     private Integer stockQuantity;
 

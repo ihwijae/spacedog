@@ -5,7 +5,6 @@ import com.spacedog.order.domain.OrderItemOption;
 import com.spacedog.order.domain.OrderItems;
 import com.spacedog.order.domain.OrderStatus;
 import com.spacedog.order.dto.OrderDetailResponse;
-import com.spacedog.order.repository.OrderItemOptionQueryRepository;
 import com.spacedog.order.repository.OrderItemOptionRepository;
 import com.spacedog.order.repository.OrderItemRepository;
 import com.spacedog.order.repository.OrderRepository;
