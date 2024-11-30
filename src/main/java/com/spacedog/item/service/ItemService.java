@@ -67,20 +67,20 @@ public class ItemService {
         if(optionGroups == null || optionGroups.isEmpty()) {
             Long defaultOptionId = optionManager.saveDefaultOption(item);
             stockDomainManager.createNotOptionItemStock(item.getId(), defaultOptionId, createItemRequest.getStockQuantity());
+        } else {
+            optionGroups.forEach(optionGroup -> {
+                OptionGroupSpecification optionGroupResult = optionGroupManager.createOptionGroup(item, optionGroup);
+                List<OptionSpecsRequest> optionSpecsRequest = optionGroup.getOptionSpecsRequest();
+
+                optionSpecsRequest.forEach(optionSpec -> {
+                    Long optionId = optionManager.saveOptionV3(optionGroupResult, optionSpec);
+                    stockDomainManager.createExistOptionItemStock(item.getId(), optionId, optionSpec.getStockQuantity());
+                });
+            });
         }
 
 
-        optionGroups.forEach(optionGroup -> {
-            OptionGroupSpecification optionGroupResult = optionGroupManager.createOptionGroup(item, optionGroup);
-            List<OptionSpecsRequest> optionSpecsRequest = optionGroup.getOptionSpecsRequest();
 
-            optionSpecsRequest.forEach(optionSpec -> {
-                Long optionId = optionManager.saveOptionV3(optionGroupResult, optionSpec);
-                stockDomainManager.createExistOptionItemStock(item.getId(), optionId, optionSpec.getStockQuantity());
-            });
-        });
-
-        da
         return createItemRequest.getId();
     }
 
