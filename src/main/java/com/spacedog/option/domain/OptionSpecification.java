@@ -34,8 +34,7 @@ public class OptionSpecification {
 //    @Convert(converter = MoneyConverter.class)
     private int additionalPrice; //옵션에 따른 추가금액 0일수도 아닐수도
 
-    @Column(name = "stock_quantity")
-    private int stockQuantity;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_spec_id")
@@ -69,30 +68,12 @@ public class OptionSpecification {
 
 
 
-    public void addQuantity(int quantity) {
-        this.stockQuantity += quantity;
-    }
 
 
-    public void removeQuantity(int quantity, Item item) {
-        int restStock = this.stockQuantity - quantity;
-
-        if (restStock < 0) {
-            throw new NotEnoughStockException("재고가 없습니다");
-        }
-
-        this.stockQuantity = restStock;
 
 
-        item.removeStock(quantity);
-    }
 
-    public void checkQuantity(int quantity) {
 
-        if (this.stockQuantity < quantity) {
-            throw new OrderException("재고가 부족합니다. 남은 재고 : " + this.stockQuantity );
-        }
-    }
 
 
 }

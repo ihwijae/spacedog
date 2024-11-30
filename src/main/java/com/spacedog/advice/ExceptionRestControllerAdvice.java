@@ -7,6 +7,7 @@ import com.spacedog.member.exception.MemberException;
 import com.spacedog.exception.RefreshTokenException;
 import com.spacedog.exception.RefreshTokenException.RefreshTokenDataBase;
 import com.spacedog.exception.RefreshTokenException.RefreshTokenExpiredException;
+import com.spacedog.order.service.OrderException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,6 +96,12 @@ public class ExceptionRestControllerAdvice {
 
     @ExceptionHandler(NotEnoughStockException.class)
     public ResponseEntity<List<String>> handleNotEnoughStockException(NotEnoughStockException ex) {
+        return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<List<String>> handleOrderException(OrderException ex) {
+        log.error(ex.getMessage(), ex);
         return createErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 

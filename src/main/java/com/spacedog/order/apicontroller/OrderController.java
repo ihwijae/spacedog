@@ -42,4 +42,12 @@ public class OrderController {
 
         return ApiResponse.success(orderDetail, "주문 상세 조회");
     }
+
+    @PatchMapping("/orders/{orderId}/cancel")
+    public ApiResponse cancelOrder(@PathVariable("orderId") Long orderId) {
+
+        orderService.cancelOrder(orderId);
+
+        return ApiResponse.successNoResponse("주문이 정상적으로 취소 됐습니다");
+    }
 }

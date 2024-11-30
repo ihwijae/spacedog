@@ -46,8 +46,7 @@ public class Item extends BaseTimeEntity {
 //    @Convert(converter = MoneyConverter.class)
     private int price;
 
-    @Column(name = "stock_quantity")
-    private int stockQuantity;
+
 
 
     @OneToMany(mappedBy = "item")
@@ -56,14 +55,13 @@ public class Item extends BaseTimeEntity {
 
 
     @Builder
-    public Item(Long id, String name, String description, Long memberId, int price, CategoryItem category, int stockQuantity) {
+    public Item(Long id, String name, String description, Long memberId, int price, CategoryItem category) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.memberId = memberId;
         this.price = price;
         this.category.add(category);
-        this.stockQuantity = stockQuantity;
     }
 
     public Item() {
@@ -80,7 +78,6 @@ public class Item extends BaseTimeEntity {
                 .name(createItemRequest.getName())
                 .description(createItemRequest.getDescription())
                 .price(createItemRequest.getPrice())
-                .stockQuantity(createItemRequest.getStockQuantity())
                 .build();
         return item;
     }
@@ -92,7 +89,6 @@ public class Item extends BaseTimeEntity {
         this.name = createItemRequest.getName();
         this.description = createItemRequest.getDescription();
         this.price = createItemRequest.getPrice();
-        this.stockQuantity = createItemRequest.getStockQuantity();
     }
 
 
@@ -103,20 +99,9 @@ public class Item extends BaseTimeEntity {
         this.category.add(category);
     }
 
-    public void addStock(int quantity) {
-        this.stockQuantity += quantity;
-    }
 
-    public void removeStock(int quantity) {
-        int restStock = this.stockQuantity - quantity;
 
-        if (restStock < 0) {
-            throw new NotEnoughStockException("재고가 없습니다");
-        }
 
-        this.stockQuantity = restStock;
-
-    }
 
 
 
@@ -133,11 +118,7 @@ public class Item extends BaseTimeEntity {
 
    }
 
-   public void checkQuantity(int quantity) {
-        if(this.stockQuantity < quantity) {
-            throw new OrderException("재고가 부족합니다. 남은 재고 : " + this.stockQuantity);
-        }
-   }
+
 
 
 

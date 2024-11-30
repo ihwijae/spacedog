@@ -25,16 +25,7 @@ public class ItemReader {
         return item;
     }
 
-    public List<Item> findByOrderItem(List<OrderItems> orderItems) {
 
-        List<Long> itemIds = orderItems.stream()
-                .map(orderItem -> orderItem.getItemId())
-                .collect(Collectors.toList());
-
-        List<Item> items = itemRepository.findByIdIn(itemIds);
-
-        return items;
-    }
 
 
 

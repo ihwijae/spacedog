@@ -45,7 +45,6 @@ public class OptionService {
                                         .name(optionSpecsRequest.getName())
                                         .additionalPrice(optionSpecsRequest.getPrice())
                                         .optionGroupSpecification(saveItemOption)
-                                        .stockQuantity(optionSpecsRequest.getStockQuantity())
                                         .build();
                                 optionSpecsRepository.save(itemOptionSpecs);
 
@@ -121,7 +120,6 @@ public class OptionService {
                                                 .name(editOptionSpecsRequest.getName())
                                                 .additionalPrice(editOptionSpecsRequest.getPrice())
                                                 .optionGroupSpecification(optionGroupSpecification)
-                                                .stockQuantity(editOptionSpecsRequest.getQuantity())
                                                 .build()
                                         );
                                 optionSpecification.update(editOptionSpecsRequest, optionGroupSpecification);

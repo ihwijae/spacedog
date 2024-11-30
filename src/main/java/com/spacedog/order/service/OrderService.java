@@ -93,43 +93,38 @@ public class OrderService {
         return orderFinder.findDetailOrder(orderId);
     }
 
-//
-//    public void cancelOrder(Long orderId) {
-//        Order order = orderFinder.orderCancleCheck(orderId);
-//
-//        order.cancel();
-//
-//        List<OrderItems> orderItems = orderFinder.findOrderItems(orderId);
-//
-//        orderItems.forEach(orderItem -> {
-//            orderItem.cancel();
-//            Item item = itemReader.findById(orderItem.getItemId());
-//            List<OrderItemOption> orderItemOptions = orderFinder.findOrderItemOptions(orderItem.getId());
-//
-//            orderItemOptions.forEach(orderItemOption -> {
-//                Long optionId = orderItemOption.getOptionId();
-//
-//            });
-//
-//
-//
-//        });
-//
-//
-//
-//        List<Integer> orderStock = orderItems.stream()
-//                .map(orderItem -> orderItem.getOrderCount())
-//                .collect(Collectors.toList());
-//
-////        List<Long> orderItemOptionIds = orderFinder.findOrderItemOptions(orderItems);
-//
-//        List<OptionSpecification> optionSpecifications = optionReader.orderCancleWithOption(orderItemOptionIds);
-//
-//        List<Item> items = itemReader.findByOrderItem(orderItems);
-//
-//        stockManager.orderCancelToStock(items, optionSpecifications, orderItems);
-//
-//
-//    }
+
+    @Transactional
+    public void cancelOrder(Long orderId) {
+
+        /**
+         * 1. 주문 취소가 가능한 상태인지 검증
+         * 2. order 상태변경 (cancel)
+         * 3. 재고 복원
+         * 4.
+         */
+        Order order = orderFinder.orderCancleCheck(orderId);
+
+        order.cancel();
+
+        List<OrderItems> orderItems = orderFinder.findOrderItems(orderId);
+
+
+
+        orderItems.forEach(orderItem -> {
+            orderItem.cancel();
+
+            Item item = itemReader.findById(orderItem.getItemId());
+            List<OrderItemOption> orderItemOptions = orderFinder.findOrderItemOptions(orderItem.getId());
+
+            orderItemOptions.forEach(orderItemOption -> {
+                Long optionId = orderItemOption.getOptionId();
+                stockManager.orderCancelToStock(item.getId(), optionId, orderItem.getOrderCount());
+
+            });
+
+        });
+
+    }
 
 }

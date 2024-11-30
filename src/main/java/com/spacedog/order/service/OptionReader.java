@@ -36,15 +36,7 @@ public class OptionReader {
        }
     }
 
-    public List<OptionSpecification> orderCancleWithOption(List<Long> optionIds) {
 
-        // null 또는 비어있는 리스트 처리
-        if (optionIds == null || optionIds.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return optionSpecsRepository.findByIdIn(optionIds);
-    }
 
 
 }

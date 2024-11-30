@@ -77,16 +77,19 @@ public class OrderFinder {
 
         Order order = orderRepository.findById(orderId);
 
-       if(order.getOrderStatus() != OrderStatus.PENDING || order.getOrderStatus() != OrderStatus.COMPLETED) {
-           throw new OrderException("주문 취소는 배송 시작전에 가능합니다 고객센터에 문의 하세요.");
-       }
+        if(order.getOrderStatus() != OrderStatus.PENDING &&
+                order.getOrderStatus() != OrderStatus.CONFIRMED &&
+                order.getOrderStatus() != OrderStatus.PROCESSING)  {
+
+            throw new OrderException("주문 취소는 배송 시작전에 가능합니다 고객센터에 문의 하세요.");
+        }
+
 
        return order;
 
     }
 
     public List<OrderItems> findOrderItems(Long orderId) {
-
 
         List<OrderItems> orderItems = orderItemRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new OrderException("no orderItems"));
