@@ -73,7 +73,13 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 > 1. 주문 상태 검증
 > 2. 주문 상태 변경
 > 3. 재고 복원
+<img src="docs/orderCancelLogic.png">
+</details>
 
+<br>
+
+<details>
+<summary>상품 API</summary>
 
 
 

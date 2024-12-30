@@ -98,18 +98,11 @@ public class OrderService {
     @Transactional
     public void cancelOrder(Long orderId) {
 
-        /**
-         * 1. 주문 취소가 가능한 상태인지 검증
-         * 2. order 상태변경 (cancel)
-         * 3. 재고 복원
-         * 4.
-         */
         Order order = orderFinder.orderCancleCheck(orderId);
 
         order.cancel();
 
         List<OrderItems> orderItems = orderFinder.findOrderItems(orderId);
-
 
 
         orderItems.forEach(orderItem -> {
