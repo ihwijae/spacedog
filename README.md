@@ -23,14 +23,14 @@
 <br>
 
 ## 🔍 ERD
-![erd.png](./erd.png)
+![erd.png](docs/erd.png)
 
 
 <br>
 
 
 ## 🔍 아키텍처
-![아키텍처](./architecture.png)
+![아키텍처](docs/architecture.png)
 
 Business Layer (Service Layer) 을 두 레이어로 나누었습니다 <br>
 Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
@@ -43,6 +43,10 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 * 그렇다면 Compoent 계층에서 작은 단위의 로직으로 구성하고 이 단위를 테스트하는게 좋은 테스트라고 생각하였습니다. 
 
 
+<br>
+
+
+
 ## 🔍 핵심 기술 :
 
 
@@ -50,7 +54,7 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <summary>주문 API</summary>
 
 ### 주문 로직 전체흐름
-<img src="order.png" alt="주문 전체 로직">
+<img src="docs/order.png" alt="주문 전체 로직">
 
 
 #### 주문생성
@@ -60,6 +64,8 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 > 4. 주문 번호 생성 (UUID 조합)
 > 5. 장바구니 존재 유무 검증
 > 6. 최종 주문 생성
+<img src="docs/orderLogic.png">
+
 
 <br>
 
