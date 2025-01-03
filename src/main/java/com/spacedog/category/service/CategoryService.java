@@ -1,5 +1,8 @@
 package com.spacedog.category.service;
 
+import com.spacedog.category.component.CategoryFinder;
+import com.spacedog.category.component.CategoryItemFinder;
+import com.spacedog.category.component.CategoryManager;
 import com.spacedog.category.domain.Category;
 import com.spacedog.category.domain.CategoryItem;
 import com.spacedog.category.dto.CategoryDto;
@@ -24,15 +27,15 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CategoryService {
 
-    private final CategoryRepository categoryRepository;
-    private final CategoryQueryRepository categoryQueryRepository;
-    private final CategoryItemRepository categoryItemRepository;
+    private final CategoryFinder categoryFinder;
+    private final CategoryManager categoryManager;
+    private final CategoryItemFinder categoryItemFinder;
 
 
     @Transactional(readOnly = true)
     public List<CategoryDto> getCategoryList() {
 
-        List<Category> mainCategory = categoryRepository.findByParentIsNull();
+        List<Category> mainCategory = categoryFinder.findMainCategory();
 
         if(mainCategory.isEmpty()) {
             throw new CategoryNotFoundException("메인 카테고리가 존재하지 않습니다");
@@ -47,7 +50,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryWithItemResponse> findCategoryItems (Long categoryId, int pageNo, int pageSize) {
 
-        return categoryQueryRepository.findCategoryItems(categoryId, pageNo, pageSize);
+        return categoryItemFinder.findCategoryItems(categoryId, pageNo, pageSize);
     }
 
 
@@ -59,11 +62,10 @@ public class CategoryService {
         }
 
                 categoryIds.forEach(c -> {
-            Category findCategory = categoryRepository.findById(c)
-                    .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다"));
+            Category findCategory = categoryFinder.findCategory(c);
 
                     CategoryItem categoryItem = CategoryItem.createCategoryItem(findCategory, item);
-                   categoryItemRepository.save(categoryItem);
+                    categoryManager.save(categoryItem);
         });
 
         //        CategoryItem categoryItem = new CategoryItem();
@@ -81,7 +83,7 @@ public class CategoryService {
     @Transactional
     public void deleteCategoryItem(Long itemId) {
 
-        List<CategoryItem> findCategoryItems = categoryItemRepository.findByItemId(itemId);
-        categoryItemRepository.deleteAll(findCategoryItems);
+        List<CategoryItem> findCategoryItems = categoryItemFinder.findCategoryItemsWithItem(itemId);
+        categoryManager.deleteAll(findCategoryItems);
     }
 }
