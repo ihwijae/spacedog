@@ -14,7 +14,6 @@ import static com.spacedog.item.domain.QItem.item;
 
 @Repository
 @RequiredArgsConstructor
-
 public class ItemRepositoryAdapter implements ItemRepositoryPort {
 
     private final ItemJpaRepository repository;
