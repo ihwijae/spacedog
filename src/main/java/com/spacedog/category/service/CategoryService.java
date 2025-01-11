@@ -68,16 +68,6 @@ public class CategoryService {
                     categoryManager.save(categoryItem);
         });
 
-        //        CategoryItem categoryItem = new CategoryItem();
-//
-//        for(Long categoryId : categoryIds) {
-//            Category findCategory = categoryRepository.findById(categoryId)
-//                    .orElseThrow(() -> new CategoryNotFoundException("카테고리를 찾을 수 없습니다"));
-//
-//            CategoryItem result = CategoryItem.createCategoryItem(findCategory, item);
-//            categoryItem = categoryItemRepository.save(result);
-//        }
-//            return categoryItem.getId();
     }
 
     @Transactional

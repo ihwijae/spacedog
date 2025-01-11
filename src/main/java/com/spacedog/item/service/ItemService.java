@@ -2,6 +2,12 @@ package com.spacedog.item.service;
 
 
 
+import com.spacedog.category.component.CategoryFinder;
+import com.spacedog.category.component.CategoryItemFinder;
+import com.spacedog.category.component.CategoryManager;
+import com.spacedog.category.domain.Category;
+import com.spacedog.category.domain.CategoryItem;
+import com.spacedog.category.exception.CategoryNotFoundException;
 import com.spacedog.category.service.CategoryService;
 import com.spacedog.item.domain.Item;
 
@@ -12,6 +18,7 @@ import com.spacedog.member.domain.Member;
 import com.spacedog.member.exception.MemberException;
 import com.spacedog.member.service.MemberReader;
 import com.spacedog.option.domain.OptionGroupSpecification;
+import com.spacedog.option.service.OptionFinder;
 import com.spacedog.option.service.OptionGroupManager;
 import com.spacedog.option.service.OptionManager;
 import com.spacedog.option.service.OptionService;
@@ -32,7 +39,6 @@ import static com.spacedog.item.exception.NotEnoughStockException.*;
 public class ItemService {
 
 
-    private final CategoryService categoryService;
     private final OptionService optionService;
     private final OptionManager optionManager;
     private final StockDomainManager stockDomainManager;
@@ -40,7 +46,10 @@ public class ItemService {
     private final OptionGroupManager optionGroupManager;
     private final ItemManager itemManager;
     private final MemberReader memberReader;
-
+    private final CategoryFinder categoryFinder;
+    private final CategoryManager categoryManager;
+    private final CategoryItemFinder categoryItemFinder;
+    private final OptionFinder optionFinder;
 
 
     @Transactional
@@ -60,7 +69,20 @@ public class ItemService {
         item.finalCreateItem(createItemRequest);
         item.addMember(member);
 
-        categoryService.saveCategoryItem(createItemRequest, item);
+
+        List<Long> categoryIds = createItemRequest.getCategoryIds();
+
+        if(categoryIds.isEmpty()) {
+            throw new CategoryNotFoundException.CategoryOfNot("카테고리가 없으면 등록할 수 없습니다");
+        }
+
+        categoryIds.forEach(c -> {
+            Category findCategory = categoryFinder.findCategory(c);
+
+            CategoryItem categoryItem = CategoryItem.createCategoryItem(findCategory, item);
+            categoryManager.save(categoryItem);
+        });
+
 
 
         List<OptionGroupRequest> optionGroups = createItemRequest.getOptionGroups();
@@ -240,10 +262,13 @@ public class ItemService {
         }
 
         // 카테고리 아이템 삭제
-        categoryService.deleteCategoryItem(itemId);
+        List<CategoryItem> categoryItems = categoryItemFinder.findCategoryItemsWithItem(itemId);
+        categoryManager.deleteAll(categoryItems);
 
         // 옵션 삭제
+        List<OptionGroupSpecification> optionGroups = optionFinder.findOption(itemId);
         optionService.deleteOptionWithItem(itemId);
+
 
         itemManager.delete(itemId);
     }
