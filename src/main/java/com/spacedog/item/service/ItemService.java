@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.spacedog.item.exception.NotEnoughStockException.*;
 
@@ -266,7 +267,12 @@ public class ItemService {
         categoryManager.deleteAll(categoryItems);
 
         // 옵션 삭제
-        List<OptionGroupSpecification> optionGroups = optionFinder.findOption(itemId);
+        List<OptionGroupSpecification> optionGroups = optionFinder.findOptionGroups(itemId);
+        List<Long> optionGroupIds = optionFinder.findOptionGroupIds(optionGroups);
+
+
+
+        optionManager.deleteOption(optionGroups);
         optionService.deleteOptionWithItem(itemId);
 
 

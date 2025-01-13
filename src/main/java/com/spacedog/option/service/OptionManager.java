@@ -123,6 +123,10 @@ public class OptionManager {
 
     }
 
+    public void deleteOption(List<OptionGroupSpecification> optionGroups) {
+        optionRepository.deleteAllInBatch(optionGroups);
+    }
+
 
 
 }

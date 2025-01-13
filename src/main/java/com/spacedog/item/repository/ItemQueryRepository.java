@@ -8,8 +8,6 @@ import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.domain.QItem;
 import com.spacedog.item.dto.*;
-import com.spacedog.option.domain.QOptionGroupSpecification;
-import com.spacedog.option.domain.QOptionSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;

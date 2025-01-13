@@ -78,7 +78,7 @@ public class ItemController {
         Member member = memberService.getMember();
         validateMember(member);
 
-        itemService.itemEdit(id, itemEditRequest, member);
+        itemService.itemEdit(id, itemEditRequest);
         return ApiResponse.success(null, "수정 완료");
     }
 
