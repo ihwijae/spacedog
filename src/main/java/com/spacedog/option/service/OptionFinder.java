@@ -1,7 +1,9 @@
 package com.spacedog.option.service;
 
 import com.spacedog.option.domain.OptionGroupSpecification;
+import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.option.repository.OptionRepository;
+import com.spacedog.option.repository.OptionSpecsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 public class OptionFinder {
 
     private final OptionRepository optionRepository;
+    private final OptionSpecsRepository optionSpecsRepository;
 
 
     public List<OptionGroupSpecification> findOptionGroups(Long itemId) {
@@ -27,7 +30,12 @@ public class OptionFinder {
                 .collect(Collectors.toList());
     }
 
-    
+    public List<OptionSpecification> findOptionSpecifications(List<Long> optionGroupIds) {
+
+        return optionSpecsRepository.findByOptionGroupSpecification_IdIn(optionGroupIds);
+    }
+
+
 
 
 }

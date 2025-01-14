@@ -9,4 +9,5 @@ public interface OptionSpecsRepository extends JpaRepository<OptionSpecification
 
     List<OptionSpecification> findByOptionGroupSpecification_Id(Long id);
     List<OptionSpecification> findByIdIn(List<Long> optionIds);
+    List<OptionSpecification> findByOptionGroupSpecification_IdIn(List<Long> optionIds);
 }

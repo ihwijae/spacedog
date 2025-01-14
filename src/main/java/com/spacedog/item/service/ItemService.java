@@ -18,6 +18,7 @@ import com.spacedog.member.domain.Member;
 import com.spacedog.member.exception.MemberException;
 import com.spacedog.member.service.MemberReader;
 import com.spacedog.option.domain.OptionGroupSpecification;
+import com.spacedog.option.domain.OptionSpecification;
 import com.spacedog.option.service.OptionFinder;
 import com.spacedog.option.service.OptionGroupManager;
 import com.spacedog.option.service.OptionManager;
@@ -102,8 +103,6 @@ public class ItemService {
                 });
             });
         }
-
-
 
         return createItemRequest.getId();
     }
@@ -203,6 +202,7 @@ public class ItemService {
     public void itemEdit (Long id, ItemEditRequest request) {
 
 
+        // 상품이름 검증
         itemFinder.validateItemName(request.getName());
 
         Item findItem = itemFinder.findById(id);
@@ -215,6 +215,9 @@ public class ItemService {
         findItem.itemUpdate(request);
 
         optionService.editOptionWithItem(request, findItem);
+
+        List<OptionGroupSpecification> optionGroups = optionFinder.findOptionGroups(findItem.getId());
+
 
 
         //단일 옵션 일때
@@ -269,11 +272,12 @@ public class ItemService {
         // 옵션 삭제
         List<OptionGroupSpecification> optionGroups = optionFinder.findOptionGroups(itemId);
         List<Long> optionGroupIds = optionFinder.findOptionGroupIds(optionGroups);
-
-
+        List<OptionSpecification> optionSpecifications = optionFinder.findOptionSpecifications(optionGroupIds);
 
         optionManager.deleteOption(optionGroups);
-        optionService.deleteOptionWithItem(itemId);
+        optionManager.deleteOptionSpecs(optionSpecifications);
+
+//        optionService.deleteOptionWithItem(itemId);
 
 
         itemManager.delete(itemId);

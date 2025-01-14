@@ -127,6 +127,14 @@ public class OptionManager {
         optionRepository.deleteAllInBatch(optionGroups);
     }
 
+    public void deleteOptionSpecs(List<OptionSpecification> optionSpecifications) {
+        optionSpecsRepository.deleteAllInBatch(optionSpecifications);
+    }
+
+    public void editOption() {
+
+    }
+
 
 
 }

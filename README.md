@@ -81,6 +81,9 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <details>
 <summary>상품 API</summary>
 
+### 상품 로직 전체 흐름
+<img src="docs/ItemLogic.png" alt="상품 전체 로직">
+
 
 
 
