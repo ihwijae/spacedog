@@ -85,6 +85,17 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <img src="docs/ItemLogic.png" alt="상품 전체 로직">
 
 
+#### 상품 등록
+> 1. 상품 생성을 누르면 임시 상품 DB에 저장 후 PK 반환
+> 2. 상품 이름 검증 (중복 검증)
+> 3. Request DTO 내부에 ID를 꺼내 임시 상품 조회
+> 4. 해당 상품에 각종 정보 저장 (등록자, 이름, 가격 등등)
+> 5. 요청 정보에서 카테고리 ID를 조회해 카테고리 등록
+> 6. 요청 정보에서 옵션 ID를 조회해 옵션 정보 등록
+
+<img src="docs/itemCreateV1.png" alt="상품 생성 로직1">
+<img src="docs/itemCreateV2.png" alt="상품 생성 로직2">
+
 
 
 </details>
