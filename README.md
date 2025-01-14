@@ -85,7 +85,7 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <img src="docs/ItemLogic.png" alt="상품 전체 로직">
 
 
-#### 상품 등록
+####  상품 등록
 > 1. 상품 생성을 누르면 임시 상품 DB에 저장 후 PK 반환
 > 2. 상품 이름 검증 (중복 검증)
 > 3. Request DTO 내부에 ID를 꺼내 임시 상품 조회
@@ -96,6 +96,14 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <img src="docs/itemCreateV1.png" alt="상품 생성 로직1">
 <img src="docs/itemCreateV2.png" alt="상품 생성 로직2">
 
+<br>
+
+#### 상품 전체 조회
+- 페이징 기능
+- 상품을 조회는 빈번히 일어난다고 생각하여 캐시 처리
+- 커버링 인덱스 사용하여 페이징 성능 최적화
+
+<img src="docs/ItemSelectQuery.png" alt="">
 
 
 </details>

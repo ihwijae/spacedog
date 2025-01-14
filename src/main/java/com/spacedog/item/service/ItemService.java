@@ -180,8 +180,6 @@ public class ItemService {
     // 상품 전체 조회
     @Transactional(readOnly = true)
     @Cacheable(cacheNames = "items", key = "#offset + '-' + #limit") //페이징 처리된 데이터를 캐시
-    //cacheNames -> items라는 이름의 캐시 저장소에 캐시를 저장한다. (캐시의 그룹이나 유형을 정의하는것)
-    //key -> #pageable을 키로 사용하여 요청에 따라 다른 페이징 결과를 캐시에 저장하겠다. 각 페이징 요청은 서로다른 key를 생성하므로 결과가 다르게 캐시된다. (각 캐시 항목을 구별하는 고유한 식별자)
     public List<FindItemAllResponse> fineItemAll (int pageNo, int pageSize ) {
         List<FindItemAllResponse> itemsAll = itemFinder.findItemsAll(pageNo, pageSize);
 
