@@ -145,74 +145,34 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 
 ```java
-    private List<ItemDetailResponse> findItemDetail(Long itemId) {
-    return query
-            .selectDistinct(Projections.fields(ItemDetailResponse.class,
-                    item.id,
-                    item.name,
-                    item.description,
-                    item.price
-            ))
-            .from(item)
-            .where(item.id.eq(itemId))
-            .fetch();
-}
-```
-1. 상품(루트)를 먼저 조회
+   public ItemDetailResponse itemDetail(Long itemId) {
 
-```java
-    private List<OptionGroupResponse> findOptionGroup(Long itemId) {
-    return query
-            .selectDistinct(Projections.fields(OptionGroupResponse.class,
-                    optionGroupSpecification.id,
-                    optionGroupSpecification.name,
-                    optionGroupSpecification.basic,
-                    optionGroupSpecification.exclusive))
-            .from(optionGroupSpecification)
-            .join(item).on(optionGroupSpecification.item.id.eq(item.id))
-            .where(optionGroupSpecification.item.id.eq(itemId))
-            .fetch();
-}
-```
-2. 옵션 그룹을 조회
+        ItemDetailResponse itemDetail = repository.findItemDetail(itemId);
 
-```java
-    private List<CategoryResponse> findCategory(Long itemId) {
-        return query
-                .select(Projections.fields(CategoryResponse.class,
-                        category.id,
-                        category.name,
-                        category.depth))
-                .from(categoryItem) // categoryItem을 먼저 조인
-                .join(categoryItem.category, category) // categoryItem과 category 조인
-                .join(categoryItem.item, item) // categoryItem과 item 조인
-                .where(categoryItem.item.id.eq(itemId)) // 조건 설정
-                .fetch();
+
+        // 컬렉션 조회
+        Map<Long, List<OptionGroupResponse>> optionGroups = repository.findOptionGroups(itemDetail.getId());
+
+        List<Long> optionGroupIds = optionGroups.values().stream()
+                .flatMap(List::stream)
+                .map(OptionGroupResponse::getId)
+                .collect(Collectors.toList());
+
+        Map<Long, List<OptionSpecsResponse>> optionSpecs = repository.findOptionSpecs(optionGroupIds);
+
+        Map<Long, List<CategoryResponse>> categories = repository.findCategories(itemDetail.getId());
+
+
+        optionGroups.values()
+                .forEach(g ->
+                        g.forEach(group -> group.setOptionSpecs(optionSpecs.get(group.getId()))));
+
+        itemDetail.setCategory(categories.get(itemDetail.getId()));
+        itemDetail.setOptionGroup(optionGroups.get(itemDetail.getId()));
+
+        return itemDetail;
     }
 ```
-3. 카테고리 조회
-
-```java
-    private List<OptionSpecsResponse> findOptionSpecs (Long optionGroupId) {
-        return query
-                .selectDistinct(Projections.fields(OptionSpecsResponse.class,
-                        optionSpecification.id,
-                        optionSpecification.name,
-                        optionSpecification.additionalPrice
-                        ))
-                .from(optionSpecification)
-                .join(optionGroupSpecification).on(optionSpecification.optionGroupSpecification.id.eq(optionGroupSpecification.id))
-                .where(optionGroupSpecification.id.eq(optionGroupId))
-                .fetch();
-    }
-```
-
-4. 옵션 스펙 조회
-
-```java
-
-```
-
 
 
 

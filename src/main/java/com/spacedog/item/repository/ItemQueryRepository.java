@@ -209,7 +209,7 @@ public class ItemQueryRepository {
 //        return itemDetail;
 //    }
 
-    public Map<Long, List<CategoryResponse>> findCategorys(List<Long> itemIds) {
+    public Map<Long, List<CategoryResponse>> findCategorys(Long itemId) {
         List<CategoryResponse> cateGoryList = query
                 .select(Projections.fields(CategoryResponse.class,
                         item.id.as("itemId"),
@@ -219,7 +219,7 @@ public class ItemQueryRepository {
                 .from(categoryItem)
                 .join(categoryItem.category, category)
                 .join(categoryItem.item, item)
-                .where(categoryItem.item.id.in(itemIds))
+                .where(categoryItem.item.id.eq(itemId))
                 .fetch();
 
 
@@ -230,7 +230,7 @@ public class ItemQueryRepository {
     }
 
 
-    public Map<Long, List<OptionGroupResponse>> findOptionGroups(List<Long> itemIds) {
+    public Map<Long, List<OptionGroupResponse>> findOptionGroups(Long itemId) {
 
         List<OptionGroupResponse> optionGroupList = query.select(Projections.fields(OptionGroupResponse.class,
                         item.id.as("itemId"),
@@ -239,7 +239,7 @@ public class ItemQueryRepository {
                         optionGroupSpecification.basic))
                 .from(optionGroupSpecification)
                 .join(item).on(optionGroupSpecification.item.id.eq(item.id))
-                .where(optionGroupSpecification.item.id.in(itemIds))
+                .where(optionGroupSpecification.item.id.eq(itemId))
                 .fetch();
 
         Map<Long, List<OptionGroupResponse>> result = optionGroupList.stream()
@@ -268,17 +268,31 @@ public class ItemQueryRepository {
 
     }
 
-    public List<ItemDetailResponse> findItemDetail(Long itemId) {
+
+//    public List<ItemDetailResponse> findItemDetail(Long itemId) {
+//        return query
+//                .selectDistinct(Projections.fields(ItemDetailResponse.class,
+//                        item.id,
+//                        item.name,
+//                        item.description,
+//                        item.price
+//                        ))
+//                .from(item)
+//                .where(item.id.eq(itemId))
+//                .fetch();
+//    }
+
+    public ItemDetailResponse findItemDetail(Long iteId) {
+
         return query
-                .selectDistinct(Projections.fields(ItemDetailResponse.class,
+                .select(Projections.fields(ItemDetailResponse.class,
                         item.id,
                         item.name,
                         item.description,
-                        item.price
-                        ))
+                        item.price))
                 .from(item)
-                .where(item.id.eq(itemId))
-                .fetch();
+                .where(item.id.eq(iteId))
+                .fetchOne();
     }
 
 

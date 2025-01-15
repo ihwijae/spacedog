@@ -84,8 +84,8 @@ public class ItemController {
 
     // 상품 상세 조회
     @GetMapping("/items/{itemId}")
-    public ApiResponse<List<ItemDetailResponse>> itemDetail(@PathVariable Long itemId) {
-        List<ItemDetailResponse> itemDetailResponses = itemService.itemDetail(itemId);
+    public ApiResponse<ItemDetailResponse> itemDetail(@PathVariable Long itemId) {
+        ItemDetailResponse itemDetailResponses = itemService.itemDetail(itemId);
         return ApiResponse.success(itemDetailResponses, "상세 조회 완료");
     }
 

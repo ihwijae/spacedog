@@ -1,10 +1,8 @@
 package com.spacedog.item.service;
 
+import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
-import com.spacedog.item.dto.FindItemAllResponse;
-import com.spacedog.item.dto.ItemDetailResponse;
-import com.spacedog.item.dto.SearchItemRequest;
-import com.spacedog.item.dto.SearchItemResponse;
+import com.spacedog.item.dto.*;
 import com.spacedog.item.exception.NotEnoughStockException;
 import com.spacedog.item.exception.NotEnoughStockException.ItemNotFound;
 import com.spacedog.item.repository.ItemRepositoryPort;
@@ -14,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -66,12 +66,32 @@ public class ItemFinder {
         return repository.findById(id).orElseThrow(() -> new ItemNotFound("상품을 찾을 수 없습니다"));
     }
 
-    public List<ItemDetailResponse> itemDetail(Long itemId) {
-//        return repository.itemDetail(itemId);
+    public ItemDetailResponse itemDetail(Long itemId) {
 
-        List<ItemDetailResponse> itemDetail = repository.findItemDetail(itemId);
+        ItemDetailResponse itemDetail = repository.findItemDetail(itemId);
 
 
+        // 컬렉션 조회
+        Map<Long, List<OptionGroupResponse>> optionGroups = repository.findOptionGroups(itemDetail.getId());
+
+        List<Long> optionGroupIds = optionGroups.values().stream()
+                .flatMap(List::stream)
+                .map(OptionGroupResponse::getId)
+                .collect(Collectors.toList());
+
+        Map<Long, List<OptionSpecsResponse>> optionSpecs = repository.findOptionSpecs(optionGroupIds);
+
+        Map<Long, List<CategoryResponse>> categories = repository.findCategories(itemDetail.getId());
+
+
+        optionGroups.values()
+                .forEach(g ->
+                        g.forEach(group -> group.setOptionSpecs(optionSpecs.get(group.getId()))));
+
+        itemDetail.setCategory(categories.get(itemDetail.getId()));
+        itemDetail.setOptionGroup(optionGroups.get(itemDetail.getId()));
+
+        return itemDetail;
     }
 
 

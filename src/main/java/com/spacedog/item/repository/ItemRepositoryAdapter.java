@@ -86,15 +86,12 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
     }
 
 
-    @Override
-    public List<ItemDetailResponse> itemDetail(Long itemId) {
-       return queryRepository.itemDetail(itemId);
-    }
+
 
 
     @Override
-    public Map<Long, List<OptionGroupResponse>> findOptionGroups(List<Long> itemIds) {
-        return queryRepository.findOptionGroups(itemIds);
+    public Map<Long, List<OptionGroupResponse>> findOptionGroups(Long itemId) {
+        return queryRepository.findOptionGroups(itemId);
     }
 
     @Override
@@ -103,12 +100,12 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
     }
 
     @Override
-    public Map<Long, List<CategoryResponse>> findCategories(List<Long> itemIds) {
-        return queryRepository.findCategorys(itemIds);
+    public Map<Long, List<CategoryResponse>> findCategories(Long itemId) {
+        return queryRepository.findCategorys(itemId);
     }
 
     @Override
-    public List<ItemDetailResponse> findItemDetail(Long itemId) {
+    public ItemDetailResponse findItemDetail(Long itemId) {
         return queryRepository.findItemDetail(itemId);
     }
 

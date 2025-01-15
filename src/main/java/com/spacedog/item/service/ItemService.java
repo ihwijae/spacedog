@@ -280,7 +280,7 @@ public class ItemService {
 
     // 상품 상세 조회
     @Transactional(readOnly = true)
-    public List<ItemDetailResponse> itemDetail(Long itemId) {
+    public ItemDetailResponse itemDetail(Long itemId) {
         return itemFinder.itemDetail(itemId);
 
     }
