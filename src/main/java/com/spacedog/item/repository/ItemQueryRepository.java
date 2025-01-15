@@ -189,27 +189,86 @@ public class ItemQueryRepository {
      * **/
 
 
-    public List<ItemDetailResponse> itemDetail(Long itemId) {
-        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
-        itemDetail.forEach(
-                itemDetailResponse -> {
+//    public List<ItemDetailResponse> itemDetail(Long itemId) {
+//        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
+//        itemDetail.forEach(
+//                itemDetailResponse -> {
+//
+//
+//                    List<OptionGroupResponse> optionGroup = findOptionGroup(itemId);
+//                    List<CategoryResponse> categoryResponses = findCategory(itemId);
+//                    itemDetailResponse.setCategory(categoryResponses);
+//                    itemDetailResponse.setOptionGroup(optionGroup);
+//
+//                    optionGroup.forEach(optionGroupResponse -> {
+//                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs(optionGroupResponse.getId());
+//                        optionGroupResponse.setOptionSpecs(optionSpecs);
+//                    });
+//                }
+//        );
+//        return itemDetail;
+//    }
+
+    public Map<Long, List<CategoryResponse>> findCategorys(List<Long> itemIds) {
+        List<CategoryResponse> cateGoryList = query
+                .select(Projections.fields(CategoryResponse.class,
+                        item.id.as("itemId"),
+                        category.id,
+                        category.name,
+                        category.depth))
+                .from(categoryItem)
+                .join(categoryItem.category, category)
+                .join(categoryItem.item, item)
+                .where(categoryItem.item.id.in(itemIds))
+                .fetch();
 
 
-                    List<OptionGroupResponse> optionGroup = findOptionGroup(itemId);
-                    List<CategoryResponse> categoryResponses = findCategory(itemId);
-                    itemDetailResponse.setCategory(categoryResponses);
-                    itemDetailResponse.setOptionGroup(optionGroup);
+        Map<Long, List<CategoryResponse>> result = cateGoryList.stream()
+                .collect(Collectors.groupingBy(c -> c.getItemId()));
 
-                    optionGroup.forEach(optionGroupResponse -> {
-                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs(optionGroupResponse.getId());
-                        optionGroupResponse.setOptionSpecs(optionSpecs);
-                    });
-                }
-        );
-        return itemDetail;
+        return result;
     }
 
-    private List<ItemDetailResponse> findItemDetail(Long itemId) {
+
+    public Map<Long, List<OptionGroupResponse>> findOptionGroups(List<Long> itemIds) {
+
+        List<OptionGroupResponse> optionGroupList = query.select(Projections.fields(OptionGroupResponse.class,
+                        item.id.as("itemId"),
+                        optionGroupSpecification.name,
+                        optionGroupSpecification.exclusive,
+                        optionGroupSpecification.basic))
+                .from(optionGroupSpecification)
+                .join(item).on(optionGroupSpecification.item.id.eq(item.id))
+                .where(optionGroupSpecification.item.id.in(itemIds))
+                .fetch();
+
+        Map<Long, List<OptionGroupResponse>> result = optionGroupList.stream()
+                .collect(Collectors.groupingBy(OptionGroupResponse::getItemId));
+
+        return result;
+
+    }
+
+    public Map<Long, List<OptionSpecsResponse>> findOptionSpecs(List<Long> optionGroupIds) {
+
+        List<OptionSpecsResponse> optionSpecsList = query
+                .select(Projections.fields(OptionSpecsResponse.class,
+                        optionGroupSpecification.id.as("optionGroupId"),
+                        optionSpecification.name,
+                        optionSpecification.additionalPrice).as("price"))
+                .from(optionSpecification)
+                .join(optionGroupSpecification).on(optionSpecification.optionGroupSpecification.id.eq(optionGroupSpecification.id))
+                .where(optionSpecification.optionGroupSpecification.id.in(optionGroupIds))
+                .fetch();
+
+        Map<Long, List<OptionSpecsResponse>> result = optionSpecsList.stream()
+                .collect(Collectors.groupingBy(OptionSpecsResponse::getOptionGroupId));
+
+        return result;
+
+    }
+
+    public List<ItemDetailResponse> findItemDetail(Long itemId) {
         return query
                 .selectDistinct(Projections.fields(ItemDetailResponse.class,
                         item.id,

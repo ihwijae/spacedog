@@ -1,10 +1,12 @@
 package com.spacedog.item.repository;
 
+import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ItemRepositoryPort {
@@ -23,5 +25,8 @@ public interface ItemRepositoryPort {
     public Optional<Item> findByItemWithCategory(Long id);
     public List<ItemDetailResponse> itemDetail(Long itemId);
     public List<Item> findByIdIn(List<Long> ids);
-
+    public Map<Long, List<OptionGroupResponse>> findOptionGroups(List<Long> itemIds);
+    public Map<Long, List<OptionSpecsResponse>> findOptionSpecs(List<Long> optionGroupIds);
+    public Map<Long, List<CategoryResponse>> findCategories(List<Long> itemIds);
+    public List<ItemDetailResponse> findItemDetail(Long itemId);
 }

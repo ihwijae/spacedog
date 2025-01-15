@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class OptionSpecsResponse {
 
-    private Long id;
+    private Long optionGroupId;
     private String name;
     private int price;
 

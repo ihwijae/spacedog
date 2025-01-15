@@ -1,6 +1,7 @@
 package com.spacedog.item.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.spacedog.category.service.CategoryResponse;
 import com.spacedog.item.domain.Item;
 import com.spacedog.item.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.spacedog.item.domain.QItem.item;
@@ -90,8 +92,25 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
     }
 
 
+    @Override
+    public Map<Long, List<OptionGroupResponse>> findOptionGroups(List<Long> itemIds) {
+        return queryRepository.findOptionGroups(itemIds);
+    }
 
+    @Override
+    public Map<Long, List<OptionSpecsResponse>> findOptionSpecs(List<Long> optionGroupIds) {
+        return queryRepository.findOptionSpecs(optionGroupIds);
+    }
 
+    @Override
+    public Map<Long, List<CategoryResponse>> findCategories(List<Long> itemIds) {
+        return queryRepository.findCategorys(itemIds);
+    }
+
+    @Override
+    public List<ItemDetailResponse> findItemDetail(Long itemId) {
+        return queryRepository.findItemDetail(itemId);
+    }
 
     private BooleanExpression LikeItemName(String searchName) {
         if(StringUtils.hasText(searchName)) {
@@ -107,10 +126,6 @@ public class ItemRepositoryAdapter implements ItemRepositoryPort {
         return null;
 
     }
-
-
-
-
 
 
 }

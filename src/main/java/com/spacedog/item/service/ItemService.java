@@ -214,8 +214,7 @@ public class ItemService {
 
         optionService.editOptionWithItem(request, findItem);
 
-        List<OptionGroupSpecification> optionGroups = optionFinder.findOptionGroups(findItem.getId());
-
+    }
 
 
         //단일 옵션 일때
@@ -249,7 +248,6 @@ public class ItemService {
 //                });
 
 
-    }
 
 
     @Transactional
@@ -274,9 +272,6 @@ public class ItemService {
 
         optionManager.deleteOption(optionGroups);
         optionManager.deleteOptionSpecs(optionSpecifications);
-
-//        optionService.deleteOptionWithItem(itemId);
-
 
         itemManager.delete(itemId);
     }

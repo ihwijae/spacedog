@@ -15,6 +15,8 @@ public class OptionGroupResponse {
 
 
 
+    private Long itemId;
+
     private Long id;
 
     private String name;

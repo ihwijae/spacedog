@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class CategoryResponse {
 
-
+    private Long itemId;
     private Long id;
-
     private String name;
     private Long depth;
 

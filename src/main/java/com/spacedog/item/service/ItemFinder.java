@@ -67,7 +67,11 @@ public class ItemFinder {
     }
 
     public List<ItemDetailResponse> itemDetail(Long itemId) {
-        return repository.itemDetail(itemId);
+//        return repository.itemDetail(itemId);
+
+        List<ItemDetailResponse> itemDetail = repository.findItemDetail(itemId);
+
+
     }
 
 
