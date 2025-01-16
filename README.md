@@ -182,4 +182,10 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 ### 리뷰 로직 전체 흐름
 <img src="docs/ReviewLogic.png" alt="리뷰 로직 전체 흐름">
 
+
+#### 리뷰 전체조회 (댓글포함)
+- 댓글, 대댓글을 따로 조회해서 서비스 단에서 조립하는 방식 채택
+
+<img src="docs/ReviewFinderAll.png" alt="리뷰 전체 조회">
+
 </details>

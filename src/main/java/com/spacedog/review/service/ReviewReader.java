@@ -34,7 +34,7 @@ public class ReviewReader {
         List<ReviewResponse> reviewAll = reviewQueryRepository.findReviewAll(itemId, pageNo, pageSize);
 
         List<Long> reviewIds = reviewAll.stream()
-                .map(reviewResponse -> reviewResponse.getReviewId())
+                .map(ReviewResponse::getReviewId)
                 .collect(Collectors.toList());
 
 
