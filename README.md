@@ -174,8 +174,12 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
     }
 ```
 
-
-
-
 </details>
 
+<details>
+<summary>리뷰 API</summary>
+
+### 리뷰 로직 전체 흐름
+<img src="docs/ReviewLogic.png" alt="리뷰 로직 전체 흐름">
+
+</details>
