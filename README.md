@@ -200,4 +200,14 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <img src="docs/ReviewSave.png" alt="리뷰 저장">
 
 
+<br>
+
+#### 리뷰 수정
+> 1. 리뷰를 작성한 회원이 맞는지 검증
+> 2. 파라미터로 받은 reviewId로 Review 객체 조회
+> 3. 반환받은 Review 객체 수정
+
+<img src="docs/ReviewEdit.png" alt="리뷰수정">
+
+
 </details>
