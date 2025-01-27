@@ -188,4 +188,15 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 <img src="docs/ReviewFinderAll.png" alt="리뷰 전체 조회">
 
+
+<br>
+
+#### 리뷰 작성
+> 1. 상품을 주문한 회원이 맞는지 검증
+> 2. 상품 임시 생성 후 pk 반환
+> 3. 반환 받은 pk로 리뷰 생성
+
+<img src="docs/createReviewTemp.png" alt="리뷰 생성">
+
+
 </details>
