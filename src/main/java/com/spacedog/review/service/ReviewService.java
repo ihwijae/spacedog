@@ -88,6 +88,7 @@ public class ReviewService {
     }
 
 
+    @Transactional
     public void deleteReview(Long reviewId) {
 
         Member member = memberReader.getMember();

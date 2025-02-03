@@ -209,5 +209,15 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 <img src="docs/ReviewEdit.png" alt="리뷰수정">
 
+<br>
+
+#### 리뷰 삭제
+> 1. 인자로 받은 reviewId로 Review 객체 조회
+> 2. 리뷰를 작성한 회원인지 검증
+> 3. 인자로 받은 reviewId로 ReviewReply 객체 조회
+> 4. Review, ReviewReply 삭제
+
+<img src="docs/ReviewDelete.png" alt="리뷰 삭제">
+
 
 </details>
