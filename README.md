@@ -76,7 +76,6 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <img src="docs/orderCancelLogic.png">
 </details>
 
-<br>
 
 <details>
 <summary>상품 API</summary>
@@ -219,5 +218,14 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 <img src="docs/ReviewDelete.png" alt="리뷰 삭제">
 
+</details>
+
+
+<details>
+<summary>카테고리 API</summary>
+
+
 
 </details>
+
+
