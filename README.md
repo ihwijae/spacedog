@@ -51,6 +51,19 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 
 <details>
+<summary>JWT 로그인 API</summary>
+
+#### 회원가입
+> 1. 이메일, 닉네임, 비밀번호 중복 검증
+> 2. 패스워드 암호화
+> 3. 장바구니 객체 생성
+> 4. 회원 DB 저장
+
+<img src="docs/SignUP.png">
+
+</details>
+
+<details>
 <summary>주문 API</summary>
 
 ### 주문 로직 전체흐름
