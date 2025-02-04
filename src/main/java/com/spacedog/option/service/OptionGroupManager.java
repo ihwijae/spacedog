@@ -6,6 +6,7 @@ import com.spacedog.option.domain.OptionGroupSpecification;
 import com.spacedog.option.repository.OptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ public class OptionGroupManager {
 
 
 
+    @Transactional
     public OptionGroupSpecification createOptionGroup(Item item, OptionGroupRequest optionGroupRequest) {
 
         OptionGroupSpecification optionGroupSpecification = OptionGroupSpecification.create(item, optionGroupRequest);
@@ -27,4 +29,6 @@ public class OptionGroupManager {
 
         return saveOptionGroup;
     }
+
+
 }

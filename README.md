@@ -236,7 +236,7 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 
 </details>
-
+[
 <details>
 <summary>파일 API</summary>
 
@@ -248,8 +248,34 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 #### 단일 이미지 업로드
 <img src="docs/FileUpload.png">
 
+<br>
+
 #### 여러 이미지 업로드
 <img src="docs/FileUploads.png">
+
+
+</details>
+
+
+<details>
+<summary>옵션 API</summary>
+
+#### 상품을 생성할때 옵션이 없을때 기본 옵션 생성
+<img src="docs/DefaultOption.png">
+
+<br>
+
+
+#### 옵션에는 옵션그룹, 옵션스펙이 존재한다
+
+#### 상품을 생성할때 옵션이 있는 경우 옵션 생셩
+- 옵션 그룹 생성
+
+<img src="docs/OptionGroupCreate.png">
+
+- 옵션 상세 내용 생성
+
+<img src="docs/OptionSpecsCreate.png">
 
 
 </details>

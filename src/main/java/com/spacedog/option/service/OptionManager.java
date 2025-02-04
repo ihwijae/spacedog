@@ -11,6 +11,7 @@ import com.spacedog.option.repository.OptionSpecsRepository;
 import com.spacedog.stock.service.StockDomainManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +25,7 @@ public class OptionManager {
     private final StockDomainManager stockDomainManager;
 
 
+    @Transactional
     public Long saveDefaultOption(Item item) {
 
         OptionGroupSpecification defaultGroup = OptionGroupSpecification.builder()
