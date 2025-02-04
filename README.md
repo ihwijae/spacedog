@@ -224,6 +224,15 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 <details>
 <summary>카테고리 API</summary>
 
+#### 카테고리 별 상품 조회
+
+- 카레고리별 상품을 조회할때 커버링 인덱스를 활용하여 조회성능 최적화
+
+
+<img src="docs/CategorySelect.png">
+
+<img src="docs/CategorySelectV2.png">
+
 
 
 </details>

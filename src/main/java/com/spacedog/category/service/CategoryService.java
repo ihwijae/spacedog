@@ -47,6 +47,7 @@ public class CategoryService {
 
     }
 
+
     @Transactional(readOnly = true)
     public List<CategoryWithItemResponse> findCategoryItems (Long categoryId, int pageNo, int pageSize) {
 
