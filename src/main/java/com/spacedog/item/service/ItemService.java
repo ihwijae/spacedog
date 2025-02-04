@@ -98,7 +98,7 @@ public class ItemService {
                 List<OptionSpecsRequest> optionSpecsRequest = optionGroup.getOptionSpecsRequest();
 
                 optionSpecsRequest.forEach(optionSpec -> {
-                    Long optionId = optionManager.saveOptionV3(optionGroupResult, optionSpec);
+                    Long optionId = optionManager.saveOptionSpecs(optionGroupResult, optionSpec);
                     stockDomainManager.createExistOptionItemStock(item.getId(), optionId, optionSpec.getStockQuantity());
                 });
             });

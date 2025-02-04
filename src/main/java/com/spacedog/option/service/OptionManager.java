@@ -114,7 +114,7 @@ public class OptionManager {
     }
 
 
-    public Long saveOptionV3(OptionGroupSpecification optionGroup, OptionSpecsRequest optionSpecsRequest) {
+    public Long saveOptionSpecs(OptionGroupSpecification optionGroup, OptionSpecsRequest optionSpecsRequest) {
 
         OptionSpecification optionSpecification = OptionSpecification.create(optionSpecsRequest, optionGroup);
 
