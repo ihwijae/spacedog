@@ -237,4 +237,23 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 </details>
 
+<details>
+<summary>파일 API</summary>
+
+#### 파일 API 전체 흐름
+<img src="docs/FileLogic.png">
+
+<br>
+
+#### 단일 이미지 업로드
+<img src="docs/FileUpload.png">
+
+#### 여러 이미지 업로드
+<img src="docs/FileUploads.png">
+
+
+</details>
+
+
+
 
