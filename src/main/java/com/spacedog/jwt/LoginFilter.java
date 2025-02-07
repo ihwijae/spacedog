@@ -55,7 +55,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         }
 
-
         //클라이언트 요청에서 email, password 추출
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
