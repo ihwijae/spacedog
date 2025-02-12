@@ -67,6 +67,12 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 <img src="docs/LoginLogic.png" alt="로그인 전체 로직">
 
+<br>
+
+#### 로그인 성공시 동작하는 핸들러
+<img src="docs/Login성공.png" alt="로그인성공">
+
+#### 로그인시 토큰은 DB에 저장하고 검증 했습니다.
 
 
 

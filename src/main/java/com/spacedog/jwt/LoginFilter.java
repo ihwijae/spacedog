@@ -73,7 +73,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     // 로그인 검증 성공시 실행 하는 메서드 (여기서 JWT 토큰 발급)
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                            FilterChain chain, Authentication authentication) throws IOException, ServletException {
 
 
         log.info("로그인 성공");
@@ -99,7 +100,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         response.setCharacterEncoding("utf-8");
         response.getWriter().print("로그인이 성공 했습니다");
-
 
     }
 
