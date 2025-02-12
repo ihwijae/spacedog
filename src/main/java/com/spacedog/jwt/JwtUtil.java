@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-public class JwtUtil {
+public class  JwtUtil {
 
     private final SecretKey secretKey;
 
@@ -82,5 +82,7 @@ public class JwtUtil {
                 .signWith(secretKey) //시크릿키를 통해 토큰 암호화 (시그니처 만들기)
                 .compact();
     }
+
+
 
 }

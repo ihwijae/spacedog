@@ -69,8 +69,84 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 <br>
 
+#### jwt 토큰 생성
+<img src="docs/jwt생성.png" alt="jwt 생성 메서드">
+
+<br>
+
 #### 로그인 성공시 동작하는 핸들러
 <img src="docs/Login성공.png" alt="로그인성공">
+
+<br>
+
+
+#### 토큰 검증
+```java
+
+ @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        // 요청에서 access토큰 헤더 가져오기
+        String authorization = request.getHeader("Authorization");
+        log.info(authorization);
+
+        // 토큰이 없다면 다음 필터로 넘긴다.
+        if(authorization == null || !authorization.startsWith("Bearer ")) {
+
+            filterChain.doFilter(request, response); //권한이 필요 없는 요청도 있을수 있기 때문에 다음 필터로 넘겨야한다.
+            return; //메서드 종료
+        }
+
+        // Bearer 공백 제거.
+        String accessToken = authorization.split(" ")[1];
+
+
+        // 토큰 만료 여부 체크, 확인 시 다음 필터로 넘기지않는다
+        try {
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e) {
+
+          response.getWriter().print("access token expired");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        // 토큰 카테고리 확인 (access 인지 체크 토큰 발급시 페이로드에 명시했다.)
+        String category = jwtUtil.getCategory(accessToken);
+
+        if(!category.equals("Authorization")) {
+
+            response.getWriter().print("Invalid access token");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        // email, role 값을 꺼내와서 일시적인 세션 생성
+        String userEmail = jwtUtil.getUserEmail(accessToken);
+        String role = jwtUtil.getRole(accessToken);
+
+        log.info("여기도 셀렉트 쿼리?");
+        Member findMember = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+
+//        Member member = Member.authorization(userEmail, null, Authority.valueOf(role));
+        CustomUserDetails customUserDetails = new CustomUserDetails(findMember.getId(), memberRepository);
+
+        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authToken);
+
+        log.info("authToken = {}", authToken);
+        log.info("context = {}", context.getAuthentication());
+        log.info("userEmail = {}", userEmail);
+
+        filterChain.doFilter(request, response);
+
+
+    }
+```
 
 #### 로그인시 토큰은 DB에 저장하고 검증 했습니다.
 
