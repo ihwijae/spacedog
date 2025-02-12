@@ -61,6 +61,20 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 <img src="docs/SignUP.png">
 
+<br>
+
+#### 스프링 시큐리티 JWT를 통한 로그인 전체 로직
+
+<img src="docs/LoginLogic.png" alt="로그인 전체 로직">
+
+
+
+
+
+<br>
+
+#### 로그인
+
 
 
 
