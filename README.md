@@ -521,6 +521,61 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 > 라이프사이클이 완전히 동일하지 않은 객체들끼리는 단방향 ManyToOne 으로 관계를 설정하고 Join을 활용  
 > 그 외는 ID 매핑으로 직접 Join 쿼리를 사용했다.
 
+<br>
+
+#### 컬렉션 조회 최적화
+> 여러개의 상품의 조회할때 ( ex)전체 아이템조회, 카테고리별 아이템 조회 등등..) 단일 조회시에는 해당 x   
+> N+1 문제 발생 조회하는 아이템의 갯수마다 N+1 쿼리가 실행된다 .  
+> 조회하는 아이템이 10개라면 컬렉션을 조회하는 10번의 쿼리가 추가로 발생한다.  
+
+```java
+    public List<ItemDetailResponse> itemDetail(Long itemId) {
+        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
+        itemDetail.forEach(
+                itemDetailResponse -> {
+
+
+                    List<OptionGroupResponse> optionGroup = findOptionGroup(itemId);
+                    List<CategoryResponse> categoryResponses = findCategory(itemId);
+                    itemDetailResponse.setCategory(categoryResponses);
+                    itemDetailResponse.setOptionGroup(optionGroup);
+
+                    optionGroup.forEach(optionGroupResponse -> {
+                        List<OptionSpecsResponse> optionSpecs = findOptionSpecs(optionGroupResponse.getId());
+                        optionGroupResponse.setOptionSpecs(optionSpecs);
+                    });
+                }
+        );
+        return itemDetail;
+    }
+```
+#### 이처럼 컬렉션안에 컬렉션이 존재하는경우 반복문을 통해 조회해서 주입해주는 방식 이었다
+
+```java
+    public List<ItemDetailResponse> findByItemDetail(Long itemId) {
+
+        //루트 조회
+        List<ItemDetailResponse> itemDetail = findItemDetail(itemId);
+
+        // optionGroup, optionSpecs 컬렉션을 Map 으로 한방에 조회
+        Map<Long, List<OptionGroupResponse>> optionGroupMap = findOptionGroupMap(toOptionGroupIds(itemDetail));
+        Map<Long, List<OptionSpecsResponse>> optionSpecsMap = findOptionSpecsMap(toOptionSpecsIds(itemDetail));
+
+        //루프를 돌면서 컬렉션 추가 (추가 쿼리 실행 xx)
+        itemDetail.forEach(
+                itemDetailResponse -> {
+                    itemDetailResponse.setOptionGroup(optionGroupMap.get(itemDetailResponse.getId()));
+
+                }
+        );
+
+    }
+```
+
+#### 이렇게 Map안에 값을 List로 담아 한번에 조회하여 쿼리를 최적화 하였다.
+
+
+
 
 
 
