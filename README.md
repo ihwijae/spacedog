@@ -521,6 +521,9 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
     }
 ```
 **fetchFirst는 limit(1).fetchOne() 과 같은 동작을 한다**
+
+<br>
+
 **조회 결과를 0, 1로 구분하면 안되고 null로 체크를 해야한다. 조회결과가 없으면 0이 아니라 null이 반환되기 때문이다.**
 
 
