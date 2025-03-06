@@ -546,7 +546,28 @@ JPA와 Entity를 동일선상에 두고 생각했다.  당연시하게 조회할
 > DTO를 사용하여 영속성 컨텍스트에 저장되지 않게 한다. ->  캐시 오버헤드를 줄일 수 있다.  
 > 2차 캐시는 기본적으로 하이버네이트가 제공하는 기능이지만, DB에서 데이터가 변경되어도 캐시된 엔티티가 반환될 가능성이 있다.  
 
+```java
+    public List<SearchItemResponse> getItems(SearchItemRequest request) {
+        return
+                query
+                        .select(Projections.fields(SearchItemResponse.class,
+                                item.name,
+                                item.description,
+                                item.price,
+                                member.name.as("memberName")))
+                        .from(item)
+                        .join(member).on(item.memberId.eq(member.id))
+                        .where(
+                                LikeItemName(request.getSearchName()),
+                                LikeItemContent(request.getSearchContent())
+                        )
+                        .fetch();
+    }
+```
+
 **결론: 엔티티 대신 DTO를 사용 하는것이 위의 문제들을 해결할 수 있는 방법이라고 생각해서 DTO를 사용했다.**
+
+
 
 
 
