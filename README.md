@@ -606,6 +606,30 @@ JPA와 Entity를 동일선상에 두고 생각했다.  당연시하게 조회할
 ```
 #### 이처럼 컬렉션안에 컬렉션이 존재하는경우 반복문을 통해 조회해서 주입해주는 방식 이었다
 
+<br>
+
+#### Map을 활용하여 한번에 조회하는 방식으로 해결했다.  
+
+```java
+    public Map<Long, List<Item>> findItemMap(List<Long> itemIds) {
+        List<Item> items = queryFactory
+                .selectFrom(item)
+                .where(item.id.in(itemIds))
+                .fetch();
+
+        Map<Long, List<Item>> itemMap = items.stream()
+                .collect(Collectors.groupingBy(Item::getId));
+
+        return itemMap;
+    }
+```
+#### id를 key로하여 value에 원하는 값을 넣어서 한번에 조회하고
+
+```java
+    List<Item> items = itemMap.get(itemCartResponse.getItemId());
+```
+#### 필요한 값을 Map에서 조회하도록 구현했다.  
+
 ```java
     public List<ItemDetailResponse> findByItemDetail(Long itemId) {
 
