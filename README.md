@@ -500,7 +500,7 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 
 
-### QueryDSL count 함수 최적화
+### ⌨️ QueryDSL count 함수 최적화
 > 데이터의 존재 유무를 확인할때 count, exist 함수를 활용한다.  
 > MySQL 기준으로 count 쿼리보다는 exist 함수를 사용하는것이 좋다고 생각한다.  
 > count 쿼리는 조건에 맞는 첫번째가 발견되더라도 모든 조건을 체크한다.  
@@ -529,7 +529,8 @@ Compoent 계층이 Data 계층 (Repository) 계층과 통신하고 <br>
 
 <br>
 
-### 조회시 Entity 보다 DTO 사용
+---
+### ⌨️ 조회시 Entity 보다 DTO 사용
 
 JPA와 Entity를 동일선상에 두고 생각했다.  당연시하게 조회할때 엔티티 자체를 조회했다.  
 
