@@ -54,7 +54,6 @@ public class ItemQueryRepository {
     }
 
 
-
     public List<SearchItemResponse> getItems(SearchItemRequest request) {
         return
                 query
@@ -71,6 +70,8 @@ public class ItemQueryRepository {
                         )
                         .fetch();
     }
+
+
 
     public List<FindItemAllResponse> findItemsAll(int pageNo, int pageSize) {
         List<Long> ids = query
